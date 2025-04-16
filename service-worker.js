@@ -4,7 +4,7 @@ const CACHE_NAME = 'flying-assessment-v1';
 const ASSETS_TO_CACHE = [
   '/',
   'index.html',
-  'standard.html',
+  'standard.html-v2',
   'bereiche.html',
   'sppb.html-v2',
   'manifest.json',
