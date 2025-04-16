@@ -1,7 +1,7 @@
 
 {
-  "name": "Flying Assessment App",
-  "short_name": "Assessments",
+  "name": "Flying Assessment-Leitfaden",
+  "short_name": "Flying",
   "start_url": "index.html",
   "display": "standalone",
   "background_color": "#ffffff",
