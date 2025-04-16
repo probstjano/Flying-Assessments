@@ -4,13 +4,13 @@ const CACHE_NAME = 'flying-assessment-v1';
 const ASSETS_TO_CACHE = [
   '/',
   'index.html',
-  'standard.html-v2',
+  'standard.html-v3',
   'bereiche.html',
   'sppb.html-v3',
   'manifest.json',
   'icon.png',
   'SPPB_Protokoll.pdf',
-  'DEMMI.html'
+  'DEMMI.html-v3'
   
 ];
 
