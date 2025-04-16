@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <title>Flying Assessment Leitfaden</title>
+  <style>
+    body { font-family: sans-serif; margin: 20px; }
+    .intro { margin-bottom: 30px; }
+    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    .card {
+      padding: 20px;
+      background: #f0f0f0;
+      text-align: center;
+      border-radius: 12px;
+      font-size: 18px;
+      text-decoration: none;
+      color: black;
+      border: 1px solid #ccc;
+    }
+    .card:hover {
+      background: #e0e0e0;
+    }
+  </style>
+
+  <link rel="manifest" href="manifest.json">
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('service-worker.js');
+    }
+  </script>
+</head>
+<body>
+  <h1>Flying Assessment Leitfaden</h1>
+  <div class="intro">
+    <p>Diese App unterstützt dich bei der Auswahl geeigneter Assessments im Flying-Physio-Kontext.</p>
+    <p><strong>Standard-Assessments:</strong> Eines davon sollte in den ersten 3 Terminen durchgeführt werden.</p>
+    <p><strong>Bereichs-Assessments:</strong> Zur vertiefenden Untersuchung je nach Funktionsbereich.</p>
+  </div>
+
+  <div class="grid">
+    <a class="card" href="standard.html">📋 Standard-Assessments</a>
+    <a class="card" href="bereiche.html">🧭 Bereichs-Assessments</a>
+  </div>
+</body>
+</html>
