@@ -124,43 +124,43 @@
       document.getElementById("ageSection").classList.remove("hidden");
     }
 
-    function toggleNorms() {
-      const age = parseInt(document.getElementById("age").value);
-      const norms = document.getElementById("normwerte");
-      let normText = "";
-      let unableText = "";
+   function toggleNorms() {
+  const age = parseInt(document.getElementById("age").value);
+  const norms = document.getElementById("normwerte");
+  let normText = "";
+  let unableText = "";
 
-      if (isNaN(age)) {
-        norms.innerText = "Bitte zuerst das Alter eingeben.";
-        return;
-      }
+  if (isNaN(age)) {
+    norms.innerText = "Bitte zuerst das Alter eingeben.";
+    return;
+  }
 
-      if (age >= 65 && age <= 69) {
-        normText = "Normwert 5x Sitz-Stand (65–69 Jahre): ca. 13.3–13.9 Sekunden";
-        unableText = "Nicht in der Lage: ca. 13.7–15.1 % (Männer–Frauen)";
-      } else if (age >= 70 && age <= 74) {
-        normText = "Normwert 5x Sitz-Stand (70–74 Jahre): ca. 13.8–15.1 Sekunden";
-        unableText = "Nicht in der Lage: ca. 16.2–22.0 % (Männer–Frauen)";
-      } else if (age >= 75 && age <= 79) {
-        normText = "Normwert 5x Sitz-Stand (75–79 Jahre): ca. 14.7–15.9 Sekunden";
-        unableText = "Nicht in der Lage: ca. 23.4–31.6 % (Männer–Frauen)";
-      } else if (age >= 80 && age <= 84) {
-        normText = "Normwert 5x Sitz-Stand (80–84 Jahre): ca. 15.1–16.9 Sekunden";
-        unableText = "Nicht in der Lage: ca. 34.4–46.0 % (Männer–Frauen)";
-      } else if (age >= 85 && age <= 89) {
-        normText = "Normwert 5x Sitz-Stand (85–89 Jahre): ca. 17.2–18.1 Sekunden";
-        unableText = "Nicht in der Lage: ca. 51.9–54.3 % (Männer–Frauen)";
-      } else if (age >= 90) {
-        normText = "Normwert 5x Sitz-Stand (90+ Jahre): ca. 16.4–18.5 Sekunden";
-        unableText = "Nicht in der Lage: ca. 62.5–83.5 % (Männer–Frauen)";
-      } else {
-        normText = "Keine Normwerte für diese Altersgruppe verfügbar.";
-        unableText = "";
-      }
+  if (age >= 65 && age <= 69) {
+    normText = "👨 Männer: 13.3 s\n👩 Frauen: 13.9 s";
+    unableText = "👨 Männer: 15.1 %\n👩 Frauen: 13.7 %";
+  } else if (age >= 70 && age <= 74) {
+    normText = "👨 Männer: 13.8 s\n👩 Frauen: 15.1 s";
+    unableText = "👨 Männer: 16.2 %\n👩 Frauen: 22.0 %";
+  } else if (age >= 75 && age <= 79) {
+    normText = "👨 Männer: 14.7 s\n👩 Frauen: 15.9 s";
+    unableText = "👨 Männer: 23.4 %\n👩 Frauen: 31.6 %";
+  } else if (age >= 80 && age <= 84) {
+    normText = "👨 Männer: 15.1 s\n👩 Frauen: 16.9 s";
+    unableText = "👨 Männer: 34.4 %\n👩 Frauen: 46.0 %";
+  } else if (age >= 85 && age <= 89) {
+    normText = "👨 Männer: 17.2 s\n👩 Frauen: 18.1 s";
+    unableText = "👨 Männer: 51.9 %\n👩 Frauen: 54.3 %";
+  } else if (age >= 90) {
+    normText = "👨 Männer: 16.4 s\n👩 Frauen: 18.5 s";
+    unableText = "👨 Männer: 62.5 %\n👩 Frauen: 83.5 %";
+  } else {
+    normText = "Keine Normwerte für diese Altersgruppe verfügbar.";
+    unableText = "";
+  }
 
-      norms.innerText = `${normText}\n${unableText}`;
-      norms.classList.remove("hidden");
-    }
-  </script>
+  norms.innerText = `Normwert 5x Sitz-Stand:\n${normText}\n\nNicht in der Lage:\n${unableText}`;
+  norms.classList.remove("hidden");
+}
+  <script>  
 </body>
 </html>
