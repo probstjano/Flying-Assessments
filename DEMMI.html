@@ -115,14 +115,35 @@
         `Rohscore: ${score}/20 → DEMMI-Score: ${scaled}/100`;
     }
 
-    async function downloadPDF() {
-      const { jsPDF } = window.jspdf;
-      const doc = new jsPDF();
-      const text = document.getElementById("result").innerText || "Noch kein Ergebnis berechnet.";
-      doc.text("DEMMI-Ergebnis", 10, 10);
-      doc.text(text, 10, 20);
-      doc.save("demmi-ergebnis.pdf");
+   <script>
+  async function downloadPDF() {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+    const form = document.forms["demmiForm"];
+    let y = 10;
+
+    doc.text("DEMMI-Auswertung", 10, y);
+    y += 10;
+
+    for (let i = 0; i < questions.length; i++) {
+      const selectedValue = form["q" + i].value;
+      const optionLabel = questions[i].options.find(opt => opt.value.toString() === selectedValue)?.label || "Keine Auswahl";
+      doc.text(`${questions[i].text}: ${optionLabel}`, 10, y);
+      y += 7;
+      if (y > 280) {
+        doc.addPage();
+        y = 10;
+      }
     }
+
+    y += 5;
+    const resultText = document.getElementById("result").innerText || "Kein Ergebnis berechnet.";
+    doc.text(resultText, 10, y);
+
+    doc.save("demmi-ergebnis.pdf");
+  }
+</script>
+
   </script>
 </body>
 </html>
