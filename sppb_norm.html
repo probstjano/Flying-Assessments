@@ -1,0 +1,130 @@
+
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SPPB – Short Physical Performance Battery</title>
+  <style>
+    body { font-family: sans-serif; margin: 10px; font-size: 16px; line-height: 1.5; max-width: 600px; }
+    label { display: block; margin: 10px 0 5px; }
+    input, select { width: 100%; padding: 6px; font-size: 16px; margin-bottom: 10px; }
+    button { padding: 10px 15px; font-size: 16px; margin-top: 10px; }
+    #result, #normwerte { font-weight: bold; margin-top: 20px; }
+    .hidden { display: none; }
+  </style>
+</head>
+<body>
+  <h1>SPPB – Short Physical Performance Battery</h1>
+  <p>Test für physische Leistungsfähigkeit unterer Extremitäten.</p>
+  <p>Eintragen mit Einzelwerte im Cenplex Behandlungsplan unter "Messung".</p>
+  <p>
+    Detailliertes Durchführungsprotokoll hier:
+    <a href="SPPB_Protokoll.pdf" target="_blank">SPPB Protokoll (PDF)</a>
+  </p>
+  <p><strong>Nur bei Bedarf hier eintragen</strong> für Infos, Normwerte und Score-Berechnung.</p>
+
+  <form id="sppbForm">
+    <label>Alter der Person:</label>
+    <input type="number" id="age" min="0" max="120">
+
+    <h3>Balance</h3>
+    <label>Füße zusammen >10s:</label>
+    <select id="standZusammen">
+      <option value="0">Nein</option>
+      <option value="1">Ja</option>
+    </select>
+
+    <label>Semitandem >10s:</label>
+    <select id="semitandem">
+      <option value="0">Nein</option>
+      <option value="1">Ja</option>
+    </select>
+
+    <label>Tandem (Zeit in Sekunden, z. B. 8.50):</label>
+    <input type="number" id="tandemZeit" step="0.01">
+
+    <h3>Gehgeschwindigkeit</h3>
+    <label>Gemessene Strecke:</label>
+    <select id="strecke">
+      <option value="3">3 Meter</option>
+      <option value="4">4 Meter</option>
+    </select>
+
+    <label>Zeit in Sekunden (z. B. 5.20):</label>
+    <input type="number" id="gehzeit" step="0.01">
+
+    <h3>5x Sitz-Stand</h3>
+    <label>Zeit in Sekunden (z. B. 12.75):</label>
+    <input type="number" id="sitzStand" step="0.01">
+
+    <button type="button" onclick="calculateSPPB()">✅ Score berechnen</button>
+  </form>
+
+  <p id="result"></p>
+  <button onclick="toggleNorms()">📊 Normwerte anzeigen</button>
+  <div id="normwerte" class="hidden"></div>
+
+  <script>
+    function calculateSPPB() {
+      let balance = 0;
+      const tandem = parseFloat(document.getElementById("tandemZeit").value);
+
+      if (document.getElementById("standZusammen").value === "1") balance += 1;
+      if (document.getElementById("semitandem").value === "1") balance += 1;
+      if (!isNaN(tandem)) {
+        if (tandem >= 3 && tandem < 10) balance += 1;
+        if (tandem >= 10) balance += 2;
+      }
+
+      const dist = parseFloat(document.getElementById("strecke").value);
+      const gehzeit = parseFloat(document.getElementById("gehzeit").value);
+      let speed = 0;
+      let gangScore = 0;
+
+      if (!isNaN(dist) && !isNaN(gehzeit) && gehzeit > 0) {
+        speed = dist / gehzeit;
+        if (speed <= 0) gangScore = 0;
+        else if (speed <= 0.45) gangScore = 1;
+        else if (speed <= 0.64) gangScore = 2;
+        else if (speed <= 0.82) gangScore = 3;
+        else gangScore = 4;
+      }
+
+      const sitzZeit = parseFloat(document.getElementById("sitzStand").value);
+      let sitzScore = 0;
+
+      if (isNaN(sitzZeit) || sitzZeit > 60) sitzScore = 0;
+      else if (sitzZeit > 16.7) sitzScore = 1;
+      else if (sitzZeit >= 13.7) sitzScore = 2;
+      else if (sitzZeit >= 11.2) sitzScore = 3;
+      else sitzScore = 4;
+
+      const total = balance + gangScore + sitzScore;
+      document.getElementById("result").innerText =
+        `Gesamt-Score: ${total}/12\nBalance: ${balance}/4, Gang: ${gangScore}/4, 5x Sitz-Stand: ${sitzScore}/4\nGeschwindigkeit: ${speed.toFixed(2)} m/s`;
+    }
+
+    function toggleNorms() {
+      const age = parseInt(document.getElementById("age").value);
+      const norms = document.getElementById("normwerte");
+      let text = "";
+
+      if (isNaN(age)) {
+        text = "Bitte zuerst das Alter eingeben.";
+      } else if (age >= 60 && age <= 69) {
+        text = "Normwert 5x Sitz-Stand (60–69 Jahre): 11.4 Sekunden";
+      } else if (age >= 70 && age <= 79) {
+        text = "Normwert 5x Sitz-Stand (70–79 Jahre): 12.6 Sekunden";
+      } else if (age >= 80 && age <= 89) {
+        text = "Normwert 5x Sitz-Stand (80–89 Jahre): 14.8 Sekunden";
+      } else {
+        text = "Keine Normwerte für diese Altersgruppe verfügbar.";
+      }
+
+      norms.innerText = text;
+      norms.classList.toggle("hidden");
+    }
+  </script>
+</body>
+</html>
