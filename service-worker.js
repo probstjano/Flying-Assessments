@@ -7,7 +7,6 @@ const ASSETS_TO_CACHE = [
   'standard.html',
   'bereiche.html',
   'sppb.html',
-  'sppb_complete.html',
   'manifest.json',
   'icon.png',
   'SPPB_Protokoll.pdf'
