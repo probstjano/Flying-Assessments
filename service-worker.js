@@ -9,7 +9,9 @@ const ASSETS_TO_CACHE = [
   'sppb.html-v3',
   'manifest.json',
   'icon.png',
-  'SPPB_Protokoll.pdf'
+  'SPPB_Protokoll.pdf',
+  'DEMMI.html'
+  
 ];
 
 // Installation: Ressourcen cachen
