@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="de">
 <head>
@@ -132,12 +131,13 @@
       const speedText = (!isNaN(speed)) ? speed.toFixed(2) + " m/s" : "-";
 
       document.getElementById("result").innerText =
-        `Gesamt-Score: ${total}/12
-Balance: ${balance}/4
-Gang: ${gangScore}/4
-5x Sitz-Stand: ${sitzScore}/4
-Gehgeschwindigkeit: ${speedText}
-5x Sitz-Stand Zeit: ${sitzZeit || "-"} s`;
+        "Gesamt-Score: " + total + "/12\\n" +
+        "Balance: " + balance + "/4\\n" +
+        "Gang: " + gangScore + "/4\\n" +
+        "5x Sitz-Stand: " + sitzScore + "/4\\n" +
+        "Gehgeschwindigkeit: " + speedText + "\\n" +
+        "5x Sitz-Stand Zeit: " + (sitzZeit || "-") + " s";
+
       document.getElementById("ageSection").classList.remove("hidden");
     }
 
@@ -152,45 +152,29 @@ Gehgeschwindigkeit: ${speedText}
       }
 
       if (age >= 65 && age <= 69) {
-        normText = "👨 Männer: 13.3 s
-👩 Frauen: 13.9 s";
-        unableText = "👨 Männer: 15.1 %
-👩 Frauen: 13.7 %";
+        normText = "👨 Männer: 13.3 s\\n👩 Frauen: 13.9 s";
+        unableText = "👨 Männer: 15.1 %\\n👩 Frauen: 13.7 %";
       } else if (age >= 70 && age <= 74) {
-        normText = "👨 Männer: 13.8 s
-👩 Frauen: 15.1 s";
-        unableText = "👨 Männer: 16.2 %
-👩 Frauen: 22.0 %";
+        normText = "👨 Männer: 13.8 s\\n👩 Frauen: 15.1 s";
+        unableText = "👨 Männer: 16.2 %\\n👩 Frauen: 22.0 %";
       } else if (age >= 75 && age <= 79) {
-        normText = "👨 Männer: 14.7 s
-👩 Frauen: 15.9 s";
-        unableText = "👨 Männer: 23.4 %
-👩 Frauen: 31.6 %";
+        normText = "👨 Männer: 14.7 s\\n👩 Frauen: 15.9 s";
+        unableText = "👨 Männer: 23.4 %\\n👩 Frauen: 31.6 %";
       } else if (age >= 80 && age <= 84) {
-        normText = "👨 Männer: 15.1 s
-👩 Frauen: 16.9 s";
-        unableText = "👨 Männer: 34.4 %
-👩 Frauen: 46.0 %";
+        normText = "👨 Männer: 15.1 s\\n👩 Frauen: 16.9 s";
+        unableText = "👨 Männer: 34.4 %\\n👩 Frauen: 46.0 %";
       } else if (age >= 85 && age <= 89) {
-        normText = "👨 Männer: 17.2 s
-👩 Frauen: 18.1 s";
-        unableText = "👨 Männer: 51.9 %
-👩 Frauen: 54.3 %";
+        normText = "👨 Männer: 17.2 s\\n👩 Frauen: 18.1 s";
+        unableText = "👨 Männer: 51.9 %\\n👩 Frauen: 54.3 %";
       } else if (age >= 90) {
-        normText = "👨 Männer: 16.4 s
-👩 Frauen: 18.5 s";
-        unableText = "👨 Männer: 62.5 %
-👩 Frauen: 83.5 %";
+        normText = "👨 Männer: 16.4 s\\n👩 Frauen: 18.5 s";
+        unableText = "👨 Männer: 62.5 %\\n👩 Frauen: 83.5 %";
       } else {
         normText = "Keine Normwerte für diese Altersgruppe verfügbar.";
         unableText = "";
       }
 
-      norms.innerText = `Normwert 5x Sitz-Stand:
-${normText}
-
-Nicht in der Lage:
-${unableText}`;
+      norms.innerText = "Normwert 5x Sitz-Stand:\\n" + normText + "\\n\\nNicht in der Lage:\\n" + unableText;
       norms.classList.remove("hidden");
     }
 
@@ -200,7 +184,7 @@ ${unableText}`;
       const resultText = document.getElementById("result").innerText || "Noch kein Ergebnis berechnet.";
       let y = 10;
       doc.text("SPPB-Auswertung", 10, y); y += 10;
-      resultText.split("\n").forEach(line => {
+      resultText.split("\\n").forEach(line => {
         doc.text(line, 10, y);
         y += 7;
       });
