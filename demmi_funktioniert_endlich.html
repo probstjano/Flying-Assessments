@@ -1,0 +1,141 @@
+
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>DEMMI – De Morton Mobility Index</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <style>
+    body {
+      font-family: sans-serif;
+      margin: 10px;
+      font-size: 16px;
+      max-width: 600px;
+    }
+    label { display: block; margin: 10px 0 5px; }
+    select {
+      width: 100%;
+      padding: 6px;
+      font-size: 16px;
+      margin-bottom: 10px;
+    }
+    button {
+      padding: 10px 15px;
+      font-size: 16px;
+      margin-top: 10px;
+    }
+    #result {
+      font-weight: bold;
+      margin-top: 20px;
+    }
+    .nav-buttons {
+      margin-top: 30px;
+    }
+    .nav-buttons a {
+      display: inline-block;
+      margin-right: 10px;
+      padding: 10px 15px;
+      background: #eee;
+      border-radius: 8px;
+      text-decoration: none;
+      color: #000;
+    }
+    .nav-buttons a:hover {
+      background: #ddd;
+    }
+  </style>
+</head>
+<body>
+  <h1>DEMMI – De Morton Mobility Index</h1>
+  <p>Mobilität von Bett bis Gang/Springen.</p>
+  <p>Direkt im Cenplex Behandlungsplan als <strong>Assessment</strong> "DEMMI" eintragen/durchführen.</p>
+  <p><strong>Alternativ:</strong> hier eintragen und in Cenplex <strong>Messung</strong> "DEMMI" Score übertragen.</p>
+  <p>Detailliertes Durchführungsprotokoll hier:
+    <a href="DEMMI_Protokoll.pdf" target="_blank">DEMMI Protokoll (PDF)</a>
+  </p>
+
+  <form id="demmiForm">
+    <div id="questions"></div>
+    <button type="button" onclick="calculateDEMMI()">✅ Score berechnen</button>
+    <button type="button" onclick="downloadPDF()">📄 Als PDF speichern</button>
+  </form>
+  <p id="result"></p>
+
+  <div class="nav-buttons">
+    <a href="standard.html">⬅️ Zurück zu Standard-Assessments</a>
+    <a href="index.html">🏠 Zur Startseite</a>
+  </div>
+
+  <script>
+    const questions = [
+      { text: "1. Gesäß anheben im Bett", options: [ { value: 0, label: "Nicht möglich" }, { value: 1, label: "Möglich" } ] },
+      { text: "2. Auf die Seite rollen", options: [ { value: 0, label: "Nicht möglich" }, { value: 1, label: "Möglich" } ] },
+      { text: "3. Vom Liegen zum Sitzen", options: [ { value: 0, label: "Nicht möglich" }, { value: 1, label: "geringe Unterstützung/Supervision" }, { value: 2, label: "selbständig" } ] },
+      { text: "4. Sitzen im Stuhl ohne Unterstützung (10 Sek.)", options: [ { value: 0, label: "Nicht möglich" }, { value: 1, label: "Möglich" } ] },
+      { text: "5. Aufstehen aus dem Stuhl", options: [ { value: 0, label: "Nicht möglich" }, { value: 1, label: "Möglich" } ] },
+      { text: "6. Aufstehen ohne Arme zur Hilfe zu nehmen", options: [ { value: 0, label: "Nicht möglich" }, { value: 1, label: "Geringe Unterstützung / Supervision" }, { value: 2, label: "Selbständig" } ] },
+      { text: "7. Ohne Unterstützung stehen (10 Sek.)", options: [ { value: 0, label: "Nicht möglich" }, { value: 1, label: "Möglich" } ] },
+      { text: "8. Stehen mit geschlossenen Füßen (10 Sek.)", options: [ { value: 0, label: "Nicht möglich" }, { value: 1, label: "Möglich" } ] },
+      { text: "9. Auf den Fußspitzen stehen (10 Sek.)", options: [ { value: 0, label: "Nicht möglich" }, { value: 1, label: "Möglich" } ] },
+      { text: "10. Tandemstand mit geschlossenen Augen (10 Sek.)", options: [ { value: 0, label: "Nicht möglich" }, { value: 1, label: "Möglich" } ] },
+      { text: "11. Gehstrecke", options: [ { value: 0, label: "< 5 m" }, { value: 1, label: "10–20 m" }, { value: 2, label: "50 m" } ] },
+      { text: "12. Selbständiges Gehen", options: [ { value: 0, label: "nicht möglich/Supervision/Hilfe" }, { value: 1, label: "Selbständig mit Gehhilfe" }, { value: 2, label: "Selbständig ohne Gehhilfe" } ] },
+      { text: "13. Stift vom Boden aufheben", options: [ { value: 0, label: "Nicht möglich" }, { value: 1, label: "Möglich" } ] },
+      { text: "14. 4 Schritte rückwärts gehen", options: [ { value: 0, label: "Nicht möglich" }, { value: 1, label: "Möglich" } ] },
+      { text: "15. Beidbeiniges Springen", options: [ { value: 0, label: "Nicht möglich" }, { value: 1, label: "Möglich" } ] }
+    ];
+
+    const conversion = [0,8,15,20,24,27,30,33,36,39,41,44,48,53,57,62,67,67,74,85,100];
+
+    const container = document.getElementById("questions");
+    questions.forEach((q, i) => {
+      let optionsHTML = "";
+      q.options.forEach(opt => {
+        optionsHTML += `<option value="${opt.value}">${opt.label}</option>`;
+      });
+
+      let html = `<label>${q.text}<select name="q${i}">${optionsHTML}</select></label>`;
+      container.innerHTML += html;
+    });
+
+    function calculateDEMMI() {
+      const form = document.forms["demmiForm"];
+      let score = 0;
+      for (let i = 0; i < questions.length; i++) {
+        score += parseInt(form["q" + i].value);
+      }
+      const scaled = score <= 20 ? conversion[score] : "Ungültig";
+      document.getElementById("result").innerText =
+        `Rohscore: ${score}/20 → DEMMI-Score: ${scaled}/100`;
+    }
+
+    async function downloadPDF() {
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF();
+      const form = document.forms["demmiForm"];
+      let y = 10;
+
+      doc.text("DEMMI-Auswertung", 10, y);
+      y += 10;
+
+      for (let i = 0; i < questions.length; i++) {
+        const selectedValue = form["q" + i].value;
+        const optionLabel = questions[i].options.find(opt => opt.value.toString() === selectedValue)?.label || "Keine Auswahl";
+        doc.text(`${questions[i].text}: ${optionLabel}`, 10, y);
+        y += 7;
+        if (y > 280) {
+          doc.addPage();
+          y = 10;
+        }
+      }
+
+      y += 5;
+      const resultText = document.getElementById("result").innerText || "Kein Ergebnis berechnet.";
+      doc.text(resultText, 10, y);
+
+      doc.save("demmi-ergebnis.pdf");
+    }
+  </script>
+</body>
+</html>
