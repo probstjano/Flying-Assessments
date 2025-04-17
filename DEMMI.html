@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="de">
 <head>
@@ -7,12 +6,7 @@
   <title>DEMMI – De Morton Mobility Index</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <style>
-    body {
-      font-family: sans-serif;
-      margin: 10px;
-      font-size: 16px;
-      max-width: 600px;
-    }
+    body { font-family: sans-serif; margin: 10px; font-size: 16px; max-width: 600px; }
     label { display: block; margin: 10px 0 5px; }
     select {
       width: 100%;
@@ -20,18 +14,9 @@
       font-size: 16px;
       margin-bottom: 10px;
     }
-    button {
-      padding: 10px 15px;
-      font-size: 16px;
-      margin-top: 10px;
-    }
-    #result {
-      font-weight: bold;
-      margin-top: 20px;
-    }
-    .nav-buttons {
-      margin-top: 30px;
-    }
+    button { padding: 10px 15px; font-size: 16px; margin-top: 10px; }
+    #result { font-weight: bold; margin-top: 20px; }
+    .nav-buttons { margin-top: 30px; }
     .nav-buttons a {
       display: inline-block;
       margin-right: 10px;
@@ -41,9 +26,8 @@
       text-decoration: none;
       color: #000;
     }
-    .nav-buttons a:hover {
-      background: #ddd;
-    }
+    .nav-buttons a:hover { background: #ddd; }
+    .hidden { display: none; }
   </style>
 </head>
 <body>
@@ -57,6 +41,16 @@
 
   <form id="demmiForm">
     <div id="questions"></div>
+    <div id="hilfsmittelSelect" class="hidden">
+      <label>Hilfsmittel bei Gehen:</label>
+      <select id="hilfsmittel">
+        <option value="Keine">Keine</option>
+        <option value="Gehbock">Gehbock</option>
+        <option value="Stock">Stock</option>
+        <option value="Rollator">Rollator</option>
+        <option value="Andere">Andere</option>
+      </select>
+    </div>
     <button type="button" onclick="calculateDEMMI()">✅ Score berechnen</button>
     <button type="button" onclick="downloadPDF()">📄 Als PDF speichern</button>
   </form>
@@ -80,7 +74,11 @@
       { text: "9. Auf den Fußspitzen stehen (10 Sek.)", options: [ { value: 0, label: "Nicht möglich" }, { value: 1, label: "Möglich" } ] },
       { text: "10. Tandemstand mit geschlossenen Augen (10 Sek.)", options: [ { value: 0, label: "Nicht möglich" }, { value: 1, label: "Möglich" } ] },
       { text: "11. Gehstrecke", options: [ { value: 0, label: "< 5 m" }, { value: 1, label: "10–20 m" }, { value: 2, label: "50 m" } ] },
-      { text: "12. Selbständiges Gehen", options: [ { value: 0, label: "nicht möglich/Supervision/Hilfe" }, { value: 1, label: "Selbständig mit Gehhilfe" }, { value: 2, label: "Selbständig ohne Gehhilfe" } ] },
+      { text: "12. Selbständiges Gehen", options: [
+        { value: 0, label: "nicht möglich/Supervision/Hilfe" },
+        { value: 1, label: "Selbständig mit Gehhilfe" },
+        { value: 2, label: "Selbständig ohne Gehhilfe" }
+      ] },
       { text: "13. Stift vom Boden aufheben", options: [ { value: 0, label: "Nicht möglich" }, { value: 1, label: "Möglich" } ] },
       { text: "14. 4 Schritte rückwärts gehen", options: [ { value: 0, label: "Nicht möglich" }, { value: 1, label: "Möglich" } ] },
       { text: "15. Beidbeiniges Springen", options: [ { value: 0, label: "Nicht möglich" }, { value: 1, label: "Möglich" } ] }
@@ -95,9 +93,21 @@
         optionsHTML += `<option value="${opt.value}">${opt.label}</option>`;
       });
 
-      let html = `<label>${q.text}<select name="q${i}">${optionsHTML}</select></label>`;
+      const html = `<label>${q.text}<select name="q${i}" onchange="checkGehilfe(${i})">${optionsHTML}</select></label>`;
       container.innerHTML += html;
     });
+
+    function checkGehilfe(index) {
+      if (index === 11) {
+        const value = document.forms["demmiForm"]["q11"].value;
+        const gehilfe = document.getElementById("hilfsmittelSelect");
+        if (value === "1") {
+          gehilfe.classList.remove("hidden");
+        } else {
+          gehilfe.classList.add("hidden");
+        }
+      }
+    }
 
     function calculateDEMMI() {
       const form = document.forms["demmiForm"];
@@ -106,8 +116,7 @@
         score += parseInt(form["q" + i].value);
       }
       const scaled = score <= 20 ? conversion[score] : "Ungültig";
-      document.getElementById("result").innerText =
-        `Rohscore: ${score}/20 → DEMMI-Score: ${scaled}/100`;
+      document.getElementById("result").innerText = `Rohscore: ${score}/20 → DEMMI-Score: ${scaled}/100`;
     }
 
     async function downloadPDF() {
@@ -124,6 +133,11 @@
         const optionLabel = questions[i].options.find(opt => opt.value.toString() === selectedValue)?.label || "Keine Auswahl";
         doc.text(`${questions[i].text}: ${optionLabel}`, 10, y);
         y += 7;
+        if (i === 11 && selectedValue === "1") {
+          const hilfsmittel = document.getElementById("hilfsmittel").value || "–";
+          doc.text(`Hilfsmittel: ${hilfsmittel}`, 10, y);
+          y += 7;
+        }
         if (y > 280) {
           doc.addPage();
           y = 10;
@@ -133,7 +147,6 @@
       y += 5;
       const resultText = document.getElementById("result").innerText || "Kein Ergebnis berechnet.";
       doc.text(resultText, 10, y);
-
       doc.save("demmi-ergebnis.pdf");
     }
   </script>
