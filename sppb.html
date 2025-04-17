@@ -171,10 +171,6 @@
       const speedText = (!isNaN(speed)) ? speed.toFixed(2) + " m/s" : "-";
 
       let y = 10;
-      doc.text("SPPB-Auswertung", 10, y); y += 10;
-      doc.text(`Balance-Score: ${balance}/4`, 10, y); y += 7;
-      doc.text(`Gang-Score: ${gangScore}/4`, 10, y); y += 7;
-      doc.text(`Sitz-Stand-Score: ${sitzScore}/4`, 10, y); y += 7;
       doc.text(`Gesamt-Score: ${total}/12`, 10, y); y += 7;
       doc.text(`Gehgeschwindigkeit: ${speedText}`, 10, y); y += 7;
       doc.text(`5x Sitz-Stand Zeit: ${sitzZeit || "-"} s`, 10, y); y += 7;
