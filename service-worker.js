@@ -1,4 +1,4 @@
-const CACHE_NAME = 'flying-assessment-v4; 
+const CACHE_NAME = 'flying-assessment-v5; 
 const ASSETS_TO_CACHE = [
   '/',
   'index.html',
