@@ -175,9 +175,6 @@
       doc.text(`Gehgeschwindigkeit: ${speedText}`, 10, y); y += 7;
       doc.text(`5x Sitz-Stand Zeit: ${sitzZeit || "-"} s`, 10, y); y += 7;
 
-      y += 5;
-      doc.text(resultText, 10, y);
-
       doc.save("sppb-ergebnis.pdf");
     }
   </script>
