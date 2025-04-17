@@ -10,7 +10,7 @@ const ASSETS_TO_CACHE = [
   'manifest.json',
   'icon.png',
   'SPPB_Protokoll.pdf',
-  'DEMMI.html-v5',
+  'DEMMI.html-v6',
   'DEMMI_Protokoll.pdf',
     'Assessment-Leitfaden.pdf',
   
