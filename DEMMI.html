@@ -73,22 +73,23 @@
 
   <script>
     const questions = [
-      { text: "1. Gesäss anheben im Bett", options: [{ value: 0, label: "Nicht möglich" }, { value: 1, label: "Möglich" }] },
-      { text: "2. Auf die Seite Rollen", options: [{ value: 0, label: "Nicht möglich" }, { value: 1, label: "Möglich" }] },
-      { text: "3. Vom liegen zum Sitzen", options: [{ value: 0, label: "Nicht möglich" }, { value: 1, label: "geringe Unterstützung/Supervision"},{value 2, label: "selbständig"}] },
-      { text: "4. Sitzen im Stuhl ohne Unterstützung (10 Sek.)", options: [{ value: 0, label: "Nicht möglich" }, { value: 1, label: "Möglich" }] },
-      { text: "5. Aufstehen aus dem Stuhl", options: [{ value: 0, label: "Nicht möglich" }, { value: 1, label: "Möglich" }] },
-      { text: "6. Aufstehen ohne Arme zur Hilfe zu nehmen", options: [{ value: 0, label: "Nicht möglich" }, { value: 1, label: "Geringe Unterstützung / Supervision" }, { value: 2, label: "Selbständig" }] },
-      { text: "7. Ohne Unterstützung stehen (10 Sek.)", options: [{ value: 0, label: "Nicht möglich" }, { value: 1, label: "Möglich" }] },
-      { text: "8. Stehen mit geschlossenen Füssen (10 Sek.)", options: [{ value: 0, label: "Nicht möglich" }, { value: 1, label: "Möglich" }] },
-      { text: "9. Auf den Fussspitzen stehen (10 Sek.)", options: [{ value: 0, label: "Nicht möglich" }, { value: 1, label: "Möglich" }] },
-      { text: "10. Tandemstand mit geschlossenen Augen (10 Sek.)", options: [{ value: 0, label: "Nicht möglich" }, { value: 1, label: "Möglich" }] },
-      { text: "11. Gehstrecke +/- Gehhilfe", options: [{ value: 0, label: "< 5m" }, { value: 1, label: "10-20m m" }, { value: 2, label: " 50 m" }] },
-      { text: "12. Selbständiges Gehen", options: [{ value: 0, label: "nicht möglich/Supervision/Hilfe}, { value: 1, label: "Selbständig mit Gehhilfe" }, { value: 2, label: "Selbständig ohne Gehilfe" }] },
-      { text: "13. Stift vom Boden aufheben", options: [{ value: 0, label: "Nicht möglich" }, { value: 1, label: "Möglich" }] },
-      { text: "14. 4 Schritte rückwärts gehen", options: [{ value: 0, label: "Nicht möglich" }, { value: 1, label: "Möglich" }] },
-      { text: "15. Beidbeiniges Springen", options: [{ value: 0, label: "Nicht möglich" }, { value: 1, label: "Möglich" }] }
-    ];
+  { text: "1. Gesäss anheben im Bett", options: [{ value: 0, label: "Nicht möglich" }, { value: 1, label: "Möglich" }] },
+  { text: "2. Auf die Seite Rollen", options: [{ value: 0, label: "Nicht möglich" }, { value: 1, label: "Möglich" }] },
+  { text: "3. Vom Liegen zum Sitzen", options: [{ value: 0, label: "Nicht möglich" }, { value: 1, label: "geringe Unterstützung/Supervision" }, { value: 2, label: "selbständig" }] },
+  { text: "4. Sitzen im Stuhl ohne Unterstützung (10 Sek.)", options: [{ value: 0, label: "Nicht möglich" }, { value: 1, label: "Möglich" }] },
+  { text: "5. Aufstehen aus dem Stuhl", options: [{ value: 0, label: "Nicht möglich" }, { value: 1, label: "Möglich" }] },
+  { text: "6. Aufstehen ohne Arme zur Hilfe zu nehmen", options: [{ value: 0, label: "Nicht möglich" }, { value: 1, label: "Geringe Unterstützung / Supervision" }, { value: 2, label: "Selbständig" }] },
+  { text: "7. Ohne Unterstützung stehen (10 Sek.)", options: [{ value: 0, label: "Nicht möglich" }, { value: 1, label: "Möglich" }] },
+  { text: "8. Stehen mit geschlossenen Füssen (10 Sek.)", options: [{ value: 0, label: "Nicht möglich" }, { value: 1, label: "Möglich" }] },
+  { text: "9. Auf den Fussspitzen stehen (10 Sek.)", options: [{ value: 0, label: "Nicht möglich" }, { value: 1, label: "Möglich" }] },
+  { text: "10. Tandemstand mit geschlossenen Augen (10 Sek.)", options: [{ value: 0, label: "Nicht möglich" }, { value: 1, label: "Möglich" }] },
+  { text: "11. Gehstrecke +/- Gehhilfe", options: [{ value: 0, label: "< 5 m" }, { value: 1, label: "10–20 m" }, { value: 2, label: "50 m" }] },
+  { text: "12. Selbständiges Gehen", options: [{ value: 0, label: "Nicht möglich / Supervision / Hilfe" }, { value: 1, label: "Selbständig mit Gehhilfe" }, { value: 2, label: "Selbständig ohne Gehhilfe" }] },
+  { text: "13. Stift vom Boden aufheben", options: [{ value: 0, label: "Nicht möglich" }, { value: 1, label: "Möglich" }] },
+  { text: "14. 4 Schritte rückwärts gehen", options: [{ value: 0, label: "Nicht möglich" }, { value: 1, label: "Möglich" }] },
+  { text: "15. Beidbeiniges Springen", options: [{ value: 0, label: "Nicht möglich" }, { value: 1, label: "Möglich" }] }
+];
+
 
     const conversion = [0,8,15,20,24,27,30,33,36,39,41,44,48,53,57,62,67,67,74,85,100];
 
