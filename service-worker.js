@@ -10,7 +10,8 @@ const ASSETS_TO_CACHE = [
   'icon.png',
   'SPPB_Protokoll.pdf',
   'DEMMI_Protokoll.pdf',
-  'Assessment-Leitfaden.pdf'
+  'Assessment-Leitfaden.pdf',
+  'FiST.html',
 ];
 
 // Neue Version sofort aktiv
