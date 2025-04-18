@@ -132,7 +132,68 @@ function toggleNorms() {
     return;
   }
 
-  // 1. BOHANNON WERTE
+
+  // 1. NORWEGISCHE WERTE (vereinfacht 70J)
+ const norway = {
+  men: {
+    60: { P5:5.5, P10:5.9, P25:6.9, P50:8.3, P75:9.8, P90:11.5, P95:12.5 },
+    65: { P5:5.7, P10:6.2, P25:7.3, P50:8.7, P75:10.2, P90:11.8, P95:12.9 },
+    70: { P5:6.1, P10:6.6, P25:7.7, P50:9.3, P75:10.9, P90:12.5, P95:13.9 },
+    75: { P5:6.4, P10:7.0, P25:8.3, P50:10.0, P75:12.1, P90:14.0, P95:15.4 },
+    80: { P5:6.6, P10:7.5, P25:8.9, P50:10.7, P75:13.5, P90:15.8, P95:17.2 },
+    85: { P5:6.9, P10:7.9, P25:9.6, P50:11.5, P75:14.9, P90:17.7, P95:19.0 }
+  },
+  women: {
+    60: { P5:5.8, P10:6.3, P25:7.4, P50:8.9, P75:10.5, P90:12.1, P95:13.2 },
+    65: { P5:6.4, P10:7.0, P25:8.2, P50:10.0, P75:11.4, P90:13.3, P95:14.6 },
+    70: { P5:7.0, P10:7.7, P25:8.9, P50:10.5, P75:12.4, P90:14.6, P95:16.1 },
+    75: { P5:7.4, P10:8.2, P25:9.5, P50:11.2, P75:13.1, P90:15.8, P95:17.4 },
+    80: { P5:7.6, P10:8.5, P25:10.0, P50:11.7, P75:13.7, P90:16.8, P95:18.5 },
+    85: { P5:7.9, P10:9.0, P25:10.5, P50:12.3, P75:14.3, P90:17.8, P95:19.7 }
+  }
+};
+
+const sitzZeit = parseFloat(document.getElementById("sitzStand").value);
+let interpText = "Keine Tromsø-Daten für diese Altersgruppe.";
+if (!isNaN(sitzZeit) && age >= 60 && age <= 89) {
+  const nearest = [60,65,70,75,80,85].reduce((prev, curr) =>
+    Math.abs(curr - age) < Math.abs(prev - age) ? curr : prev
+  );
+  const P = norway[sex][nearest];
+  const percentiles = [5,10,25,50,75,90,95];
+  const values = percentiles.map(p => P["P"+p]);
+  let faster = 0;
+
+  if (sitzZeit <= values[0]) faster = 95;
+  else if (sitzZeit >= values[6]) faster = 5;
+  else {
+    for (let i = 0; i < values.length - 1; i++) {
+      if (sitzZeit >= values[i] && sitzZeit <= values[i+1]) {
+        const p0 = percentiles[i], p1 = percentiles[i+1];
+        const v0 = values[i], v1 = values[i+1];
+        const frac = (sitzZeit - v0) / (v1 - v0);
+        faster = Math.round(100 - (p0 + frac * (p1 - p0)));
+        break;
+      }
+    }
+  }
+
+  // Anzeige als Tabelle
+  interpText = `<h3>Norwegische Referenzwerte (Tromsø – ${nearest} Jahre – ${sex === 'men' ? 'Männer' : 'Frauen'})</h3>
+    <table><tr><th>Perzentil</th><th>Wert (s)</th></tr>
+    ${percentiles.map(p => `<tr><td>P${p}</td><td>${P["P"+p]}</td></tr>`).join("")}
+    </table>
+    <p>→ Du bist schneller als: <strong>${faster}%</strong> der Vergleichsgruppe.</p>`;
+}
+
+  norms.innerHTML += `<h3>Norwegische Referenzwerte (Tromsø)</h3>
+  <table><tr><th>Perzentil</th><th>Wert (s)</th></tr>
+  <tr><td>P5</td><td>${P.P5}</td></tr>
+  <tr><td>P50 (Median)</td><td>${P.P50}</td></tr>
+  <tr><td>P95</td><td>${P.P95}</td></tr></table>
+  <p>→ Du bist schneller als: <strong>${faster}</strong> der Vergleichsgruppe (${sex === 'men' ? 'Männer' : 'Frauen'})</p>`;
+
+   // 1. BOHANNON WERTE
   const bohannon = {
     men: {
       "60–69": { mean: "13.3", unable: "15.1%" },
@@ -153,30 +214,9 @@ function toggleNorms() {
   else if (age < 90) ageGroup = "80–89";
 
   const b = bohannon[sex][ageGroup];
-  norms.innerHTML += `<h3>Mittelwerte Bohannon – ${ageGroup}</h3>
+  norms.innerHTML += `<h3>Mittelwerte und Unfähigkeit Test durchzuführen über alle Gruppen (zuhause lebend, Institution) – ${ageGroup}</h3>
   <table><tr><th>Geschlecht</th><th>MW (s)</th><th>% nicht fähig</th></tr>
   <tr><td>${sex === 'men' ? 'Männer' : 'Frauen'}</td><td>${b.mean}</td><td>${b.unable}</td></tr></table>`;
-
-  // 2. NORWEGISCHE WERTE (vereinfacht 70J)
-  const norway = {
-    men: { P5:6.1, P50:9.3, P95:13.9 },
-    women: { P5:7.0, P50:10.5, P95:16.1 }
-  };
-  const P = norway[sex];
-  let faster = "-";
-  if (!isNaN(sitzZeit)) {
-    if (sitzZeit <= P.P5) faster = "≈95 %";
-    else if (sitzZeit <= P.P50) faster = "50–95 %";
-    else if (sitzZeit <= P.P95) faster = "5–50 %";
-    else faster = "<5 %";
-  }
-
-  norms.innerHTML += `<h3>Norwegische Referenzwerte (Tromsø)</h3>
-  <table><tr><th>Perzentil</th><th>Wert (s)</th></tr>
-  <tr><td>P5</td><td>${P.P5}</td></tr>
-  <tr><td>P50 (Median)</td><td>${P.P50}</td></tr>
-  <tr><td>P95</td><td>${P.P95}</td></tr></table>
-  <p>→ Du bist schneller als: <strong>${faster}</strong> der Vergleichsgruppe (${sex === 'men' ? 'Männer' : 'Frauen'})</p>`;
 
   norms.classList.remove("hidden");
 }
