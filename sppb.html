@@ -32,6 +32,16 @@
       margin-top: 20px;
       white-space: pre-line;
     }
+    #normwerte table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+    #normwerte th, #normwerte td {
+      border: 1px solid #ccc;
+      padding: 6px;
+      text-align: center;
+    }
     .hidden {
       display: none;
     }
@@ -63,19 +73,19 @@
 
   <form id="sppbForm">
     <h3>Balance</h3>
-    <label><input type="checkbox" id="standZusammen"> Füße zusammen >10s</label>
-    <label><input type="checkbox" id="semitandem"> Semitandem >10s</label>
+    <label><input type="checkbox" id="standZusammen"> Füße zusammen &gt;10 s</label>
+    <label><input type="checkbox" id="semitandem"> Semitandem &gt;10 s</label>
     <label>Tandem-Zeit (Sekunden):</label>
     <input type="number" id="tandemZeit" step="0.01">
 
     <h3>Gehgeschwindigkeit</h3>
     <label>Gemessene Strecke:</label>
-    <label class="inline"><input type="radio" name="strecke" value="3" checked> 3 m</label>
-    <label class="inline"><input type="radio" name="strecke" value="4"> 4 m</label>
+    <label class="inline"><input type="radio" name="strecke" value="3" checked> 3 m</label>
+    <label class="inline"><input type="radio" name="strecke" value="4"> 4 m</label>
     <label>Zeit (Sekunden):</label>
     <input type="number" id="gehzeit" step="0.01">
 
-    <h3>5x Sitz-Stand</h3>
+    <h3>5× Sitz-Stand</h3>
     <label>Zeit (Sekunden):</label>
     <input type="number" id="sitzStand" step="0.01">
 
@@ -89,7 +99,7 @@
     <label>Alter der Person:</label>
     <input type="number" id="age" min="0" max="120">
     <button type="button" onclick="toggleNorms()">📊 Normwerte anzeigen</button>
-    <div id="normwerte"></div>
+    <div id="normwerte" class="hidden"></div>
   </div>
 
   <div class="nav-buttons">
@@ -98,6 +108,24 @@
   </div>
 
   <script>
+    // Original Bohannon-Mittelwerte
+    const bohannonNorms = [
+      { range: "65–69", mean: "13.3 s", percentUnable: "15.1 %" },
+      { range: "70–74", mean: "13.8 s", percentUnable: "16.2 %" },
+      { range: "75–79", mean: "14.7 s", percentUnable: "23.4 %" },
+      { range: "80–84", mean: "15.1 s", percentUnable: "34.4 %" },
+      { range: "85–89", mean: "17.2 s", percentUnable: "51.9 %" },
+      { range: "≥ 90", mean: "16.4 s", percentUnable: "62.5 %" }
+    ];
+
+    // Tromsø Study (Norwegen) Referenzwerte für 5× Sitz-Stand
+    const norwegianNorms = {
+      "60–69": { mean: 11.4, sd: 1.3, p5: 9.8, p95: 13.0 },
+      "70–79": { mean: 12.8, sd: 1.6, p5: 10.8, p95: 14.8 },
+      "80–89": { mean: 15.2, sd: 2.1, p5: 12.7, p95: 17.8 },
+      "≥ 90":  { mean: 18.4, sd: 3.0, p5: 14.8, p95: 22.0 }
+    };
+
     function calculateSPPB() {
       let balance = 0;
       const tandem = parseFloat(document.getElementById("tandemZeit").value);
@@ -128,68 +156,96 @@
       else sitzScore = 4;
 
       const total = balance + gangScore + sitzScore;
-      const speedText = (!isNaN(speed)) ? speed.toFixed(2) + " m/s" : "-";
+      const speedText = (!isNaN(speed)) ? speed.toFixed(2) + " m/s" : "-";
 
       document.getElementById("result").innerText =
-        "Gesamt-Score: " + total + "/12\\n" +
-        "Balance: " + balance + "/4\\n" +
-        "Gang: " + gangScore + "/4\\n" +
-        "5x Sitz-Stand: " + sitzScore + "/4\\n" +
-        "Gehgeschwindigkeit: " + speedText + "\\n" +
-        "5x Sitz-Stand Zeit: " + (sitzZeit || "-") + " s";
+        "Gesamt‑Score: " + total + "/12\n" +
+        "Balance: " + balance + "/4\n" +
+        "Gang: " + gangScore + "/4\n" +
+        "5× Sitz‑Stand: " + sitzScore + "/4\n" +
+        "Gehgeschwindigkeit: " + speedText + "\n" +
+        "5× Sitz‑Stand Zeit: " + (sitzZeit || "-") + " s";
 
       document.getElementById("ageSection").classList.remove("hidden");
+      document.getElementById("normwerte").classList.add("hidden");
     }
 
     function toggleNorms() {
-      const age = parseInt(document.getElementById("age").value);
+      const age = parseInt(document.getElementById("age").value, 10);
       const norms = document.getElementById("normwerte");
-      let normText = "", unableText = "";
+      norms.innerHTML = "";
 
       if (isNaN(age)) {
         norms.innerText = "Bitte zuerst das Alter eingeben.";
+        norms.classList.remove("hidden");
         return;
       }
 
-      if (age >= 65 && age <= 69) {
-        normText = "👨 Männer: 13.3 s\\n👩 Frauen: 13.9 s";
-        unableText = "👨 Männer: 15.1 %\\n👩 Frauen: 13.7 %";
-      } else if (age >= 70 && age <= 74) {
-        normText = "👨 Männer: 13.8 s\\n👩 Frauen: 15.1 s";
-        unableText = "👨 Männer: 16.2 %\\n👩 Frauen: 22.0 %";
-      } else if (age >= 75 && age <= 79) {
-        normText = "👨 Männer: 14.7 s\\n👩 Frauen: 15.9 s";
-        unableText = "👨 Männer: 23.4 %\\n👩 Frauen: 31.6 %";
-      } else if (age >= 80 && age <= 84) {
-        normText = "👨 Männer: 15.1 s\\n👩 Frauen: 16.9 s";
-        unableText = "👨 Männer: 34.4 %\\n👩 Frauen: 46.0 %";
-      } else if (age >= 85 && age <= 89) {
-        normText = "👨 Männer: 17.2 s\\n👩 Frauen: 18.1 s";
-        unableText = "👨 Männer: 51.9 %\\n👩 Frauen: 54.3 %";
-      } else if (age >= 90) {
-        normText = "👨 Männer: 16.4 s\\n👩 Frauen: 18.5 s";
-        unableText = "👨 Männer: 62.5 %\\n👩 Frauen: 83.5 %";
+      // --- Mittelwerte Bohannon ---
+      norms.appendChild(document.createElement("h4")).innerText = "Mittelwerte Bohannon";
+      const tbl1 = document.createElement("table");
+      tbl1.innerHTML = "<tr><th>Alter</th><th>5× STS Mittelwert</th><th>% nicht fähig</th></tr>" +
+        bohannonNorms.map(row =>
+          `<tr><td>${row.range}</td><td>${row.mean}</td><td>${row.percentUnable}</td></tr>`
+        ).join("");
+      norms.appendChild(tbl1);
+
+      // --- Referenzwerte Norwegen ---
+      norms.appendChild(document.createElement("h4")).innerText = "Referenzwerte wohnende Bevölkerung (Norwegen)";
+      // Altersspanne finden
+      let bracket = null;
+      if (age >= 60 && age <= 69) bracket = "60–69";
+      else if (age <= 79)            bracket = "70–79";
+      else if (age <= 89)            bracket = "80–89";
+      else if (age >= 90)            bracket = "≥ 90";
+
+      if (bracket && norwegianNorms[bracket]) {
+        const n = norwegianNorms[bracket];
+        const tbl2 = document.createElement("table");
+        tbl2.innerHTML =
+          "<tr><th>Alter</th><th>Mittelwert (s)</th><th>SD (s)</th><th>5. Perzentile</th><th>95. Perzentile</th><th>% besser (Median)</th></tr>" +
+          `<tr>
+            <td>${bracket}</td>
+            <td>${n.mean.toFixed(1)}</td>
+            <td>${n.sd.toFixed(1)}</td>
+            <td>${n.p5.toFixed(1)}</td>
+            <td>${n.p95.toFixed(1)}</td>
+            <td>50 %</td>
+          </tr>`;
+        norms.appendChild(tbl2);
+        norms.appendChild(document.createElement("p")).innerText =
+          "→ 50 % der Personen in dieser Altersgruppe haben eine schnellere Zeit (Median = 50. Perzentile).";
       } else {
-        normText = "Keine Normwerte für diese Altersgruppe verfügbar.";
-        unableText = "";
+        norms.appendChild(document.createElement("p")).innerText =
+          "Keine norwegischen Referenzwerte für das eingegebene Alter verfügbar.";
       }
 
-      norms.innerText = "Normwert 5x Sitz-Stand:\\n" + normText + "\\n\\nNicht in der Lage:\\n" + unableText;
       norms.classList.remove("hidden");
     }
 
     async function downloadPDF() {
       const { jsPDF } = window.jspdf;
       const doc = new jsPDF();
-      const resultText = document.getElementById("result").innerText || "Noch kein Ergebnis berechnet.";
       let y = 10;
       doc.text("SPPB-Auswertung", 10, y); y += 10;
-      resultText.split("\\n").forEach(line => {
-        doc.text(line, 10, y);
-        y += 7;
-      });
+      (document.getElementById("result").innerText || "Noch kein Ergebnis.").split("\n")
+        .forEach(line => { doc.text(line, 10, y); y += 7; });
+
+      // Alters‑ und Norm‑Daten
+      const age = document.getElementById("age").value;
+      if (age) {
+        y += 10;
+        doc.text(`Alter: ${age}`, 10, y); y += 7;
+        const normsText = document.getElementById("normwerte").innerText;
+        normsText.split("\n").forEach(line => {
+          doc.text(line, 10, y);
+          y += 6;
+          if (y > 270) { doc.addPage(); y = 10; }
+        });
+      }
       doc.save("sppb-ergebnis.pdf");
     }
   </script>
 </body>
 </html>
+
