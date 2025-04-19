@@ -114,7 +114,7 @@
       const btn = document.getElementById("toggleBtnSitz");
       const norms = document.getElementById("normwerteSitz");
 
-      if (normsVisible) {
+      if (SitzVisible) {
         norms.classList.add("hidden");
         btn.innerText = "📊 Normwerte Sitz-Stand anzeigen";
         normsVisible = false;
@@ -208,7 +208,7 @@
 
       norms.classList.remove("hidden");
       btn.innerText = "📉 Normwerte sit-stand verbergen";
-      normsVisible = true;
+      SitzVisible = true;
     }
 
     function toggleNormsSPPB() {
