@@ -372,7 +372,7 @@ function toggleNormsSPPB() {
   norms.innerHTML = `<h3>Norwegische Referenzwerte – Gehgeschwindigkeit (${nearest} Jahre – ${sex === 'men' ? 'Männer' : 'Frauen'})</h3>`;
   norms.innerHTML += `<table><tr><th>Perzentil</th><th>m/s</th></tr>
     ${Object.entries(P).map(([k, v]) => `<tr><td>${k}</td><td>${v}</td></tr>`).join("")}
-  </table><p>→ Die Gehgeschwindigkeit ist schneller als: <strong>${faster}%</strong> der Vergleichsgruppe.</p>`;
+  </table> <p> Dieser Score ist besser als bei <strong>${percentileNumber}%</strong> der Vergleichsgruppe.</p>;
 
   norms.classList.remove("hidden");
   btn.innerText = "📉 Normwerte Gehgeschwindigkeit verbergen";
