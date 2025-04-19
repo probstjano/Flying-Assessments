@@ -273,7 +273,7 @@ function toggleNormsSPPB() {
   let nearestP = "n.v.";
   for (let p of percentiles) {
     if (score <= normData["P" + p]) {
-      nearestP = `≈ {p}`;
+      nearestP = `≈ P${p}`;
       break;
     }
   }
@@ -301,7 +301,7 @@ function toggleNormsSPPB() {
 
        const age = parseInt(document.getElementById("age").value, 10);
       const sex = document.getElementById("sex").value;
-      const sitzZeit = parseFloat(document.getElementById("sitzStand").value);
+      const speed = parseFloat(document.getElementById("speed").value);
       norms.innerHTML = "";
 
       if (isNaN(age)) {
@@ -334,7 +334,7 @@ const gaitNorms = {
 
       let faster = "-";
       const P = gaitNorms[sex][nearest];
-      if (!isNaN(sitzZeit)) {
+      if (!isNaN(speed)) {
         const percentiles = [5,10,25,50,75,90,95];
         const values = percentiles.map(p => P["P"+p]);
         if (speed <= values[0]) faster = 95;
