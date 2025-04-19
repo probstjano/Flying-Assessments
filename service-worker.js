@@ -12,7 +12,7 @@ const ASSETS_TO_CACHE = [
   'DEMMI_Protokoll.pdf',
   'Assessment-Leitfaden.pdf',
   'FiST.html',
-  'PSFS_GAS.html',
+  'PSFS_GAS.html'
   
 ];
 
