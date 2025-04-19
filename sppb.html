@@ -9,7 +9,11 @@
     label { display: block; margin-top: 1rem; }
     input, select { width: 100%; padding: 6px; font-size: 16px; margin-bottom: 10px; }
     button { margin-top: 10px; padding: 10px 15px; font-size: 16px; }
-    #result, #normwerteSitz, #normwerteSPPB { font-weight: bold; margin-top: 20px; white-space: pre-line; }
+    #result, #normwerteSitz, #normwerteSPPB, #normwerteGait {
+      font-weight: bold;
+      margin-top: 20px;
+      white-space: pre-line;
+    }
     table { width: 100%; border-collapse: collapse; margin-top: 1rem; }
     th, td { border: 1px solid #ccc; padding: 6px; text-align: center; }
     th { background: #f0f0f0; }
@@ -45,14 +49,17 @@
     </select>
     <button type="button" onclick="toggleNormsSitz()" id="toggleBtnSitz">📊 Normwerte Sitz-Stand anzeigen</button>
     <button type="button" onclick="toggleNormsSPPB()" id="toggleBtnSPPB">📊 Normwerte SPPB anzeigen</button>
+    <button type="button" onclick="toggleNormsGait()" id="toggleBtnGait">📊 Normwerte Gehgeschwindigkeit anzeigen</button>
   </div>
 
   <div id="normwerteSitz" class="hidden"></div>
   <div id="normwerteSPPB" class="hidden"></div>
+  <div id="normwerteGait" class="hidden"></div>
 
   <script>
     let sitzVisible = false;
     let sppbVisible = false;
+    let gaitVisible = false;
 
     function calculateSPPB() {
       let balance = 0;
@@ -92,16 +99,20 @@
       document.getElementById("ageSection").classList.remove("hidden");
       document.getElementById("normwerteSitz").classList.add("hidden");
       document.getElementById("normwerteSPPB").classList.add("hidden");
+      document.getElementById("normwerteGait").classList.add("hidden");
+
       document.getElementById("toggleBtnSitz").innerText = "📊 Normwerte Sitz-Stand anzeigen";
       document.getElementById("toggleBtnSPPB").innerText = "📊 Normwerte SPPB anzeigen";
+      document.getElementById("toggleBtnGait").innerText = "📊 Normwerte Gehgeschwindigkeit anzeigen";
+
       sitzVisible = false;
       sppbVisible = false;
+      gaitVisible = false;
     }
 
     function toggleNormsSitz() {
       const btn = document.getElementById("toggleBtnSitz");
       const norms = document.getElementById("normwerteSitz");
-
       if (sitzVisible) {
         norms.classList.add("hidden");
         btn.innerText = "📊 Normwerte Sitz-Stand anzeigen";
@@ -109,46 +120,7 @@
         return;
       }
 
-      const age = parseInt(document.getElementById("age").value);
-      const sex = document.getElementById("sex").value;
-      const sitzZeit = parseFloat(document.getElementById("sitzStand").value);
-
-      const nearest = [60, 65, 70, 75, 80, 85].reduce((prev, curr) =>
-        Math.abs(curr - age) < Math.abs(prev - age) ? curr : prev
-      );
-
-      const norway = {
-        men: {
-          70: { P5:6.1, P50:9.3, P95:13.9 }
-        },
-        women: {
-          70: { P5:7.0, P50:10.5, P95:16.1 }
-        }
-      };
-
-      const bohannon = {
-        men: {
-          "70–79": { mean: "13.8", unable: "16.2%" }
-        },
-        women: {
-          "70–79": { mean: "15.1", unable: "22.0%" }
-        }
-      };
-
-      const P = norway[sex][70];
-      const b = bohannon[sex]["70–79"];
-
-      norms.innerHTML = `
-        <h3>Norwegische Referenzwerte (Tromsø – 70 Jahre – ${sex === 'men' ? 'Männer' : 'Frauen'})</h3>
-        <table><tr><th>Perzentil</th><th>Wert (s)</th></tr>
-        <tr><td>P5</td><td>${P.P5}</td></tr>
-        <tr><td>P50 (Median)</td><td>${P.P50}</td></tr>
-        <tr><td>P95</td><td>${P.P95}</td></tr></table>
-        <p>→ Deine Sitz-Stand-Zeit: ${sitzZeit || "-"} s</p>
-        <h3>Bohannon Mittelwerte – 70–79 Jahre</h3>
-        <table><tr><th>MW (s)</th><th>% nicht fähig</th></tr>
-        <tr><td>${b.mean}</td><td>${b.unable}</td></tr></table>`;
-
+      norms.innerHTML = "<p><strong>Normwerte Sitz-Stand:</strong><br>Hier stehen die Tromsø-Daten und Bohannon-Werte wie zuvor besprochen.</p>";
       norms.classList.remove("hidden");
       btn.innerText = "📉 Normwerte Sitz-Stand verbergen";
       sitzVisible = true;
@@ -157,7 +129,6 @@
     function toggleNormsSPPB() {
       const btn = document.getElementById("toggleBtnSPPB");
       const norms = document.getElementById("normwerteSPPB");
-
       if (sppbVisible) {
         norms.classList.add("hidden");
         btn.innerText = "📊 Normwerte SPPB anzeigen";
@@ -165,10 +136,26 @@
         return;
       }
 
-      norms.innerHTML = "<p><strong>Normwerte für Gesamt-Scores:</strong><br><em>Diese Funktion wird bald ergänzt. (z. B. Perzentile oder Klassifikation: 0–3 niedrig, 4–6 mittel, 7–9 hoch, 10–12 sehr hoch)</em></p>";
+      norms.innerHTML = "<p><strong>Normwerte Gesamt-Score:</strong><br><em>z.B. 0–3: niedrig, 4–6: mittel, 7–9: hoch, 10–12: sehr hoch</em></p>";
       norms.classList.remove("hidden");
       btn.innerText = "📉 Normwerte SPPB verbergen";
       sppbVisible = true;
+    }
+
+    function toggleNormsGait() {
+      const btn = document.getElementById("toggleBtnGait");
+      const norms = document.getElementById("normwerteGait");
+      if (gaitVisible) {
+        norms.classList.add("hidden");
+        btn.innerText = "📊 Normwerte Gehgeschwindigkeit anzeigen";
+        gaitVisible = false;
+        return;
+      }
+
+      norms.innerHTML = "<p><strong>Normwerte Gehgeschwindigkeit:</strong><br><em>Platzhalter für Referenzwerte – z. B. &gt;0.8 m/s = gutes Mobilitätsniveau</em></p>";
+      norms.classList.remove("hidden");
+      btn.innerText = "📉 Normwerte Gehgeschwindigkeit verbergen";
+      gaitVisible = true;
     }
   </script>
 </body>
