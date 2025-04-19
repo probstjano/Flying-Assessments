@@ -157,7 +157,7 @@
         }
       }
 
-      norms.innerHTML += `<h3>Norwegische Referenzwerte (Tromsø – ${nearest} Jahre – ${sex === 'men' ? 'Männer' : 'Frauen'})</h3>`;
+      norms.innerHTML += `<h3>Norwegische Referenzwerte zuhause lebende Personen (${nearest} Jahre – ${sex === 'men' ? 'Männer' : 'Frauen'})</h3>`;
       norms.innerHTML += `<table><tr><th>Perzentil</th><th>Wert (s)</th></tr>
         ${Object.entries(P).map(([k,v]) => `<tr><td>${k}</td><td>${v}</td></tr>`).join("")}
       </table><p>→ Du bist schneller als: <strong>${faster}%</strong> der Vergleichsgruppe.</p>`;
@@ -183,7 +183,7 @@
       else if (age < 90) ageGroup = "80–89";
 
       const b = bohannon[sex][ageGroup];
-      norms.innerHTML += `<h3>Mittelwerte & Unfähigkeit (Bohannon, Gesamtbevölkerung) – ${ageGroup}</h3>
+      norms.innerHTML += `<h3>Mittelwerte & Anzeil die Sitz-Stand nich durchführen können (Bohannon, Gesamtbevölkerung) – ${ageGroup}</h3>
         <table><tr><th>Geschlecht</th><th>MW (s)</th><th>% nicht fähig</th></tr>
         <tr><td>${sex === 'men' ? 'Männer' : 'Frauen'}</td><td>${b.mean}</td><td>${b.unable}</td></tr>
       </table>`;
