@@ -290,79 +290,83 @@ function toggleNormsSPPB() {
 
 
     function toggleNormsGait() {
-      const btn = document.getElementById("toggleBtnGait");
-      const norms = document.getElementById("normwerteGait");
-      if (gaitVisible) {
-        norms.classList.add("hidden");
-        btn.innerText = "📊 Normwerte Gehgeschwindigkeit anzeigen";
-        gaitVisible = false;
-        return;
-      }
+  const btn = document.getElementById("toggleBtnGait");
+  const norms = document.getElementById("normwerteGait");
 
-       const age = parseInt(document.getElementById("age").value, 10);
-      const sex = document.getElementById("sex").value;
-      const speed = parseFloat(document.getElementById("speed").value);
-      norms.innerHTML = "";
-
-      if (isNaN(age)) {
-        norms.innerText = "Bitte zuerst das Alter eingeben.";
-        norms.classList.remove("hidden");
-        return;
-      }
-const gaitNorms = {
-  men: {
-    60: { P5: 0.88, P10: 0.95, P25: 1.08, P50: 1.22, P75: 1.35, P90: 1.50, P95: 1.58 },
-    65: { P5: 0.85, P10: 0.92, P25: 1.04, P50: 1.18, P75: 1.33, P90: 1.47, P95: 1.57 },
-    70: { P5: 0.81, P10: 0.88, P25: 0.99, P50: 1.13, P75: 1.29, P90: 1.44, P95: 1.54 },
-    75: { P5: 0.74, P10: 0.81, P25: 0.91, P50: 1.05, P75: 1.22, P90: 1.37, P95: 1.46 },
-    80: { P5: 0.65, P10: 0.72, P25: 0.83, P50: 0.97, P75: 1.14, P90: 1.30, P95: 1.35 },
-    85: { P5: 0.56, P10: 0.64, P25: 0.74, P50: 0.89, P75: 1.06, P90: 1.22, P95: 1.25 }
-  },
-  women: {
-    60: { P5: 0.89, P10: 0.95, P25: 1.07, P50: 1.22, P75: 1.37, P90: 1.52, P95: 1.61 },
-    65: { P5: 0.82, P10: 0.88, P25: 1.00, P50: 1.16, P75: 1.31, P90: 1.46, P95: 1.56 },
-    70: { P5: 0.74, P10: 0.81, P25: 0.92, P50: 1.09, P75: 1.24, P90: 1.39, P95: 1.48 },
-    75: { P5: 0.67, P10: 0.73, P25: 0.85, P50: 1.02, P75: 1.18, P90: 1.32, P95: 1.41 },
-    80: { P5: 0.60, P10: 0.66, P25: 0.79, P50: 0.96, P75: 1.12, P90: 1.25, P95: 1.33 },
-    85: { P5: 0.54, P10: 0.59, P25: 0.73, P50: 0.90, P75: 1.06, P90: 1.17, P95: 1.25 }
+  if (gaitVisible) {
+    norms.classList.add("hidden");
+    btn.innerText = "📊 Normwerte Gehgeschwindigkeit anzeigen";
+    gaitVisible = false;
+    return;
   }
-};
 
-      const nearest = [60, 65, 70, 75, 80, 85].reduce((prev, curr) =>
-        Math.abs(curr - age) < Math.abs(prev - age) ? curr : prev
-      );
+  const age = parseInt(document.getElementById("age").value, 10);
+  const sex = document.getElementById("sex").value;
+  const dist = parseFloat(document.querySelector('input[name="strecke"]:checked').value);
+  const gehzeit = parseFloat(document.getElementById("gehzeit").value);
+  norms.innerHTML = "";
 
-      let faster = "-";
-      const P = gaitNorms[sex][nearest];
-      if (!isNaN(speed)) {
-        const percentiles = [5,10,25,50,75,90,95];
-        const values = percentiles.map(p => P["P"+p]);
-        if (speed <= values[0]) faster = 95;
-        else if (speed >= values[6]) faster = 5;
-        else {
-          for (let i = 0; i < values.length - 1; i++) {
-            if (speed >= values[i] && speed<= values[i+1]) {
-              const p0 = percentiles[i], p1 = percentiles[i+1];
-              const v0 = values[i], v1 = values[i+1];
-              const frac = (speed - v0) / (v1 - v0);
-              faster = Math.round(100 - (p0 + frac * (p1 - p0)));
-              break;
-            }
-          }
+  if (isNaN(age) || isNaN(dist) || isNaN(gehzeit) || gehzeit <= 0) {
+    norms.innerText = "Bitte Alter und Gehzeit eingeben.";
+    norms.classList.remove("hidden");
+    return;
+  }
+
+  const speed = dist / gehzeit;
+
+  const gaitNorms = {
+    men: {
+      60: { P5: 0.88, P10: 0.95, P25: 1.08, P50: 1.22, P75: 1.35, P90: 1.50, P95: 1.58 },
+      65: { P5: 0.85, P10: 0.92, P25: 1.04, P50: 1.18, P75: 1.33, P90: 1.47, P95: 1.57 },
+      70: { P5: 0.81, P10: 0.88, P25: 0.99, P50: 1.13, P75: 1.29, P90: 1.44, P95: 1.54 },
+      75: { P5: 0.74, P10: 0.81, P25: 0.91, P50: 1.05, P75: 1.22, P90: 1.37, P95: 1.46 },
+      80: { P5: 0.65, P10: 0.72, P25: 0.83, P50: 0.97, P75: 1.14, P90: 1.30, P95: 1.35 },
+      85: { P5: 0.56, P10: 0.64, P25: 0.74, P50: 0.89, P75: 1.06, P90: 1.22, P95: 1.25 }
+    },
+    women: {
+      60: { P5: 0.89, P10: 0.95, P25: 1.07, P50: 1.22, P75: 1.37, P90: 1.52, P95: 1.61 },
+      65: { P5: 0.82, P10: 0.88, P25: 1.00, P50: 1.16, P75: 1.31, P90: 1.46, P95: 1.56 },
+      70: { P5: 0.74, P10: 0.81, P25: 0.92, P50: 1.09, P75: 1.24, P90: 1.39, P95: 1.48 },
+      75: { P5: 0.67, P10: 0.73, P25: 0.85, P50: 1.02, P75: 1.18, P90: 1.32, P95: 1.41 },
+      80: { P5: 0.60, P10: 0.66, P25: 0.79, P50: 0.96, P75: 1.12, P90: 1.25, P95: 1.33 },
+      85: { P5: 0.54, P10: 0.59, P25: 0.73, P50: 0.90, P75: 1.06, P90: 1.17, P95: 1.25 }
+    }
+  };
+
+  const nearest = [60, 65, 70, 75, 80, 85].reduce((prev, curr) =>
+    Math.abs(curr - age) < Math.abs(prev - age) ? curr : prev
+  );
+
+  let faster = "-";
+  const P = gaitNorms[sex][nearest];
+  if (!isNaN(speed)) {
+    const percentiles = [5,10,25,50,75,90,95];
+    const values = percentiles.map(p => P["P"+p]);
+    if (speed <= values[0]) faster = 5;
+    else if (speed >= values[6]) faster = 95;
+    else {
+      for (let i = 0; i < values.length - 1; i++) {
+        if (speed >= values[i] && speed <= values[i+1]) {
+          const p0 = percentiles[i], p1 = percentiles[i+1];
+          const v0 = values[i], v1 = values[i+1];
+          const frac = (speed - v0) / (v1 - v0);
+          faster = Math.round(p0 + frac * (p1 - p0));
+          break;
         }
       }
-
-      norms.innerHTML += `<h3>Norwegische Referenzwerte zuhause lebende Personen (${nearest} Jahre – ${sex === 'men' ? 'Männer' : 'Frauen'})</h3>`;
-      norms.innerHTML += `<table><tr><th>Perzentil</th><th>Wert (s)</th></tr>
-        ${Object.entries(P).map(([k,v]) => `<tr><td>${k}</td><td>${v}</td></tr>`).join("")}
-      </table><p>→ Die Zeit ist schneller als bei: <strong>${faster}%</strong> der Vergleichsgruppe.</p>`;
-
-
-      norms.innerHTML = "<p><strong>Normwerte Gehgeschwindigkeit:</strong><br><em>Platzhalter für Referenzwerte – z. B. &gt;0.8 m/s = gutes Mobilitätsniveau</em></p>";
-      norms.classList.remove("hidden");
-      btn.innerText = "📉 Normwerte Gehgeschwindigkeit verbergen";
-      gaitVisible = true;
     }
+  }
+
+  norms.innerHTML = `<h3>Norwegische Referenzwerte – Gehgeschwindigkeit (${nearest} Jahre – ${sex === 'men' ? 'Männer' : 'Frauen'})</h3>`;
+  norms.innerHTML += `<table><tr><th>Perzentil</th><th>m/s</th></tr>
+    ${Object.entries(P).map(([k, v]) => `<tr><td>${k}</td><td>${v}</td></tr>`).join("")}
+  </table><p>→ Du bist schneller als: <strong>${faster}%</strong> der Vergleichsgruppe.</p>`;
+
+  norms.classList.remove("hidden");
+  btn.innerText = "📉 Normwerte Gehgeschwindigkeit verbergen";
+  gaitVisible = true;
+}
+
   </script>
 </body>
 </html>
