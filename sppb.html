@@ -105,29 +105,35 @@
         `Gesamt-Score: ${total}/12\nBalance: ${balance}/4\nGang: ${gangScore}/4\n5x Sitz-Stand: ${sitzScore}/4\nGehgeschwindigkeit: ${speedText}\n5x Sitz-Stand Zeit: ${sitzZeit || "-"} s`;
 
       document.getElementById("ageSection").classList.remove("hidden");
-      document.getElementById("normwerteSitz").classList.add("hidden");
-      document.getElementById("normwerteSPPB").classList.add("hidden");
-      document.getElementById("normwerteGait").classList.add("hidden");
+      function hideAllNorms() {
+  document.getElementById("normwerteSitz").classList.add("hidden");
+  document.getElementById("normwerteSPPB").classList.add("hidden");
+  document.getElementById("normwerteGait").classList.add("hidden");
 
-      document.getElementById("toggleBtnSitz").innerText = "📊 Normwerte Sitz-Stand anzeigen";
-      document.getElementById("toggleBtnSPPB").innerText = "📊 Normwerte SPPB anzeigen";
-      document.getElementById("toggleBtnGait").innerText = "📊 Normwerte Gehgeschwindigkeit anzeigen";
+  document.getElementById("toggleBtnSitz").innerText = "📊 Normwerte Sitz-Stand anzeigen";
+  document.getElementById("toggleBtnSPPB").innerText = "📊 Normwerte SPPB anzeigen";
+  document.getElementById("toggleBtnGait").innerText = "📊 Normwerte Gehgeschwindigkeit anzeigen";
 
-      sitzVisible = false;
-      sppbVisible = false;
-      gaitVisible = false;
+  sitzVisible = false;
+  sppbVisible = false;
+  gaitVisible = false;
+}
     }
 
     function toggleNormsSitz() {
-      const btn = document.getElementById("toggleBtnSitz");
-      const norms = document.getElementById("normwerteSitz");
+  const btn = document.getElementById("toggleBtnSitz");
+  const norms = document.getElementById("normwerteSitz");
 
-      if (sitzVisible) {
-        norms.classList.add("hidden");
-        btn.innerText = "📊 Normwerte Sitz-Stand anzeigen";
-        sitzVisible = false;
-        return;
-      }
+  if (sitzVisible) {
+    norms.classList.add("hidden");
+    btn.innerText = "📊 Normwerte Sitz-Stand anzeigen";
+    sitzVisible = false;
+    return;
+  }
+
+  hideAllNorms();
+  sitzVisible = true;
+
 
       const age = parseInt(document.getElementById("age").value, 10);
       const sex = document.getElementById("sex").value;
@@ -229,6 +235,10 @@ function toggleNormsSPPB() {
     return;
   }
 
+  hideAllNorms();
+  sppbVisible = true;
+
+
   const age = parseInt(document.getElementById("age").value, 10);
   const sex = document.getElementById("sex").value;
   const resultText = document.getElementById("result").innerText;
@@ -287,7 +297,7 @@ function toggleNormsSPPB() {
 }
 
 
-    function toggleNormsGait() {
+  function toggleNormsGait() {
   const btn = document.getElementById("toggleBtnGait");
   const norms = document.getElementById("normwerteGait");
 
@@ -297,6 +307,10 @@ function toggleNormsSPPB() {
     gaitVisible = false;
     return;
   }
+
+  hideAllNorms();
+  gaitVisible = true;
+
 
   const age = parseInt(document.getElementById("age").value, 10);
   const sex = document.getElementById("sex").value;
