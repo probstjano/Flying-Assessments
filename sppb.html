@@ -235,8 +235,6 @@ function toggleNormsSPPB() {
   const totalMatch = resultText.match(/Gesamt-Score: (\d+)/);
   const score = totalMatch ? parseInt(totalMatch[1]) : null;
 
-  norms.innerHTML = "";
-
   if (isNaN(age) || score === null) {
     norms.innerText = "Bitte zuerst Alter eingeben und Score berechnen.";
     norms.classList.remove("hidden");
@@ -278,7 +276,7 @@ function toggleNormsSPPB() {
     }
   }
 
-  norms.innerHTML = `<h3>SPPB Gesamt-Score – Tromsø Referenzwerte (${nearest} Jahre – ${sex === "men" ? "Männer" : "Frauen"})</h3>`;
+  norms.innerHTML = `<h3>SPPB Gesamt-Score – norwegische Referenzwerte (${nearest} Jahre – ${sex === "men" ? "Männer" : "Frauen"})</h3>`;
   norms.innerHTML += `<table><tr><th>Perzentil</th><th>Score</th></tr>
     ${percentiles.map(p => `<tr><td>P${p}</td><td>${normData["P" + p]}</td></tr>`).join("")}
   </table><p>→ Dieser Score ist besser al bei <strong>${percentileNumber}% </strong> der Vergleichsgruppe </p>`;
