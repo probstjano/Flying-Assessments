@@ -22,6 +22,14 @@
 </head>
 <body>
   <h1>SPPB – Short Physical Performance Battery</h1>
+  <p>Test für physische Leistungsfähigkeit unterer Extremitäten.</p>
+  <p>Eintragen mit Einzelwerte im Cenplex Behandlungsplan unter "Messung".</p>
+  <p>
+    Detailliertes Durchführungsprotokoll hier:
+    <a href="SPPB_Protokoll.pdf" target="_blank">SPPB Protokoll (PDF)</a>
+  </p>
+  <p><strong>Nur bei Bedarf hier eintragen</strong> für Infos, Normwerte und Score-Berechnung.</p>
+
   <form>
     <label><input type="checkbox" id="standZusammen"> Füße zusammen >10s</label>
     <label><input type="checkbox" id="semitandem"> Semitandem >10s</label>
@@ -178,7 +186,7 @@
       norms.innerHTML += `<h3>Norwegische Referenzwerte zuhause lebende Personen (${nearest} Jahre – ${sex === 'men' ? 'Männer' : 'Frauen'})</h3>`;
       norms.innerHTML += `<table><tr><th>Perzentil</th><th>Wert (s)</th></tr>
         ${Object.entries(P).map(([k,v]) => `<tr><td>${k}</td><td>${v}</td></tr>`).join("")}
-      </table><p>→ Du bist schneller als: <strong>${faster}%</strong> der Vergleichsgruppe.</p>`;
+      </table><p>→ Die Zeit ist schneller als bei: <strong>${faster}%</strong> der Vergleichsgruppe.</p>`;
 
       const bohannon = {
         men: {
@@ -201,7 +209,7 @@
       else if (age < 90) ageGroup = "80–89";
 
       const b = bohannon[sex][ageGroup];
-      norms.innerHTML += `<h3>Mittelwerte & Anzeil die Sitz-Stand nich durchführen können (Bohannon, Gesamtbevölkerung) – ${ageGroup}</h3>
+      norms.innerHTML += `<h3>Mittelwert  & Anzeil der Personen die Sitz-Stand Test nich durchführen können (Gesamtbevölkerung inkl. Pflegeheime/Institutionen) – ${ageGroup}</h3>
         <table><tr><th>Geschlecht</th><th>MW (s)</th><th>% nicht fähig</th></tr>
         <tr><td>${sex === 'men' ? 'Männer' : 'Frauen'}</td><td>${b.mean}</td><td>${b.unable}</td></tr>
       </table>`;
@@ -221,7 +229,67 @@
         return;
       }
 
-      norms.innerHTML = "<p><strong>Normwerte Gesamt-Score:</strong><br><em>z.B. 0–3: niedrig, 4–6: mittel, 7–9: hoch, 10–12: sehr hoch</em></p>";
+      const age = parseInt(document.getElementById("age").value, 10);
+      const sex = document.getElementById("sex").value;
+      const sitzZeit = parseFloat(document.getElementById("sitzStand").value);
+      norms.innerHTML = "";
+
+      if (isNaN(age)) {
+        norms.innerText = "Bitte zuerst das Alter eingeben.";
+        norms.classList.remove("hidden");
+        return;
+      }
+
+      const sppb  = {
+        men: {
+          60: { P5:5.5, P10:5.9, P25:6.9, P50:8.3, P75:9.8, P90:11.5, P95:12.5 },
+          65: { P5:5.7, P10:6.2, P25:7.3, P50:8.7, P75:10.2, P90:11.8, P95:12.9 },
+          70: { P5:6.1, P10:6.6, P25:7.7, P50:9.3, P75:10.9, P90:12.5, P95:13.9 },
+          75: { P5:6.4, P10:7.0, P25:8.3, P50:10.0, P75:12.1, P90:14.0, P95:15.4 },
+          80: { P5:6.6, P10:7.5, P25:8.9, P50:10.7, P75:13.5, P90:15.8, P95:17.2 },
+          85: { P5:6.9, P10:7.9, P25:9.6, P50:11.5, P75:14.9, P90:17.7, P95:19.0 }
+        },
+        women: {
+          60: { P5:5.8, P10:6.3, P25:7.4, P50:8.9, P75:10.5, P90:12.1, P95:13.2 },
+          65: { P5:6.4, P10:7.0, P25:8.2, P50:10.0, P75:11.4, P90:13.3, P95:14.6 },
+          70: { P5:7.0, P10:7.7, P25:8.9, P50:10.5, P75:12.4, P90:14.6, P95:16.1 },
+          75: { P5:7.4, P10:8.2, P25:9.5, P50:11.2, P75:13.1, P90:15.8, P95:17.4 },
+          80: { P5:7.6, P10:8.5, P25:10.0, P50:11.7, P75:13.7, P90:16.8, P95:18.5 },
+          85: { P5:7.9, P10:9.0, P25:10.5, P50:12.3, P75:14.3, P90:17.8, P95:19.7 }
+        }
+      };
+
+      const nearest = [60, 65, 70, 75, 80, 85].reduce((prev, curr) =>
+        Math.abs(curr - age) < Math.abs(prev - age) ? curr : prev
+      );
+
+      let faster = "-";
+      const P = norway[sex][nearest];
+      if (!isNaN(total)) {
+        const percentiles = [5,10,25,50,75,90,95];
+        const values = percentiles.map(p => P["P"+p]);
+        if (sitzZeit <= values[0]) faster = 95;
+        else if (sitzZeit >= values[6]) faster = 5;
+        else {
+          for (let i = 0; i < values.length - 1; i++) {
+            if (sitzZeit >= values[i] && sitzZeit <= values[i+1]) {
+              const p0 = percentiles[i], p1 = percentiles[i+1];
+              const v0 = values[i], v1 = values[i+1];
+              const frac = (sitzZeit - v0) / (v1 - v0);
+              faster = Math.round(100 - (p0 + frac * (p1 - p0)));
+              break;
+            }
+          }
+        }
+      }
+
+      norms.innerHTML += `<h3>Norwegische Referenzwerte zuhause lebende Personen (${nearest} Jahre – ${sex === 'men' ? 'Männer' : 'Frauen'})</h3>`;
+      norms.innerHTML += `<table><tr><th>Perzentil</th><th>Wert (s)</th></tr>
+        ${Object.entries(P).map(([k,v]) => `<tr><td>${k}</td><td>${v}</td></tr>`).join("")}
+      </table><p>→ Dieser Score is besser als bei: <strong>${faster}%</strong> der Vergleichsgruppe.</p>`;
+
+      norms.innerHTML =  <p> <strong> Einteilung ud Cut-off Werte:</strong><br></p>
+      <p> z.B. 0–3: niedrig, 4–6: mittel, 7–9: hoch, 10–12: sehr hoch </p>";
       norms.classList.remove("hidden");
       btn.innerText = "📉 Normwerte SPPB verbergen";
       sppbVisible = true;
