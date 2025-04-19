@@ -110,7 +110,18 @@
       gaitVisible = false;
     }
 
-     const age = parseInt(document.getElementById("age").value, 10);
+    function toggleNormsSitz() {
+      const btn = document.getElementById("toggleBtnSitz");
+      const norms = document.getElementById("normwerteSitz");
+
+      if (normsVisible) {
+        norms.classList.add("hidden");
+        btn.innerText = "📊 Normwerte Sitz-Stand anzeigen";
+        normsVisible = false;
+        return;
+      }
+
+      const age = parseInt(document.getElementById("age").value, 10);
       const sex = document.getElementById("sex").value;
       const sitzZeit = parseFloat(document.getElementById("sitzStand").value);
       norms.innerHTML = "";
@@ -199,7 +210,6 @@
       btn.innerText = "📉 Normwerte sit-stand verbergen";
       normsVisible = true;
     }
-
 
     function toggleNormsSPPB() {
       const btn = document.getElementById("toggleBtnSPPB");
