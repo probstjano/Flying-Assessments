@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SARA – Scale for the Assessment and Rating of Ataxia</title>
+  <style>
+    body { font-family: sans-serif; margin: 2rem; font-size: 16px; max-width: 900px; }
+    h1 { margin-bottom: 0; }
+    p { margin-top: 0.2rem; }
+    .question-block { margin-bottom: 1.5rem; }
+    .question { margin-bottom: 0.5rem; font-weight: bold; }
+    select { width: 100%; padding: 6px; font-size: 16px; }
+    button { margin-top: 20px; padding: 10px 15px; font-size: 16px; }
+    #result { margin-top: 2rem; font-weight: bold; white-space: pre-line; }
+  </style>
+</head>
+<body>
+  <h1>SARA – Scale for the Assessment and Rating of Ataxia</h1>
+  <p> semiquantitativen Bewertung der Kleinhirnataxie (spinozerebelläre, Friedreich- und sporadische Ataxxie. Kann auch bei Schlaganfallpatienten mit Ataxie verwendet werden. Höhere Werte = stärkere Ataxie.</p>
+  <p> Im Cenplex Beahndlungsplan als <strong> Messung </strogn> hinterlegt . Hier durchführen und Score im Cenplex übertragen </p>
+  <p> Ausführliches Durchführungsprotokoll hier: </p>
+  <form id="saraForm">
+    <div id="questions"></div>
+    <button type="button" onclick="calculateSARA()">✅ Score berechnen</button>
+    <button type="button" onclick="generatePDF()">📄 PDF erstellen</button>
+  </form>
+  <div id="result"></div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script>
+    const questions = [
+      {
+        text: "1) Gang",
+        options: [
+          "0 – Normal, keine Schwierigkeiten beim Gehen, beim Drehen und bei Tandemgang (bis zu einem Fehltritt erlaubt)",
+          "1 – Leichte Schwierigkeiten, nur sichtbar bei 10 aufeinanderfolgenden Schritten im Tandem",
+          "2 – Deutlich abnormal, mehr als 10 Schritte im Tandem nicht möglich",
+          "3 – Erhebliches Schwanken, Schwierigkeiten bei der Halbumdrehung, aber ohne Unterstützung",
+          "4 – Ausgeprägtes Schwanken, gelegentliches Abstützen an der Wand erforderlich",
+          "5 – Starkes Schwanken, ständige Unterstützung durch Stock oder Arm",
+          "6 – Gehen >10 m nur mit starker Unterstützung",
+          "7 – Gehen <10 m nur mit starker Unterstützung",
+          "8 – Gehunfähig, auch mit Unterstützung"
+        ]
+      },
+      {
+        text: "2) Stand",
+        options: [
+          "0 – Normal, kann im Tandem >10 s stehen",
+          "1 – Stehen >10 s mit Füßen zusammen, aber nicht im Tandem",
+          "2 – Stehen >10 s mit Füßen zusammen, aber mit Schwankungen",
+          "3 – Stehen >10 s nur in natürlicher Position",
+          "4 – Nur gelegentliche Unterstützung beim Stehen erforderlich",
+          "5 – Ständige Unterstützung durch einen Arm erforderlich",
+          "6 – Nicht in der Lage, >10 s zu stehen, auch mit Unterstützung"
+        ]
+      },
+      {
+        text: "3) Sitzen",
+        options: [
+          "0 – Normal, keine Schwierigkeiten beim Sitzen >10 s",
+          "1 – Leichte Schwierigkeiten, gelegentliches Schwanken",
+          "2 – Ständiges Schwanken, aber >10 s ohne Halt",
+          "3 – Nur mit gelegentlicher Unterstützung >10 s sitzen",
+          "4 – Ohne kontinuierliche Unterstützung nicht möglich >10 s zu sitzen"
+        ]
+      },
+      {
+        text: "4) Sprechstörungen",
+        options: [
+          "0 – Normal",
+          "1 – Vermutung von Sprechstörungen",
+          "2 – Sprechen gestört, aber gut verständlich",
+          "3 – Gelegentlich schwer verständlich",
+          "4 – Viele Wörter schwer verständlich",
+          "5 – Nur einzelne Wörter verständlich",
+          "6 – Unverständlich/Dysarthrie"
+        ]
+      },
+      {
+        text: "5) Finger Chase",
+        options: [
+          "0 – Keine Dysmetrie",
+          "1 – Dysmetrie <5 cm",
+          "2 – Dysmetrie <15 cm",
+          "3 – Dysmetrie >15 cm",
+          "4 – Nicht in der Lage, 5 Bewegungen auszuführen"
+        ]
+      },
+      {
+        text: "6) Finger-Nase-Test",
+        options: [
+          "0 – Kein Tremor",
+          "1 – Tremor <2 cm",
+          "2 – Tremor <5 cm",
+          "3 – Tremor >5 cm",
+          "4 – Nicht in der Lage, 5 Bewegungen auszuführen"
+        ]
+      },
+      {
+        text: "7) Schnelle, alternierende Bewegungen der Hände",
+        options: [
+          "0 – Normal, <10 s, keine Unregelmäßigkeiten",
+          "1 – Geringe Unregelmäßigkeiten, <10 s",
+          "2 – Deutlich unregelmäßig, aber <10 s",
+          "3 – Sehr unregelmäßig, >10 s",
+          "4 – Nicht in der Lage, 10 Zyklen auszuführen"
+        ]
+      },
+      {
+        text: "8) Knie-Hacke-Versuch",
+        options: [
+          "0 – Normal",
+          "1 – Geringfügig abnormales Gleiten, Kontakt gehalten",
+          "2 – Deutlich abnormales Gleiten, bis zu 3x Kontakt verloren",
+          "3 – Stark abnormales Gleiten, >3x Kontakt verloren",
+          "4 – Nicht in der Lage, Aufgabe auszuführen"
+        ]
+      }
+    ];
+
+    const container = document.getElementById("questions");
+    questions.forEach((q, i) => {
+      const block = document.createElement("div");
+      block.className = "question-block";
+      const options = q.options.map((text, idx) => `<option value="${idx}">${text}</option>`).join("");
+      block.innerHTML = `
+        <div class="question">${q.text}</div>
+        <select name="q${i}" required>
+          <option value="" disabled selected>Antwort auswählen</option>
+          ${options}
+        </select>
+      `;
+      container.appendChild(block);
+    });
+
+    function calculateSARA() {
+      let total = 0;
+      for (let i = 0; i < questions.length; i++) {
+        const val = parseInt(document.querySelector(`select[name='q${i}']`)?.value);
+        if (isNaN(val)) return alert("Bitte alle Fragen beantworten.");
+        total += val;
+      }
+      document.getElementById("result").innerText = `SARA Gesamtscore: ${total} / 40\n(Höhere Werte = stärkere Ataxie)`;
+    }
+
+    async function generatePDF() {
+      const { jsPDF } = window.jspdf;
+      let doc = new jsPDF();
+      let y = 10;
+
+      doc.setFontSize(16);
+      doc.text("SARA – Auswertung", 10, y);
+      y += 10;
+
+      let total = 0;
+      questions.forEach((q, i) => {
+        const select = document.querySelector(`select[name='q${i}']`);
+        const val = parseInt(select?.value);
+        const label = select?.options[select.selectedIndex]?.text;
+        if (!isNaN(val)) total += val;
+        doc.setFontSize(12);
+        doc.text(`${q.text}`, 10, y);
+        y += 6;
+        doc.text(`Antwort: ${label}`, 10, y);
+        y += 10;
+        if (y > 270) {
+          doc.addPage();
+          y = 10;
+        }
+      });
+
+      doc.setFontSize(14);
+      doc.text(`Gesamtscore: ${total} / 40 (höhere Werte = stärkere Symptomatik)`, 10, y);
+      window.open(doc.output('bloburl'), '_blank');
+    }
+  </script>
+</body>
+</html>
