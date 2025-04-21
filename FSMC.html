@@ -11,14 +11,21 @@
     label { display: block; margin: 1rem 0 0.2rem; }
     .question-block { margin-bottom: 1rem; }
     .question { margin-bottom: 0.5rem; font-weight: bold; }
-    .options label { display: inline-block; margin-right: 1.5rem; }
     button { margin-top: 20px; padding: 10px 15px; font-size: 16px; }
     #result { margin-top: 2rem; font-weight: bold; white-space: pre-line; }
+    select { width: 100%; padding: 6px; font-size: 16px; }
   </style>
 </head>
 <body>
   <h1>FSMC – Fatigue Skala für Motorik und Kognition</h1>
-  <p>Bitte jede Aussage beantworten. Antwortmöglichkeiten: 1 = Trifft gar nicht zu ... 5 = Trifft völlig zu.</p>
+  <p>Bitte jede Aussage beantworten. Auswahlmöglichkeiten:</p>
+  <ul>
+    <li>1 – Trifft gar nicht zu</li>
+    <li>2 – Trifft wenig zu</li>
+    <li>3 – Trifft teils zu</li>
+    <li>4 – Trifft ziemlich zu</li>
+    <li>5 – Trifft völlig zu</li>
+  </ul>
   <form id="fsmcForm">
     <div id="questions"></div>
     <button type="button" onclick="calculateFSMC()">✅ Score berechnen</button>
@@ -50,6 +57,14 @@
       "Im Zustand der Erschöpfung nimmt meine Vergesslichkeit merklich zu."
     ];
 
+    const labels = [
+      "Trifft gar nicht zu",
+      "Trifft wenig zu",
+      "Trifft teils zu",
+      "Trifft ziemlich zu",
+      "Trifft völlig zu"
+    ];
+
     const cognitiveIndexes = [0, 2, 4, 6, 7, 10, 12, 14, 15, 17];
     const motorIndexes = [1, 3, 5, 8, 9, 11, 13, 16, 18, 19];
 
@@ -57,11 +72,13 @@
     questions.forEach((text, i) => {
       const block = document.createElement("div");
       block.className = "question-block";
+      const options = labels.map((label, idx) => `<option value="${idx + 1}">${label}</option>`).join("");
       block.innerHTML = `
         <div class="question">${i + 1}. ${text}</div>
-        <div class="options">
-          ${[1, 2, 3, 4, 5].map(n => `<label><input type="radio" name="q${i}" value="${n}" required> ${n}</label>`).join(" ")}
-        </div>
+        <select name="q${i}" required>
+          <option value="" disabled selected>Antwort auswählen</option>
+          ${options}
+        </select>
       `;
       container.appendChild(block);
     });
@@ -69,7 +86,7 @@
     function calculateFSMC() {
       let cognitive = 0, motoric = 0;
       for (let i = 0; i < 20; i++) {
-        const val = parseInt(document.querySelector(`input[name='q${i}']:checked`)?.value);
+        const val = parseInt(document.querySelector(`select[name='q${i}']`)?.value);
         if (!val) return alert("Bitte alle Fragen beantworten.");
         if (cognitiveIndexes.includes(i)) cognitive += val;
         else if (motorIndexes.includes(i)) motoric += val;
@@ -100,7 +117,7 @@
 
       let cognitive = 0, motoric = 0;
       questions.forEach((q, i) => {
-        const val = parseInt(document.querySelector(`input[name='q${i}']:checked`)?.value);
+        const val = parseInt(document.querySelector(`select[name='q${i}']`)?.value);
         if (!val) val = 0;
         if (cognitiveIndexes.includes(i)) cognitive += val;
         else if (motorIndexes.includes(i)) motoric += val;
@@ -123,8 +140,9 @@
       y += 10;
 
       questions.forEach((q, i) => {
-        const val = parseInt(document.querySelector(`input[name='q${i}']:checked`)?.value);
-        const line = `${i + 1}. [${val ?? "-"}] ${q}`;
+        const val = document.querySelector(`select[name='q${i}']`)?.value;
+        const label = val ? labels[parseInt(val) - 1] : "-";
+        const line = `${i + 1}. [${val ?? "-"}] ${q} → ${label}`;
         doc.text(line, 10, y);
         y += 7;
         if (y > 280) {
