@@ -142,7 +142,7 @@
       });
 
       doc.setFontSize(14);
-      doc.text(`Gesamtscore: ${total} / 24. Je höher desto stärker Symptomatik`, 10, y);
+      doc.text(`Gesamtscore: ${total} / 24. (höhere Werte=stärkere Symptomatik) `, 10, y);
 
       window.open(doc.output('bloburl'), '_blank');
     }
