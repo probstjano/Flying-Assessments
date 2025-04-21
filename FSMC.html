@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>FSMC – Fatigue Skala für Motorik und Kognition</title>
+  
   <style>
     body { font-family: sans-serif; margin: 2rem; font-size: 16px; max-width: 700px; }
     h1 { margin-bottom: 0; }
@@ -18,7 +19,9 @@
 </head>
 <body>
   <h1>FSMC – Fatigue Skala für Motorik und Kognition</h1>
-  <p>Bitte jede Aussage beantworten. Auswahlmöglichkeiten:</p>
+  <p> Abklärung von motorischer und kognitiver Fatigue-Symptomatik bei Patienten mit Multipler Skleorse </p>
+  <p> In Cenplex Behandlungsplan als <strong> Messung </strong> vorhanden. Hier eintragen/durchführen und Summen-Scores im Cenplex übertragen </p>
+
   <ul>
     <li>1 – Trifft gar nicht zu</li>
     <li>2 – Trifft wenig zu</li>
@@ -36,24 +39,24 @@
   <script>
     const questions = [
       "Wenn ich mich längere Zeit konzentriere, erschöpft es mich schneller als andere Menschen in meinem Alter.",
-      "Meine Bewegungen werden im Zustand der Erschöpfung deutlich verlangsamt.",
-      "Wegen meiner Erschöpfungszustände brauche ich länger, um neue Aufgaben zu beginnen oder Entscheidungen zu treffen.",
-      "Ich fühle mich auch bei leichter körperlicher Anstrengung erschöpft.",
-      "Wenn ich erschöpft bin, habe ich Schwierigkeiten, mich sprachlich auszudrücken.",
-      "Wenn ich erschöpft bin, fällt es mir schwer, mich körperlich zu bewegen.",
-      "Wegen meiner Erschöpfungszustände fällt es mir heute schwerer, Neues zu lernen als früher.",
+      "Meine Bewegungen werden im Zustand der Erschöpfung deutlich ungeschickter und unkoordinierter.",
+      "Wegen meiner Erschöpfungszustände brauche ich heute bei körperliche Tätigkeiten häufigere und/oder längere Ruhepausen als früher.",
+      "Im Zustand der Erschöpfung bin ich unfähig, Entscheidungen zu treffen.",
+      "Ich fühle mich heute körperlich schneller erschöpft als früher, wenn ich stressige Situationen ausgesetzt bin.",
+      "Wegen meinte Erschöpfungszustände habe ich wesentlich weniger sozialer Kontakte als früher.",
+      "Wegen meiner Erschöpfungszustände fällt es mir heute schwerer, etwas Neues zu lernen als früher.",
       "Berufliche Anforderungen lassen mich geistig schneller erschöpfen als früher.",
       "Erschöpfungszustände spüre ich besonders stark in meinen Muskeln.",
-      "Bei körperlicher Anstrengung über einen längeren Zeitraum habe ich eher Mühe durchzuhalten als früher.",
+      "Bei körperlicher Anstrengung über einen längeren Zeitraum habe ich mehr Mühe durchzuhalten als früher.",
       "Meine Konzentrationsfähigkeit nimmt bei Stress beträchtlich ab.",
-      "Im Zustand der Erschöpfung bin ich weniger motiviert etwas zu unternehmen, selbst bei Aufgaben, die mit körperlicher Anstrengung verbunden sind.",
-      "Mein Denken verlangsamt sich deutlich, wenn ich erschöpft bin.",
+      "Im Zustand der Erschöpfung bin ich weniger motiviert als andere Menschen, Tätigkeiten zu beginnen, die mit körperlicher Anstrengung verbunden sind.",
+      "Mein Denken verlangsamt sich zusehends, wenn es heiss ist.",
       "Meine Bewegungen werden im Zustand der Erschöpfung eindeutig langsamer.",
-      "Wenn ich erschöpft bin, habe ich den Eindruck, etwas zu tun, etwas zu wollen, etwas nachdenken oder entscheiden fällt mir schwerer.",
-      "Im Zustand der Erschöpfung bin ich entscheidungsschwach und nicht mehr in der Lage, schnell zu handeln.",
-      "Im Zustand der Erschöpfung komme ich mit Bewegungen langsamer voran.",
-      "Meine Aufmerksamkeit lässt im Erschöpfungszustand deutlich nach.",
-      "Wenn es heiß ist, fühle ich mich hauptsächlich körperlich schwach und bewegungslos.",
+      "Wegen meiner Erschöfpungszustände habe ich heute weniger Lust als früher, etwas zu tun, was Nachdenken erfordert.",
+      "Wenn sich ein Erschöpfungszustand einstellt, bin ich überhaupt nciht mehr in der Lage, schnell zu reagieren.",
+      "Im Zustand der Erschöpfung, kommen mit bestimmte Worte nicht mehr in den Sinn.",
+      "Meine Aufmerksamkeit lässt im Erschöpfungszustand wesentlich schneller nach als früher.",
+      "Wenn es heiss ist, fühle ich mich hauptsächlich körperlich extrem schwach und energielos.",
       "Im Zustand der Erschöpfung nimmt meine Vergesslichkeit merklich zu."
     ];
 
@@ -65,8 +68,8 @@
       "Trifft völlig zu"
     ];
 
-    const cognitiveIndexes = [0, 2, 4, 6, 7, 10, 12, 14, 15, 17];
-    const motorIndexes = [1, 3, 5, 8, 9, 11, 13, 16, 18, 19];
+    const cognitiveIndexes = [0, 3, 6, 7, 10, 12, 14, 16, 17, 19];
+    const motorIndexes = [1, 2, 4, 5, 8, 9, 11, 13, 15, 18];
 
     const container = document.getElementById("questions");
     questions.forEach((text, i) => {
