@@ -1,1 +1,160 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Berg Balance Skala (BBS)</title>
+  <style>
+    body { font-family: sans-serif; margin: 2rem; font-size: 16px; max-width: 1000px; }
+    h1 { margin-bottom: 0.5rem; }
+    .question-block { margin-bottom: 1.5rem; }
+    .question { font-weight: bold; margin-bottom: 0.5rem; }
+    select { width: 100%; padding: 8px; font-size: 16px; }
+    button { margin-top: 20px; padding: 10px 15px; font-size: 16px; }
+    #result { margin-top: 2rem; font-weight: bold; white-space: pre-line; }
+  </style>
+</head>
+<body>
+  <h1>Berg Balance Skala (BBS)</h1>
+  <p>Zur Einschätzung des Gleichgewichts und Sturzrisikos. Bitte wählen Sie für jedes Item die passende Bewertung (0–4).</p>
+  <form id="bbsForm">
+    <div id="questions"></div>
+    <button type="button" onclick="calculateBBS()">✅ Score berechnen</button>
+    <button type="button" onclick="generatePDF()">📄 PDF erstellen</button>
+  </form>
+  <div id="result"></div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script>
+    const questions = [
+      {
+        text: "1. Vom Sitzen zum Stehen",
+        options: [
+          "4 kann aufstehen ohne die Hände einzusetzen und sich selbstständig stabilisieren",
+          "3 kann selbstständig mit Einsatz der Hände aufstehen",
+          "2 kann nach einigen Versuchen mit Einsatz der Hände aufstehen",
+          "1 braucht minimale Hilfe zum Aufstehen oder zum Stabilisieren",
+          "0 braucht mässige bis maximale Hilfe um aufzustehen"
+        ]
+      },
+      {
+        text: "2. Stehen ohne Unterstützung",
+        options: [
+          "4 kann zwei Minuten sicher stehen",
+          "3 kann zwei Minuten unter Supervision stehen",
+          "2 kann 30 Sek. ohne Unterstützung stehen",
+          "1 braucht einige Versuche, um 30 Sekunden ohne Unterstützung zu stehen",
+          "0 kann nicht ohne Unterstützung 30 Sekunden stehen"
+        ]
+      },
+      {
+        text: "3. Sitzen ohne Rückenlehne, aber mit beiden Füßen auf dem Boden oder auf einer Fußbank",
+        options: [
+          "4 kann sicher und stabil zwei Minuten sitzen",
+          "3 kann zwei Minuten unter Supervision sitzen",
+          "2 kann 30 Sekunden sitzen",
+          "1 kann 10 Sekunden sitzen",
+          "0 kann nicht ohne Unterstützung 10 Sekunden sitzen"
+        ]
+      },
+      {
+        text: "4. Vom Stehen zum Sitzen",
+        options: [
+          "4 setzt sich sicher mit minimalem Einsatz der Hände hin",
+          "3 kontrolliert das Hinsetzen mit den Händen",
+          "2 berührt mit Rückseite der Beine den Stuhl, um das Hinsetzen zu kontrollieren",
+          "1 setzt sich selbständig aber unkontrolliert hin",
+          "0 braucht Hilfe um sich hinzusetzen"
+        ]
+      },
+      {
+        text: "5. Transfer",
+        options: [
+          "4 kann den Transfer sicher mit minimalem Einsatz der Hände ausführen",
+          "3 kann den Transfer sicher ausführen, muss aber die Hände einsetzen",
+          "2 kann den Transfer mit verbaler Anweisung und/oder unter Supervision ausführen",
+          "1 braucht eine Person zur Hilfestellung",
+          "0 braucht zwei Personen zur Hilfestellung oder Supervision um sicher zu sein"
+        ]
+      },
+      {
+        text: "6. Stehen mit geschlossenen Augen ohne Unterstützung",
+        options: [
+          "4 kann zehn Sekunden sicher stehen",
+          "3 kann zehn Sekunden unter Supervision stehen",
+          "2 kann drei Sekunden stehen",
+          "1 kann nicht die Augen drei Sekunden geschlossen halten, steht aber stabil",
+          "0 braucht Hilfe, um nicht zu fallen"
+        ]
+      },
+      {
+        text: "7. Stehen mit Füßen dicht nebeneinander",
+        options: [
+          "4 kann selbständig Füße nebeneinander stellen und 1 Minute sicher stehen",
+          "3 kann selbständig Füße nebeneinander stellen und unter Supervision 1 Minute stehen",
+          "2 kann selbständig Füße nebeneinander stellen und die Position 30 Sekunden halten",
+          "1 braucht Hilfe um die Position einzunehmen, kann aber 15 Sekunden mit geschlossenen Füßen stehen",
+          "0 braucht Hilfe um die Position einzunehmen, kann diese nicht für 15 Sekunden halten"
+        ]
+      },
+      // Items 8–14 folgen im nächsten Schritt (Platzgründe)
+    ];
+
+    const container = document.getElementById("questions");
+    questions.forEach((q, i) => {
+      const block = document.createElement("div");
+      block.className = "question-block";
+      const options = q.options.map((text, idx) => `<option value="${4 - idx}">${text}</option>`).join("");
+      block.innerHTML = `
+        <div class="question">${q.text}</div>
+        <select name="q${i}" required>
+          <option value="" disabled selected>Antwort auswählen</option>
+          ${options}
+        </select>
+      `;
+      container.appendChild(block);
+    });
+
+    function calculateBBS() {
+      let total = 0;
+      for (let i = 0; i < questions.length; i++) {
+        const val = parseInt(document.querySelector(`select[name='q${i}']`)?.value);
+        if (isNaN(val)) return alert("Bitte alle Fragen beantworten.");
+        total += val;
+      }
+      document.getElementById("result").innerText = `BBS Gesamtscore: ${total} / 56`;
+    }
+
+    async function generatePDF() {
+      const { jsPDF } = window.jspdf;
+      let doc = new jsPDF();
+      let y = 10;
+
+      doc.setFontSize(16);
+      doc.text("Berg Balance Skala – Auswertung", 10, y);
+      y += 10;
+
+      let total = 0;
+      questions.forEach((q, i) => {
+        const select = document.querySelector(`select[name='q${i}']`);
+        const val = parseInt(select?.value);
+        const label = select?.options[select.selectedIndex]?.text;
+        if (!isNaN(val)) total += val;
+        doc.setFontSize(12);
+        doc.text(`${q.text}`, 10, y);
+        y += 6;
+        doc.text(`Antwort: ${label}`, 10, y);
+        y += 10;
+        if (y > 270) {
+          doc.addPage();
+          y = 10;
+        }
+      });
+
+      doc.setFontSize(14);
+      doc.text(`Gesamtscore: ${total} / 56`, 10, y);
+      window.open(doc.output('bloburl'), '_blank');
+    }
+  </script>
+</body>
+</html>
 
