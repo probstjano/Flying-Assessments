@@ -31,99 +31,95 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script>
     const questions = [
-      {
-        text: "1) Gang",
-        options: [
-          "0 – Normal, keine Schwierigkeiten beim Gehen, beim Drehen und bei Tandemgang (bis zu einem Fehltritt erlaubt)",
-          "1 – Leichte Schwierigkeiten, nur sichtbar bei 10 aufeinanderfolgenden Schritten im Tandem",
-          "2 – Deutlich abnormal, mehr als 10 Schritte im Tandem nicht möglich",
-          "3 – Erhebliches Schwanken, Schwierigkeiten bei der Halbumdrehung, aber ohne Unterstützung",
-          "4 – Ausgeprägtes Schwanken, gelegentliches Abstützen an der Wand erforderlich",
-          "5 – Starkes Schwanken, ständige Unterstützung durch Stock oder Arm",
-          "6 – Gehen >10 m nur mit starker Unterstützung (zwei spezielle Stöcke oder Rollator oder Begleitperson)",
-          "7 – Gehen <10 m nur mit starker Unterstützung (zwei spezielle Stöcke oder Rollator oder Begleitperson)",
-          "8 – Gehunfähig, auch mit Unterstützung"
-        ]
-      },
-      {
-        text: "2) Stand",
-        options: [
-          "0 – Normal, kann im Tandem >10 s stehen",
-          "1 – Stehen >10 s mit Füssen zusammen möglich, aber nicht im Tandem",
-          "2 – Stehen >10 s mit Füssen zusammen, aber mit Schwankungen",
-          "3 – Stehen >10 s nur in natürlicher Position",
-          "4 – Kann in natürlicher Position für > 10 s stehen, nur mit gelegentlicher Unterstützung",
-          "5 – Kann für > 10 s in natürlicher Position nur mit ständiger Unterstützung eines Armes stehen",
-          "6 – Nicht in der Lage für > 10 s zu stehen, auch bei konstanter Abstützung eines Armes"
-        ]
-      },
-      {
-        text: "3) Sitzen",
-        options: [
-          "0 – Normal, keine Schwierigkeiten beim Sitzen >10 s",
-          "1 – Leichte Schwierigkeiten, gelegentliches Schwanken",
-          "2 – Ständiges Schwanken, aber >10 s ohne Halten sitzen",
-          "3 – Nur mit gelegentlicher Unterstützung >10 s sitzen",
-          "4 – Ohne kontinuierliche Unterstützung nicht möglich >10 s zu sitzen"
-        ]
-      },
-      {
-        text: "4) Sprechstörungen",
-        options: [
-          "0 – Normal",
-          "1 – Vermutung von Sprechstörungen",
-          "2 – Das Sprechen ist gestört, aber es ist leicht die Person zu verstehen",
-          "3 – Gelegentlich sind Wörter schwer zu verstehen",
-          "4 – Viele Wörter sind schwer zu verstehen",
-          "5 – Nur einzelne Wörter sind verständlich",
-          "6 – Das Sprechen ist unverständlich/Dysarthriee"
-        ]
-      },
-      {
-        text: "5) Finger Chase",
-        options: [
-          "0 – Keine Dysmetrie",
-          "1 – Dysmetrie < 5 cm, zu kurz oder über das Ziel hinausschießend",
-          "2 – Dysmetrie <15 cm, zu kurz oder über das Ziel hinausschießend",
-          "3 – Dysmetrie >5cm, zu kurz oder über das Ziel hinausschießend",
-          "4 – Nicht in der Lage, 5 Bewegungen auszuführen"
-        ]
-      },
-      {
-        text: "6) Finger-Nase-Test",
-        options: [
-          "0 – Kein Tremor",
-          "1 – Tremor mit einer Amplitude von <2 cm",
-          "2 – Tremor mit einer Amplitude von <5 cm",
-          "3 – Tremor mit einer Amplitude von >5 cm",
-          "4 – Nicht in der Lage, 5 Zeigebewegungen auszuführen"
-        ]
-      },
-      {
-        text: "7) Schnelle, alternierende Bewegungen der Hände",
-        options: [
-          "0 – Normal, keine Unregelmäßigkeiten (er/sie führt die Bewegung in < 10 s aus)",
-          "1 – Geringe Unregelmäßigkeiten (er/sie führt der Bewegung in < 10 s aus)",
-          "2 – Deutliche Unregelmässigkeit, einzelne Bewegungen sind schwer voneinander zu unterscheiden oder 
-es gibt relevante Unterbrechungen, Bewegung jedoch  < 10 s",
-          "3 – Sehr große Unregelmäßigkeit, einzelne Bewegungen sind schwer voneinander zu unterscheiden oder 
-es gibt relevante Unterbrechungen. Bewegung > 10 s ",
-          "4 – Nicht in der Lage 10 Zyklen auszuführe"
-        ]
-      },
-      {
-        text: "8) Knie-Hacke-Versuch",
-        options: [
-          "0 – Normal",
-          "1 – Geringfügig abnormales Gleiten, Kontakt zum Schienbein wird gehalten",
-          "2 – Deutliches abnormales Gleiten, Ferse verliert den Kontakt zum Schienbein bis zu 3 Mal während 
-3 Zyklen",
-          "3 – Stark abnormales Gleiten, Ferse verliert den Kontakt zum Schienbein 4 Mal oder mehr während 
-3 Zyklen ",
-          "4 – Nicht in der Lage die Aufgabe auszuführen"
-        ]
-      }
-    ];
+  {
+    text: "1) Gang",
+    options: [
+      "0 – Normal, keine Schwierigkeiten beim Gehen, beim Drehen und bei Tandemgang (bis zu einem Fehltritt erlaubt)",
+      "1 – Leichte Schwierigkeiten, nur sichtbar bei 10 aufeinanderfolgenden Schritten im Tandem",
+      "2 – Deutlich abnormal, mehr als 10 Schritte im Tandem nicht möglich",
+      "3 – Erhebliches Schwanken, Schwierigkeiten bei der Halbumdrehung, aber ohne Unterstützung",
+      "4 – Ausgeprägtes Schwanken, gelegentliches Abstützen an der Wand erforderlich",
+      "5 – Starkes Schwanken, ständige Unterstützung durch Stock oder Arm",
+      "6 – Gehen >10 m nur mit starker Unterstützung (zwei spezielle Stöcke oder Rollator oder Begleitperson)",
+      "7 – Gehen <10 m nur mit starker Unterstützung (zwei spezielle Stöcke oder Rollator oder Begleitperson)",
+      "8 – Gehunfähig, auch mit Unterstützung"
+    ]
+  },
+  {
+    text: "2) Stand",
+    options: [
+      "0 – Normal, kann im Tandem >10 s stehen",
+      "1 – Stehen >10 s mit Füßen zusammen möglich, aber nicht im Tandem",
+      "2 – Stehen >10 s mit Füßen zusammen, aber mit Schwankungen",
+      "3 – Stehen >10 s nur in natürlicher Position",
+      "4 – Kann in natürlicher Position für >10 s stehen, nur mit gelegentlicher Unterstützung",
+      "5 – Kann für >10 s in natürlicher Position nur mit ständiger Unterstützung eines Armes stehen",
+      "6 – Nicht in der Lage für >10 s zu stehen, auch bei konstanter Abstützung eines Armes"
+    ]
+  },
+  {
+    text: "3) Sitzen",
+    options: [
+      "0 – Normal, keine Schwierigkeiten beim Sitzen >10 s",
+      "1 – Leichte Schwierigkeiten, gelegentliches Schwanken",
+      "2 – Ständiges Schwanken, aber >10 s ohne Halten sitzen",
+      "3 – Nur mit gelegentlicher Unterstützung >10 s sitzen",
+      "4 – Ohne kontinuierliche Unterstützung nicht möglich >10 s zu sitzen"
+    ]
+  },
+  {
+    text: "4) Sprechstörungen",
+    options: [
+      "0 – Normal",
+      "1 – Vermutung von Sprechstörungen",
+      "2 – Das Sprechen ist gestört, aber es ist leicht die Person zu verstehen",
+      "3 – Gelegentlich sind Wörter schwer zu verstehen",
+      "4 – Viele Wörter sind schwer zu verstehen",
+      "5 – Nur einzelne Wörter sind verständlich",
+      "6 – Das Sprechen ist unverständlich/Dysarthrie"
+    ]
+  },
+  {
+    text: "5) Finger Chase",
+    options: [
+      "0 – Keine Dysmetrie",
+      "1 – Dysmetrie <5 cm, zu kurz oder über das Ziel hinausschießend",
+      "2 – Dysmetrie <15 cm, zu kurz oder über das Ziel hinausschießend",
+      "3 – Dysmetrie >15 cm, zu kurz oder über das Ziel hinausschießend",
+      "4 – Nicht in der Lage, 5 Bewegungen auszuführen"
+    ]
+  },
+  {
+    text: "6) Finger-Nase-Test",
+    options: [
+      "0 – Kein Tremor",
+      "1 – Tremor mit einer Amplitude von <2 cm",
+      "2 – Tremor mit einer Amplitude von <5 cm",
+      "3 – Tremor mit einer Amplitude von >5 cm",
+      "4 – Nicht in der Lage, 5 Zeigebewegungen auszuführen"
+    ]
+  },
+  {
+    text: "7) Schnelle, alternierende Bewegungen der Hände",
+    options: [
+      "0 – Normal, keine Unregelmäßigkeiten (unter 10 s)",
+      "1 – Geringe Unregelmäßigkeiten (unter 10 s)",
+      "2 – Deutliche Unregelmäßigkeit, Bewegungen schwer unterscheidbar oder unterbrochen, aber unter 10 s",
+      "3 – Sehr große Unregelmäßigkeit, schwer unterscheidbare Bewegungen oder Unterbrechungen, über 10 s",
+      "4 – Nicht in der Lage, 10 Zyklen auszuführen"
+    ]
+  },
+  {
+    text: "8) Knie-Hacke-Versuch",
+    options: [
+      "0 – Normal",
+      "1 – Geringfügig abnormales Gleiten, Kontakt zum Schienbein wird gehalten",
+      "2 – Deutliches abnormales Gleiten, Ferse verliert bis zu 3-mal den Kontakt zum Schienbein während 3 Zyklen",
+      "3 – Stark abnormales Gleiten, Ferse verliert mehr als 3-mal den Kontakt während 3 Zyklen",
+      "4 – Nicht in der Lage, die Aufgabe auszuführen"
+    ]
+  }
+];
 
     const container = document.getElementById("questions");
     questions.forEach((q, i) => {
