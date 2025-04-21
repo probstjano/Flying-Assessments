@@ -273,7 +273,7 @@ function toggleNormsSPPB() {
   let nearestP = "n.v.";
   for (let p of percentiles) {
     if (score <= normData["P" + p]) {
-      nearestP = `≈ P${p}`;
+      nearestP = `≈ ${p}`;
       break;
     }
   }
