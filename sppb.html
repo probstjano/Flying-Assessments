@@ -273,7 +273,7 @@ function toggleNormsSPPB() {
   let nearestP = "n.v.";
   for (let p of percentiles) {
     if (score <= normData["P" + p]) {
-      nearestP = `≈ ${p}`;
+      nearestP = `${p}`;
       break;
     }
   }
@@ -281,7 +281,7 @@ function toggleNormsSPPB() {
   norms.innerHTML = `<h3>SPPB Gesamt-Score – norwegische Referenzwerte (${nearest} Jahre – ${sex === "men" ? "Männer" : "Frauen"})</h3>`;
   norms.innerHTML += `<table><tr><th>Perzentil</th><th>Score</th></tr>
     ${percentiles.map(p => `<tr><td>P${p}</td><td>${normData["P" + p]}</td></tr>`).join("")}
-  </table><p>→ Dieser Score entspricht ungefähr dem <strong>${nearestP}</strong> Perzentil der Referenzgruppe. Dies bedeutet der Score ist besser als bei <strong>${nearestP}</strong> % der Vergleichsgruppe </p>`;
+  </table><p>→ Dieser Score ist nahe am <strong>${nearestP}</strong> Perzentil der Referenzgruppe. Dies bedeutet der Score ist besser als bei ca <strong>${nearestP}</strong> % der Vergleichsgruppe </p>`;
 
   norms.classList.remove("hidden");
   btn.innerText = "📉 Normwerte SPPB verbergen";
