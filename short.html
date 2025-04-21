@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Berg Balance Skala (BBS)</title>
+  <style>
+    body { font-family: sans-serif; margin: 2rem; font-size: 16px; max-width: 1000px; }
+    h1 { margin-bottom: 0.5rem; }
+    .question-block { margin-bottom: 1.5rem; }
+    .question { font-weight: bold; margin-bottom: 0.5rem; }
+    select, option { width: 100%; padding: 8px; font-size: 16px; }
+    button { margin-top: 20px; padding: 10px 15px; font-size: 16px; }
+    #result { margin-top: 2rem; font-weight: bold; white-space: pre-line; }
+  </style>
+</head>
+<body>
+  <h1>Berg Balance Skala (BBS)</h1>
+  <p>Zur Einschätzung des Gleichgewichts und Sturzrisikos. Bitte wählen Sie für jedes Item die passende Bewertung.</p>
+  <label for="formSelect"><strong>Form auswählen:</strong></label>
+  <select id="formSelect" onchange="renderForm()">
+    <option value="full">Vollversion (14 Items)</option>
+    <option value="short">Kurzversion (7 Items)</option>
+  </select>
+
+  <form id="bbsForm">
+    <div id="questions"></div>
+    <button type="button" onclick="calculateBBS()">✅ Score berechnen</button>
+    <button type="button" onclick="generatePDF()">📄 PDF erstellen</button>
+  </form>
+
+  <div id="result"></div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script>
+    const fullQuestions = [
+      // (vollständige Version mit originalen Formulierungen für alle 14 Items aus vorherigem Codeblock eingefügt)
+      { text: "1. Vom Sitzen zum Stehen", options: [
+        "4 kann aufstehen ohne die Hände einzusetzen und sich selbstständig stabilisieren",
+        "3 kann selbstständig mit Einsatz der Hände aufstehen",
+        "2 kann nach einigen Versuchen mit Einsatz der Hände aufstehen",
+        "1 braucht minimale Hilfe zum Aufstehen oder zum Stabilisieren",
+        "0 braucht mäßige bis maximale Hilfe um aufzustehen"
+      ]},
+      { text: "2. Stehen ohne Unterstützung", options: [
+        "4 kann zwei Minuten sicher stehen",
+        "3 kann zwei Minuten unter Supervision stehen",
+        "2 kann 30 Sek. ohne Unterstützung stehen",
+        "1 braucht einige Versuche, um 30 Sekunden ohne Unterstützung zu stehen",
+        "0 kann nicht ohne Unterstützung 30 Sekunden stehen"
+      ]},
+      { text: "3. Sitzen ohne Rückenlehne, aber mit beiden Füßen auf dem Boden oder auf einer Fußbank", options: [
+        "4 kann sicher und stabil zwei Minuten sitzen",
+        "3 kann zwei Minuten unter Supervision sitzen",
+        "2 kann 30 Sekunden sitzen",
+        "1 kann 10 Sekunden sitzen",
+        "0 kann nicht ohne Unterstützung 10 Sekunden sitzen"
+      ]},
+      { text: "4. Vom Stehen zum Sitzen", options: [
+        "4 setzt sich sicher mit minimalem Einsatz der Hände hin",
+        "3 kontrolliert das Hinsetzen mit den Händen",
+        "2 berührt mit Rückseite der Beine den Stuhl, um das Hinsetzen zu kontrollieren",
+        "1 setzt sich selbständig aber unkontrolliert hin",
+        "0 braucht Hilfe um sich hinzusetzen"
+      ]},
+      { text: "5. Transfer", options: [
+        "4 kann den Transfer sicher mit minimalem Einsatz der Hände ausführen",
+        "3 kann den Transfer sicher ausführen, muss aber die Hände einsetzen",
+        "2 kann den Transfer mit verbaler Anweisung und/oder unter Supervision ausführen",
+        "1 braucht eine Person zur Hilfestellung",
+        "0 braucht zwei Personen zur Hilfestellung oder Supervision um sicher zu sein"
+      ]},
+      { text: "6. Stehen mit geschlossenen Augen ohne Unterstützung", options: [
+        "4 kann zehn Sekunden sicher stehen",
+        "3 kann zehn Sekunden unter Supervision stehen",
+        "2 kann drei Sekunden stehen",
+        "1 kann nicht die Augen drei Sekunden geschlossen halten, steht aber stabil",
+        "0 braucht Hilfe, um nicht zu fallen"
+      ]},
+      { text: "7. Stehen mit Füßen dicht nebeneinander", options: [
+        "4 kann selbständig Füße nebeneinander stellen und 1 Minute sicher stehen",
+        "3 kann selbständig Füße nebeneinander stellen und unter Supervision 1 Minute stehen",
+        "2 kann selbständig Füße nebeneinander stellen und die Position 30 Sekunden halten",
+        "1 braucht Hilfe um die Position einzunehmen, kann aber 15 Sekunden mit geschlossenen Füßen stehen",
+        "0 braucht Hilfe um die Position einzunehmen, kann diese nicht für 15 Sekunden halten"
+      ]},
+      { text: "8. Nach vorne greifen mit ausgestrecktem Arm im Stand", options: [
+        "4 kann mehr als 25 cm ohne zu fallen nach vorne greifen",
+        "3 kann mehr als 12 cm nach vorne greifen",
+        "2 kann mehr als 5 cm nach vorne greifen",
+        "1 kann nur minimal nach vorne greifen (weniger als 5 cm)",
+        "0 verliert das Gleichgewicht und benötigt Hilfe, um nicht zu fallen"
+      ]},
+      { text: "9. Gegenstand vom Boden aufheben im Stand", options: [
+        "4 kann sicher einen Gegenstand vom Boden aufheben",
+        "3 kann den Gegenstand aufheben, benötigt jedoch Überwachung",
+        "2 kann den Gegenstand mit Hilfe oder Änderung der Körperposition aufheben",
+        "1 kann den Gegenstand nur mit Unterstützung aufheben",
+        "0 ist nicht in der Lage, den Gegenstand aufzuheben und verliert das Gleichgewicht"
+      ]},
+      { text: "10. Stehen, sich umsehen über rechte und linke Schulter", options: [
+        "4 kann sich sicher nach beiden Seiten umsehen",
+        "3 kann sich nach beiden Seiten unter Supervision umsehen",
+        "2 kann sich nur zu einer Seite sicher umsehen",
+        "1 zeigt Angst oder Unsicherheit beim Umdrehen",
+        "0 kann sich nicht sicher umsehen und verliert das Gleichgewicht"
+      ]},
+      { text: "11. Sich um 360° drehen", options: [
+        "4 kann sicher eine komplette Drehung in weniger als 4 Sekunden ausführen",
+        "3 kann sicher eine komplette Drehung in mehr als 4 Sekunden ausführen",
+        "2 benötigt mehrere Schritte um die Drehung zu vollenden",
+        "1 benötigt Unterstützung bei der Drehung",
+        "0 ist nicht in der Lage sich sicher zu drehen"
+      ]},
+      { text: "12. Einen Schritt vorwärts machen (rechte und linke Füße abwechselnd) und stehen bleiben", options: [
+        "4 kann einen Schritt sicher und kontrolliert ausführen",
+        "3 kann einen Schritt unter Supervision ausführen",
+        "2 zeigt Unsicherheit oder leichte Unterstützung erforderlich",
+        "1 benötigt Unterstützung beim Schritt",
+        "0 kann keinen Schritt ausführen, ohne das Gleichgewicht zu verlieren"
+      ]},
+      { text: "13. Stehen mit einem Fuß vor dem anderen (Tandemstellung)", options: [
+        "4 kann 30 Sekunden sicher stehen",
+        "3 kann 30 Sekunden unter Supervision stehen",
+        "2 kann weniger als 30 Sekunden stehen",
+        "1 benötigt Hilfe, um die Position einzunehmen oder zu halten",
+        "0 kann die Position nicht einnehmen oder halten"
+      ]},
+      { text: "14. Auf einem Bein stehen", options: [
+        "4 kann 10 Sekunden sicher stehen",
+        "3 kann 10 Sekunden unter Supervision stehen",
+        "2 kann 5 Sekunden stehen",
+        "1 kann weniger als 3 Sekunden stehen",
+        "0 kann die Position nicht einnehmen oder halten"
+      ]}
+    ];
+
+    const shortIndexes = [0, 5, 7, 9, 12, 13, 14];
+
+    function renderForm() {
+      const formType = document.getElementById("formSelect").value;
+      const container = document.getElementById("questions");
+      container.innerHTML = "";
+
+      const items = formType === "full" ? fullQuestions : shortIndexes.map(i => fullQuestions[i]);
+
+      items.forEach((q, i) => {
+        const block = document.createElement("div");
+        block.className = "question-block";
+        const options = q.options.map((textOpt, idx) => {
+          return `<option value="${4 - idx}">${textOpt}</option>`;
+        }).join("");
+        block.innerHTML = `
+          <div class="question">${formType === "full" ? i + 1 : shortIndexes[i] + 1}. ${q.text}</div>
+          <select name="q${i}" required>
+            <option value="" disabled selected>Antwort auswählen</option>
+            ${options}
+          </select>
+        `;
+        container.appendChild(block);
+      });
+    }
+
+    function calculateBBS() {
+      const selects = document.querySelectorAll("select[name^='q']");
+      let total = 0;
+      for (let sel of selects) {
+        const val = parseInt(sel.value);
+        if (isNaN(val)) return alert("Bitte alle Fragen beantworten.");
+        total += val;
+      }
+      const formType = document.getElementById("formSelect").value;
+      const max = formType === "full" ? 56 : 28;
+      document.getElementById("result").innerText = `BBS Gesamtscore: ${total} / ${max}`;
+    }
+
+    async function generatePDF() {
+      const { jsPDF } = window.jspdf;
+      const formType = document.getElementById("formSelect").value;
+      const items = formType === "full" ? fullQuestions : shortIndexes.map(i => fullQuestions[i]);
+      const selects = document.querySelectorAll("select[name^='q']");
+
+      let doc = new jsPDF();
+      let y = 10;
+      let total = 0;
+
+      doc.setFontSize(16);
+      doc.text(`BBS ${formType === "full" ? "Vollversion" : "Kurzversion"} – Auswertung`, 10, y);
+      y += 10;
+
+      items.forEach((q, i) => {
+        const sel = selects[i];
+        const val = parseInt(sel.value);
+        const label = sel.options[sel.selectedIndex].text;
+        if (!isNaN(val)) total += val;
+        doc.setFontSize(12);
+        doc.text(`${formType === "full" ? i + 1 : shortIndexes[i] + 1}. ${q.text}`, 10, y);
+        y += 6;
+        doc.text(`Antwort: ${label}`, 10, y);
+        y += 10;
+        if (y > 270) {
+          doc.addPage();
+          y = 10;
+        }
+      });
+
+      const max = formType === "full" ? 56 : 28;
+      doc.setFontSize(14);
+      doc.text(`Gesamtscore: ${total} / ${max}`, 10, y);
+      window.open(doc.output('bloburl'), '_blank');
+    }
+
+    renderForm();
+  </script>
+</body>
+</html>
