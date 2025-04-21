@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FOG-Q – Freezing of Gait Questionnaire</title>
+  <style>
+    body { font-family: sans-serif; margin: 2rem; font-size: 16px; max-width: 800px; }
+    h1 { margin-bottom: 0; }
+    p { margin-top: 0.2rem; }
+    .question-block { margin-bottom: 1.5rem; }
+    .question { margin-bottom: 0.5rem; font-weight: bold; }
+    select { width: 100%; padding: 6px; font-size: 16px; }
+    button { margin-top: 20px; padding: 10px 15px; font-size: 16px; }
+    #result { margin-top: 2rem; font-weight: bold; white-space: pre-line; }
+  </style>
+</head>
+<body>
+  <h1>Freezing of Gait Questionnaire (FOG-Q)</h1>
+  <p>Beurteilung und Verlaufsüberprüfung der "Freezing" Symptomatik bei Parkinson.</p>
+  <p>Im Cenplex als <strong> Messung </strong> vorhanden. Hier ausfüllen und Summe-Score übertragen</p>
+  <form id="fogForm">
+    <div id="questions"></div>
+    <button type="button" onclick="calculateFOG()">✅ Score berechnen</button>
+    <button type="button" onclick="generatePDF()">📄 PDF erstellen</button>
+  </form>
+  <div id="result"></div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script>
+    const questions = [
+      {
+        text: "In Ihrem schlechtesten Zustand gehen Sie:",
+        options: [
+          "Normal",
+          "Ziemlich normal – etwas langsam",
+          "Langsam, aber völlig selbständig",
+          "Brauche Hilfe oder Gehstützen",
+          "Nicht in der Lage zu gehen"
+        ]
+      },
+      {
+        text: "Beeinflussen Ihre Gehschwierigkeiten Ihre alltäglichen Aktivitäten und Ihre Unabhängigkeit?",
+        options: [
+          "Überhaupt nicht",
+          "Ein bisschen",
+          "Moderat",
+          "Stark",
+          "Nicht in der Lage zu gehen"
+        ]
+      },
+      {
+        text: "Spüren Sie, wie Ihre Füße am Boden kleben bleiben während des Gehens, während des Drehens oder wenn Sie den ersten Schritt auslösen möchten?",
+        options: [
+          "Nie",
+          "Sehr selten (einmal im Monat)",
+          "Selten (einmal in der Woche)",
+          "Oft (einmal am Tag)",
+          "Immer (beim Gehen)"
+        ]
+      },
+      {
+        text: "Wie lange dauert Ihre längste Freezing Episode?",
+        options: [
+          "Passiert nie",
+          "1–2 Sekunden",
+          "3–10 Sekunden",
+          "11–30 Sekunden",
+          "Nicht in der Lage zu gehen für mehr als 30 Sekunden"
+        ]
+      },
+      {
+        text: "Wie lange dauert Ihre typische Starthemmung, wenn Sie den ersten Schritt einleiten?",
+        options: [
+          "Gar nicht",
+          "Dauert länger als 1 Sekunde bis Gehstart",
+          "Dauert länger als 3 Sekunden bis Gehstart",
+          "Dauert länger als 10 Sekunden bis Gehstart",
+          "Dauert länger als 30 Sekunden bis Gehstart"
+        ]
+      },
+      {
+        text: "Wie lange müssen Sie typischerweise zögern, bevor Sie drehen (Freezing beim Drehen)?",
+        options: [
+          "Nie",
+          "1–2 Sekunden bis zum Drehen",
+          "3–10 Sekunden bis zum Drehen",
+          "11–30 Sekunden bis zum Drehen",
+          "Nicht in der Lage zu Drehen für mehr als 30 Sekunden"
+        ]
+      }
+    ];
+
+    const container = document.getElementById("questions");
+    questions.forEach((q, i) => {
+      const block = document.createElement("div");
+      block.className = "question-block";
+      const options = q.options.map((text, idx) => `<option value="${idx}">${text}</option>`).join("");
+      block.innerHTML = `
+        <div class="question">${i + 1}. ${q.text}</div>
+        <select name="q${i}" required>
+          <option value="" disabled selected>Antwort auswählen</option>
+          ${options}
+        </select>
+      `;
+      container.appendChild(block);
+    });
+
+    function calculateFOG() {
+      let total = 0;
+      for (let i = 0; i < questions.length; i++) {
+        const val = parseInt(document.querySelector(`select[name='q${i}']`)?.value);
+        if (isNaN(val)) return alert("Bitte alle Fragen beantworten.");
+        total += val;
+      }
+      document.getElementById("result").innerText = `FOG-Q Gesamtscore: ${total} / 24`;
+    }
+
+    async function generatePDF() {
+      const { jsPDF } = window.jspdf;
+      let doc = new jsPDF();
+      let y = 10;
+
+      doc.setFontSize(16);
+      doc.text("Freezing of Gait Questionnaire (FOG-Q) – Auswertung", 10, y);
+      y += 10;
+
+      let total = 0;
+      questions.forEach((q, i) => {
+        const select = document.querySelector(`select[name='q${i}']`);
+        const val = parseInt(select?.value);
+        const label = select?.options[select.selectedIndex]?.text;
+        if (!isNaN(val)) total += val;
+        doc.setFontSize(12);
+        doc.text(`${i + 1}. ${q.text}`, 10, y);
+        y += 6;
+        doc.text(`Antwort: ${label}`, 10, y);
+        y += 10;
+        if (y > 270) {
+          doc.addPage();
+          y = 10;
+        }
+      });
+
+      doc.setFontSize(14);
+      doc.text(`Gesamtscore: ${total} / 24`, 10, y);
+
+      window.open(doc.output('bloburl'), '_blank');
+    }
+  </script>
+</body>
+</html>
