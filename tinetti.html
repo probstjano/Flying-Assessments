@@ -152,15 +152,13 @@
   }
 ];
 
-    function calculateTINETTI() {
-      const items = useShort ? shortIndexes.map(i => fullQuestions[i]) : fullQuestions;
-      let total = 0;
-      for (let idx = 0; idx < items.length; idx++) {
-        const fullIndex = useShort ? shortIndexes[idx] : idx;
-        const sel = document.querySelector(`select[name='q${fullIndex}']`);
-        if (!sel || sel.value === "") return alert("Bitte alle Fragen beantworten.");
-        total += parseInt(sel.value);
+    function calculateTINETTI()  {
+      const form = document.forms["demmiForm"];
+      let score = 0;
+      for (let i = 0; i < questions.length; i++) {
+        score += parseInt(form["q" + i].value);
       }
+    }
       const max = useShort ? 28 : 56;
       currentScore = total;
       document.getElementById("scoreDisplay").innerText = `BBS Gesamtscore: ${total} / ${max}`;
