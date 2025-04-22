@@ -149,51 +149,58 @@
     }
 
     function renderForm() {
-      const container = document.getElementById("questions");
-      container.innerHTML = "";
-      const items = useShort ? shortIndexes.map(i => fullQuestions[i]) : fullQuestions;
+  const container = document.getElementById("questions");
+  container.innerHTML = "";
+  const items = useShort ? shortIndexes.map(i => fullQuestions[i]) : fullQuestions;
 
-      items.forEach((q, i) => {
-        const block = document.createElement("div");
-        block.className = "question-block";
-        const options = q.options.map((textOpt, idx) => {
-          return `<option value="${4 - idx}">${textOpt}</option>`;
-        }).join("");
-        block.innerHTML = `
-          <div class="question">${useShort ? shortIndexes[i] + 1 : i + 1}. ${q.text}</div>
-          <select name="q${useShort ? shortIndexes[i] : i}" required>
-            <option value="" disabled selected>Antwort auswählen</option>
-            ${options}
-          </select>
-        `;
-        container.appendChild(block);
-      });
-    }
+  items.forEach((q, idx) => {
+    const fullIndex = useShort ? shortIndexes[idx] : idx;
+    const block = document.createElement("div");
+    block.className = "question-block";
+    const options = q.options.map((textOpt, i) =>
+      `<option value="${4 - i}">${textOpt}</option>`).join("");
+    block.innerHTML = `
+      <div class="question">${fullIndex + 1}. ${q.text}</div>
+      <select name="q${fullIndex}" required>
+        <option value="" disabled selected>Antwort auswählen</option>
+        ${options}
+      </select>
+    `;
+    container.appendChild(block);
+  });
+}
+
 
     function calculateNorm(age) {
       if (age < 70) return 56;
       return Math.round((56 - (age - 70) * 0.7) * 10) / 10;
     }
 
-    function calculateBBS() {
-      const selects = document.querySelectorAll("select[name^='q']");
-      let total = 0;
-      for (let sel of selects) {
-        const val = parseInt(sel.value);
-        if (isNaN(val)) return; // keine Alert, um Nutzbarkeit bei Wechsel zu verbessern
-        total += val;
-      }
+   function calculateBBS() {
+  const items = useShort ? shortIndexes.map(i => fullQuestions[i]) : fullQuestions;
+  let total = 0;
 
-      const max = useShort ? 28 : 56;
-      const age = parseInt(document.getElementById("age").value);
-      const norm = useShort ? "–" : calculateNorm(age);
-
-      document.getElementById("result").innerText =
-        `BBS Gesamtscore: ${total} / ${max}` + (useShort ? "" : `\nErwarteter Normwert (Alter ${age}): ${norm}`);
-
-      document.getElementById("normInfo").innerText = useShort ? "" :
-        "Ein 0-jähriger, selbstständig lebender Mensch ohne beeinträchtigende Erkrankungen erreicht wahrscheinlich einen Maximalwert von 56 Punkten auf der BBS. Ab dem 1. Lebensjahr nimmt der mittlere Wert um ca. 0,7 Punkte pro Jahr ab und die Streuung der Werte steigt an.";
+  for (let idx = 0; idx < items.length; idx++) {
+    const fullIndex = useShort ? shortIndexes[idx] : idx;
+    const sel = document.querySelector(`select[name='q${fullIndex}']`);
+    if (!sel || sel.value === "") {
+      document.getElementById("result").innerText = "";
+      return;
     }
+    total += parseInt(sel.value);
+  }
+
+  const max = useShort ? 28 : 56;
+  const age = parseInt(document.getElementById("age").value);
+  const norm = useShort ? "–" : calculateNorm(age);
+
+  document.getElementById("result").innerText =
+    `BBS Gesamtscore: ${total} / ${max}` + (useShort ? "" : `\nErwarteter Normwert (Alter ${age}): ${norm}`);
+
+  document.getElementById("normInfo").innerText = useShort ? "" :
+    "Ein 0-jähriger, selbstständig lebender Mensch ohne beeinträchtigende Erkrankungen erreicht wahrscheinlich einen Maximalwert von 56 Punkten auf der BBS. Ab dem 1. Lebensjahr nimmt der mittlere Wert um ca. 0,7 Punkte pro Jahr ab und die Streuung der Werte steigt an.";
+}
+
 
     async function generatePDF() {
       const { jsPDF } = window.jspdf;
