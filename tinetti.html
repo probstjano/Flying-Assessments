@@ -3,23 +3,22 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Berg Balance Skala (BBS)</title>
+  <title>Tinetti POMA</title>
   <style>
     body { font-family: sans-serif; margin: 2rem; font-size: 16px; max-width: 1000px; }
     .question-block { margin-bottom: 1.5rem; }
     .question { font-weight: bold; margin-bottom: 0.5rem; }
-    select, input[type="number"] { width: 100%; padding: 8px; font-size: 16px; margin-bottom: 1rem; }
+    select { width: 100%; padding: 8px; font-size: 16px; margin-bottom: 1rem; }
     button { margin-top: 20px; padding: 10px 15px; font-size: 16px; }
-    #scoreDisplay, #result { margin-top: 2rem; font-weight: bold; white-space: pre-line; }
-    #normInfo { margin-top: 1rem; font-size: 0.9em; color: #333; }
-    #normBlock { display: none; margin-top: 1rem; }
+    #result { margin-top: 2rem; font-weight: bold; white-space: pre-line; }
+    .nav-buttons { margin-top: 2rem; }
   </style>
 </head>
 <body>
   <h1>Tinetti POMA</h1>
-  <p> Assessment für Gleichgewicht und Gang. V.a an älteren Menschen/Geriatrie untersucht. Empfohlen als Teil Sturzrisiko-Assessments, weniger als Verlaufszeichen </p>
-  <p> Im Cenplex Behandlungsplan als <strong> Messung </strong> hinterlegt. Hier durchführen und Summenscore übertragen </p>
-  Ausführliches Protokoll hier: <a href="Tinetti_Protokoll.pdf" target="_blank">Tinetti Protokoll (PDF)</a>
+  <p>Assessment für Gleichgewicht und Gang. V.a. an älteren Menschen/Geriatrie untersucht. Empfohlen als Teil von Sturzrisiko-Assessments, weniger geeignet zur Verlaufsbeobachtung.</p>
+  <p>Im Cenplex-Behandlungsplan als <strong>Messung</strong> hinterlegt. Hier durchführen und Summenscore übertragen.</p>
+  <p>Ausführliches Protokoll hier: <a href="Tinetti_Protokoll.pdf" target="_blank">Tinetti Protokoll (PDF)</a></p>
 
   <form id="Tinettiform">
     <div id="questions"></div>
@@ -27,7 +26,7 @@
     <button type="button" onclick="generatePDF()">📄 Als PDF speichern</button>
   </form>
 
-  <p id="result"></p>
+  <div id="result"></div>
 
   <div class="nav-buttons">
     <a href="standard.html">⬅️ Zurück zu Standard-Assessments</a>
@@ -42,24 +41,23 @@
       { text: "Versuche, aufzustehen", options: ["0 – unmöglich ohne Hilfe", "1 – möglich, aber braucht mehr als einen Versuch", "2 – möglich, in einem Versuch"] },
       { text: "Unmittelbare Stehbalance (erste 5 Sekunden)", options: ["0 – unsicher (macht kleine Schritte, deutliche Rumpfbewegungen)", "1 – sicher, aber benötigt Stock, Böckli oder anderes Hilfsmittel", "2 – sicher, ohne Hilfsmittel"] },
       { text: "Stehbalance beim Versuch, Füsse nahe beieinander zu halten", options: ["0 – unsicher", "1 – sicher, aber Füsse weit voneinander (mehr als 10 cm) Oder benötigt Hilfsmittel", "2 – sicher, ohne Hilfsmittel"] },
-      { text: "Stoss (Füsse so nahe beieinander wie möglich, Untersucher stösst 3x mit Handteller auf Sternum des Pat.)", options: ["0 – würde ohne Hilfe umfallen", "1 – macht Ausweichschritte, muss sich halten, fällt aber nicht um", "2 – sicher"] },
-      { text: "Augen geschlossen (Füsse so nahe beieinander wie möglich)", options: ["0 – unsicher", "1 – sicher"] },
-      { text: "Beginn des Gangs (nach dem Befehl zu gehen)", options: ["0 – irgend ein Zögern oder verschiedene Versuche", "1 – kein Zögern"] },
-      { text: "Schrittlänge rechtes Schwungbein", options: ["0 – kommt nicht vor linken Standfuss beim Gang", "1 – kommt vor linken Standfuss"] },
-      { text: "Schritthöhe rechtes Schwungbein", options: ["0 – rechter Fuss hebt nicht vollständig vom Boden ab", "1 – rechter Fuss hebt vollständig vom Boden ab"] },
-      { text: "Schrittlänge linkes Schwungbein", options: ["0 – kommt nicht vor rechten Standfuss beim Gang", "1 – kommt vor rechten Standfuss"] },
-      { text: "Schritthöhe linkes Schwungbein", options: ["0 – linker Fuss hebt nicht vollständig vom Boden ab", "1 – linker Fuss hebt vollständig vom Boden ab"] },
-      { text: "Gangsymmetrie", options: ["0 – Schrittlänge links und rechts sind nicht gleich", "1 – Schrittlänge links und rechts sind gleich"] },
-      { text: "Schrittkontinuität", options: ["0 – Schritte anhalten oder Diskontinuität", "1 – Schritte sind kontinuierlich"] },
-      { text: "Rumpfstabilität", options: ["0 – ausgeprägtes SChwanken oder benütz Hilfsmittel", "1 – Kein SChwanken aber vornübergebeugt oder braucht Arme", "2 – gerade, kein Schwanken, braucht Arme nicht"] },
-      { text: "Schrittbreite", options: ["0 – Gang breitbeinig (mehr als 5cm) ", "1 – Füsse berühren sich ebinahe beim Gehen"] },
-      { text: "Drehung um 360°", options: ["0 – diskontinuierliche Schritte", "1 – kontinuierliche Schritte] },
-      { text: "Absitzen", options: ["0 – unsicher (schätzt Distanz fallsch ein, fällt im Stuhl", "1 – benützt Arme oder macht grobe Bewegungen", "2 – sicher mit feiner Bewegung"] }
-                                           
+      { text: "Stoss (Füsse so nahe beieinander wie möglich)", options: ["0 – würde ohne Hilfe umfallen", "1 – macht Ausweichschritte, muss sich halten, fällt aber nicht um", "2 – sicher"] },
+      { text: "Augen geschlossen (Füsse nahe beieinander)", options: ["0 – unsicher", "1 – sicher"] },
+      { text: "Beginn des Gangs", options: ["0 – Zögern oder mehrere Versuche", "1 – kein Zögern"] },
+      { text: "Schrittlänge rechts", options: ["0 – nicht vor linken Standfuß", "1 – vor linken Standfuß"] },
+      { text: "Schritthöhe rechts", options: ["0 – hebt nicht vollständig ab", "1 – hebt vollständig ab"] },
+      { text: "Schrittlänge links", options: ["0 – nicht vor rechten Standfuß", "1 – vor rechten Standfuß"] },
+      { text: "Schritthöhe links", options: ["0 – hebt nicht vollständig ab", "1 – hebt vollständig ab"] },
+      { text: "Gangsymmetrie", options: ["0 – ungleich", "1 – gleich"] },
+      { text: "Schrittkontinuität", options: ["0 – diskontinuierlich", "1 – kontinuierlich"] },
+      { text: "Rumpfstabilität", options: ["0 – starkes Schwanken oder Hilfsmittel", "1 – vornübergebeugt oder braucht Arme", "2 – gerade, ohne Schwanken, keine Arme"] },
+      { text: "Schrittbreite", options: ["0 – breitbeinig (>5 cm)", "1 – Füße fast berührend"] },
+      { text: "Drehung um 360°", options: ["0 – diskontinuierlich", "1 – kontinuierlich"] },
+      { text: "Absitzen", options: ["0 – unsicher (zielt schlecht, fällt)", "1 – grob, benutzt Arme", "2 – sicher, kontrolliert"] }
     ];
 
-    const balanceIndexes = [0, 1, 2, 3, 4, 5, 6, 15, 16];
-    const gaitIndexes = [7, 8, 9, 10, 11, 12, 13, 14];
+    const balanceIndexes = [0,1,2,3,4,5,6,14,16,17];
+    const gaitIndexes = [7,8,9,10,11,12,13,15];
 
     function renderForm() {
       const container = document.getElementById("questions");
@@ -91,15 +89,21 @@
         else if (gaitIndexes.includes(i)) gait += val;
       }
 
-      const max = questions.reduce((sum, q) => {
-        return sum + Math.max(...q.options.map(o => parseInt(o.split(" – ")[0])));
-      }, 0);
-
       const total = balance + gait;
+      let riskLevel = "";
+      if (total < 19) riskLevel = "❗ Hohes Sturzrisiko";
+      else if (total <= 24) riskLevel = "⚠️ Mittleres Sturzrisiko";
+      else riskLevel = "✅ Geringes Sturzrisiko";
+
+      const balRisk = balance < 12 ? "⚠️ Gleichgewichts-Sturzrisiko erhöht" : "✅ Gleichgewicht unauffällig";
+      const gaitRisk = gait < 8 ? "⚠️ Gang-Sturzrisiko erhöht" : "✅ Gang unauffällig";
+
       document.getElementById("result").innerHTML =
-        `<strong>Tinetti/POMA Gesamt:</strong> ${total} / ${max}<br>` +
-        `<strong>Gleichgewicht:</strong> ${balance}/16<br>` +
-        `<strong>Gang:</strong> ${gait}/ 12`;
+        `<strong>Gesamt-Score:</strong> ${total} / 28<br>` +
+        `<strong>Gleichgewicht:</strong> ${balance} / 16 → ${balRisk}<br>` +
+        `<strong>Gang:</strong> ${gait} / 12 → ${gaitRisk}<br><br>` +
+        `<strong>Sturzrisiko-Gesamt:</strong> ${riskLevel}<br><br>` +
+        `<em>Hinweis: Die Einteilung des Sturzrisikos variiert je nach Literaturquelle.</em>`;
     }
 
     async function generatePDF() {
@@ -129,11 +133,8 @@
         }
       }
 
-      const max = questions.reduce((sum, q) => {
-        return sum + Math.max(...q.options.map(o => parseInt(o.split(" – ")[0])));
-      }, 0);
       doc.setFontSize(14);
-      doc.text(`Gesamtscore: ${total} / ${max}`, 10, y);
+      doc.text(`Gesamtscore: ${total} / 28`, 10, y);
       window.open(doc.output('bloburl'), '_blank');
     }
 
