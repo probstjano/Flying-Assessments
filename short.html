@@ -28,7 +28,106 @@
   <div id="result"></div>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script>
-    const fullQuestions = [...]; // vollständige Fragenliste wie zuvor (aus Platzgründen nicht erneut eingefügt)
+    const fullQuestions = [
+      { text: "1. Vom Sitzen zum Stehen", options: [
+        "4 kann aufstehen ohne die Hände einzusetzen und sich selbstständig stabilisieren",
+        "3 kann selbstständig mit Einsatz der Hände aufstehen",
+        "2 kann nach einigen Versuchen mit Einsatz der Hände aufstehen",
+        "1 braucht minimale Hilfe zum Aufstehen oder zum Stabilisieren",
+        "0 braucht mäßige bis maximale Hilfe um aufzustehen"
+      ]},
+      { text: "2. Stehen ohne Unterstützung", options: [
+        "4 kann zwei Minuten sicher stehen",
+        "3 kann zwei Minuten unter Supervision stehen",
+        "2 kann 30 Sek. ohne Unterstützung stehen",
+        "1 braucht einige Versuche, um 30 Sekunden ohne Unterstützung zu stehen",
+        "0 kann nicht ohne Unterstützung 30 Sekunden stehen"
+      ]},
+      { text: "3. Sitzen ohne Rückenlehne, aber mit beiden Füßen auf dem Boden oder auf einer Fußbank", options: [
+        "4 kann sicher und stabil zwei Minuten sitzen",
+        "3 kann zwei Minuten unter Supervision sitzen",
+        "2 kann 30 Sekunden sitzen",
+        "1 kann 10 Sekunden sitzen",
+        "0 kann nicht ohne Unterstützung 10 Sekunden sitzen"
+      ]},
+      { text: "4. Vom Stehen zum Sitzen", options: [
+        "4 setzt sich sicher mit minimalem Einsatz der Hände hin",
+        "3 kontrolliert das Hinsetzen mit den Händen",
+        "2 berührt mit Rückseite der Beine den Stuhl, um das Hinsetzen zu kontrollieren",
+        "1 setzt sich selbständig aber unkontrolliert hin",
+        "0 braucht Hilfe um sich hinzusetzen"
+      ]},
+      { text: "5. Transfer", options: [
+        "4 kann den Transfer sicher mit minimalem Einsatz der Hände ausführen",
+        "3 kann den Transfer sicher ausführen, muss aber die Hände einsetzen",
+        "2 kann den Transfer mit verbaler Anweisung und/oder unter Supervision ausführen",
+        "1 braucht eine Person zur Hilfestellung",
+        "0 braucht zwei Personen zur Hilfestellung oder Supervision um sicher zu sein"
+      ]},
+      { text: "6. Stehen mit geschlossenen Augen ohne Unterstützung", options: [
+        "4 kann zehn Sekunden sicher stehen",
+        "3 kann zehn Sekunden unter Supervision stehen",
+        "2 kann drei Sekunden stehen",
+        "1 kann nicht die Augen drei Sekunden geschlossen halten, steht aber stabil",
+        "0 braucht Hilfe, um nicht zu fallen"
+      ]},
+      { text: "7. Stehen mit Füßen dicht nebeneinander", options: [
+        "4 kann selbständig Füße nebeneinander stellen und 1 Minute sicher stehen",
+        "3 kann selbständig Füße nebeneinander stellen und unter Supervision 1 Minute stehen",
+        "2 kann selbständig Füße nebeneinander stellen und die Position 30 Sekunden halten",
+        "1 braucht Hilfe um die Position einzunehmen, kann aber 15 Sekunden mit geschlossenen Füßen stehen",
+        "0 braucht Hilfe um die Position einzunehmen, kann diese nicht für 15 Sekunden halten"
+      ]},
+      { text: "8. Nach vorne greifen mit ausgestrecktem Arm im Stand", options: [
+        "4 kann mehr als 25 cm ohne zu fallen nach vorne greifen",
+        "3 kann mehr als 12 cm nach vorne greifen",
+        "2 kann mehr als 5 cm nach vorne greifen",
+        "1 kann nur minimal nach vorne greifen (weniger als 5 cm)",
+        "0 verliert das Gleichgewicht und benötigt Hilfe, um nicht zu fallen"
+      ]},
+      { text: "9. Gegenstand vom Boden aufheben im Stand", options: [
+        "4 kann sicher einen Gegenstand vom Boden aufheben",
+        "3 kann den Gegenstand aufheben, benötigt jedoch Überwachung",
+        "2 kann den Gegenstand mit Hilfe oder Änderung der Körperposition aufheben",
+        "1 kann den Gegenstand nur mit Unterstützung aufheben",
+        "0 ist nicht in der Lage, den Gegenstand aufzuheben und verliert das Gleichgewicht"
+      ]},
+      { text: "10. Stehen, sich umsehen über rechte und linke Schulter", options: [
+        "4 kann sich sicher nach beiden Seiten umsehen",
+        "3 kann sich nach beiden Seiten unter Supervision umsehen",
+        "2 kann sich nur zu einer Seite sicher umsehen",
+        "1 zeigt Angst oder Unsicherheit beim Umdrehen",
+        "0 kann sich nicht sicher umsehen und verliert das Gleichgewicht"
+      ]},
+      { text: "11. Sich um 360° drehen", options: [
+        "4 kann sicher eine komplette Drehung in weniger als 4 Sekunden ausführen",
+        "3 kann sicher eine komplette Drehung in mehr als 4 Sekunden ausführen",
+        "2 benötigt mehrere Schritte um die Drehung zu vollenden",
+        "1 benötigt Unterstützung bei der Drehung",
+        "0 ist nicht in der Lage sich sicher zu drehen"
+      ]},
+      { text: "12. Einen Schritt vorwärts machen (rechte und linke Füße abwechselnd) und stehen bleiben", options: [
+        "4 kann einen Schritt sicher und kontrolliert ausführen",
+        "3 kann einen Schritt unter Supervision ausführen",
+        "2 zeigt Unsicherheit oder leichte Unterstützung erforderlich",
+        "1 benötigt Unterstützung beim Schritt",
+        "0 kann keinen Schritt ausführen, ohne das Gleichgewicht zu verlieren"
+      ]},
+      { text: "13. Stehen mit einem Fuß vor dem anderen (Tandemstellung)", options: [
+        "4 kann 30 Sekunden sicher stehen",
+        "3 kann 30 Sekunden unter Supervision stehen",
+        "2 kann weniger als 30 Sekunden stehen",
+        "1 benötigt Hilfe, um die Position einzunehmen oder zu halten",
+        "0 kann die Position nicht einnehmen oder halten"
+      ]},
+      { text: "14. Auf einem Bein stehen", options: [
+        "4 kann 10 Sekunden sicher stehen",
+        "3 kann 10 Sekunden unter Supervision stehen",
+        "2 kann 5 Sekunden stehen",
+        "1 kann weniger als 3 Sekunden stehen",
+        "0 kann die Position nicht einnehmen oder halten"
+      ]}
+    ];
 
     const shortIndexes = [0, 5, 7, 8, 9, 12, 13];
     let useShort = false;
