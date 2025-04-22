@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>1-Minute Sit-to-Stand Test (1MSTS)</title>
+  <style>
+    body { font-family: sans-serif; margin: 2rem; font-size: 16px; max-width: 600px; }
+    label { display: block; margin-top: 1rem; }
+    input, select { width: 100%; padding: 6px; font-size: 16px; margin-bottom: 10px; }
+    button { margin-top: 10px; padding: 10px 15px; font-size: 16px; }
+    #result, #normwerte1MSTS { font-weight: bold; margin-top: 20px; white-space: pre-line; }
+    table { width: 100%; border-collapse: collapse; margin-top: 1rem; }
+    th, td { border: 1px solid #ccc; padding: 6px; text-align: center; }
+    th { background: #f0f0f0; }
+    .hidden { display: none; }
+  </style>
+</head>
+<body>
+  <h1>1-Minute Sit-to-Stand Test (1MSTS)</h1>
+  <p>Test zur Erfassung der Kardiovaskulären und Muskulären Ausdauer. In der Innereren Medizin, speziell Pulmonale Rehabilitation, sehr gut validiert. </p>
+  <p>Durchführung: Wenn möglich Stuhl ca 46cm hoch. So oft wie möglich innerhalb 1min aufstehen-absitzen ohne Arme zur Hilfe zu nehmen. Arme auf der Hüfte oder frei neben dem Körper. Nach 30s und 45s die Zeit durchgeben </p>
+  <p>Im Cenplex-Behandlungsplan als <strong>Messung</strong> dokumentieren. Hier eintragen für Normwerte </p>
+
+  <form>
+    <label>Wiederholungen in 1 Minute:</label>
+    <input type="number" id="reps" step="1" />
+
+    <label>Alter:</label>
+    <input type="number" id="age" min="18" max="100" />
+
+    <label>Geschlecht:</label>
+    <select id="sex">
+      <option value="men">Männlich</option>
+      <option value="women">Weiblich</option>
+    </select>
+
+    <button type="button" onclick="calculate1MSTS()">✅ Einschätzung anzeigen</button>
+    <button type="button" onclick="toggleNorms1MSTS()" id="toggleBtn1MSTS">📊 Normwerte anzeigen</button>
+    <button type="button" onclick="generatePDF()">📄 Als PDF speichern</button>
+  </form>
+
+  <div id="result"></div>
+  <div id="normwerte1MSTS" class="hidden"></div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script>
+    let normVisible = false;
+
+    const normsCH = {
+      men: {
+        20: [27, 41, 50, 57, 72],
+        25: [29, 40, 48, 56, 74],
+        30: [28, 40, 47, 56, 72],
+        35: [27, 38, 47, 58, 72],
+        40: [25, 37, 45, 53, 69],
+        45: [25, 35, 44, 52, 70],
+        50: [24, 35, 42, 53, 67],
+        55: [22, 33, 41, 48, 63],
+        60: [20, 31, 37, 46, 63],
+        65: [20, 29, 35, 44, 60],
+        70: [19, 27, 32, 40, 59],
+        75: [16, 25, 30, 37, 56]
+      },
+      women: {
+        20: [31, 39, 47, 55, 70],
+        25: [30, 40, 47, 54, 68],
+        30: [27, 37, 45, 51, 68],
+        35: [25, 37, 42, 50, 63],
+        40: [26, 35, 41, 48, 65],
+        45: [25, 35, 41, 50, 63],
+        50: [23, 33, 39, 47, 60],
+        55: [21, 30, 36, 43, 61],
+        60: [20, 28, 34, 40, 55],
+        65: [19, 27, 33, 40, 53],
+        70: [17, 25, 30, 36, 51],
+        75: [13, 22, 27, 30, 43]
+      }
+    };
+
+    function getNearestAgeGroup(age) {
+      const ageGroups = [20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75];
+      return ageGroups.reduce((prev, curr) =>
+        Math.abs(curr - age) < Math.abs(prev - age) ? curr : prev
+      );
+    }
+
+    function calculate1MSTS() {
+      const reps = parseInt(document.getElementById("reps").value);
+      const age = parseInt(document.getElementById("age").value);
+      const sex = document.getElementById("sex").value;
+
+      if (isNaN(reps) || isNaN(age)) {
+        alert("Bitte gültige Werte eingeben.");
+        return;
+      }
+
+      const ageGroup = getNearestAgeGroup(age);
+      let faster = "-";
+
+      if (age > 79) {
+        document.getElementById("result").innerText =
+          `→ Für dieses Alter sind keine Normwerte verfügbar.\nNormwerte für 75–79 Jahre (${sex === "men" ? "Männer" : "Frauen"}):\n` +
+          `P2.5: ${normsCH[sex][75][0]}, P25: ${normsCH[sex][75][1]}, P50: ${normsCH[sex][75][2]}, P75: ${normsCH[sex][75][3]}, P97.5: ${normsCH[sex][75][4]}`;
+        return;
+      }
+
+      const values = normsCH[sex][ageGroup];
+      const percentiles = [2.5, 25, 50, 75, 97.5];
+
+      if (reps <= values[0]) faster = 2;
+      else if (reps >= values[4]) faster = 98;
+      else {
+        for (let i = 0; i < values.length - 1; i++) {
+          if (reps >= values[i] && reps <= values[i + 1]) {
+            const p0 = percentiles[i], p1 = percentiles[i + 1];
+            const v0 = values[i], v1 = values[i + 1];
+            const frac = (reps - v0) / (v1 - v0);
+            faster = Math.round(p0 + frac * (p1 - p0));
