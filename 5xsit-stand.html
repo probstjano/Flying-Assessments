@@ -1,63 +1,64 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>5x Sitz-Stand Test</title>
   <style>
     body { font-family: sans-serif; margin: 2rem; font-size: 16px; max-width: 600px; }
-    input, select, button { width: 100%; padding: 8px; margin: 8px 0; font-size: 16px; }
-    #result, #normwerteSitz { margin-top: 20px; font-weight: bold; white-space: pre-line; }
-    .hidden { display: none; }
+    label { display: block; margin-top: 1rem; }
+    input, select { width: 100%; padding: 6px; font-size: 16px; margin-bottom: 10px; }
+    button { margin-top: 10px; padding: 10px 15px; font-size: 16px; }
+    #result, #normwerteSitz {
+      font-weight: bold;
+      margin-top: 20px;
+      white-space: pre-line;
+    }
     table { width: 100%; border-collapse: collapse; margin-top: 1rem; }
     th, td { border: 1px solid #ccc; padding: 6px; text-align: center; }
     th { background: #f0f0f0; }
+    .hidden { display: none; }
+    .nav-buttons { margin-top: 2rem; }
   </style>
 </head>
 <body>
   <h1>5x Sitz-Stand Test</h1>
+  <p>Nur wenn dieser Teil des SPPB einzeln durchgeführt wurde. Bei vollständigem SPPB dort eintragen.</p>
+  <p>Durchführung laut SPPB-Protokoll. Ergebnis eintragen im Behandlungsplan unter <strong>Messung</strong>.</p>
+  <p><a href="SPPB_Protokoll.pdf" target="_blank">📄 SPPB Protokoll (PDF)</a></p>
 
-  <label for="sitzStand">Zeit für 5x Sitz-Stand (Sekunden):</label>
+  <label>5x Sitz-Stand Zeit (Sekunden):</label>
   <input type="number" id="sitzStand" step="0.01" />
-
-  <button onclick="calculateSitz()">✅ Score berechnen</button>
 
   <div id="result"></div>
 
-  <label for="age">Alter:</label>
+  <label>Alter:</label>
   <input type="number" id="age" min="60" max="120">
 
-  <label for="sex">Geschlecht:</label>
+  <label>Geschlecht:</label>
   <select id="sex">
     <option value="men">Männlich</option>
     <option value="women">Weiblich</option>
   </select>
 
-  <button onclick="toggleNorms()">📊 Normwerte ein-/ausblenden</button>
+  <button type="button" onclick="toggleNormsSitz()" id="toggleBtnSitz">📊 Normwerte anzeigen</button>
   <div id="normwerteSitz" class="hidden"></div>
+
+  <div class="nav-buttons">
+    <a href="standard.html">⬅️ Zurück zu Standard-Assessments</a><br>
+    <a href="index.html">🏠 Zur Startseite</a>
+  </div>
 
   <script>
     let sitzVisible = false;
 
-    function calculateSitz() {
-      const sitzZeit = parseFloat(document.getElementById("sitzStand").value);
-      let score = 0;
-      if (isNaN(sitzZeit) || sitzZeit > 60) score = 0;
-      else if (sitzZeit > 16.7) score = 1;
-      else if (sitzZeit >= 13.7) score = 2;
-      else if (sitzZeit >= 11.2) score = 3;
-      else score = 4;
-
-      document.getElementById("result").innerText =
-        `Score gemäß SPPB: ${score} / 4\nZeit: ${sitzZeit || "-"} s`;
-
-      document.getElementById("normwerteSitz").classList.add("hidden");
-      sitzVisible = false;
-    }
-
-    function toggleNorms() {
+    function toggleNormsSitz() {
+      const btn = document.getElementById("toggleBtnSitz");
       const norms = document.getElementById("normwerteSitz");
+
       if (sitzVisible) {
         norms.classList.add("hidden");
+        btn.innerText = "📊 Normwerte anzeigen";
         sitzVisible = false;
         return;
       }
@@ -65,9 +66,10 @@
       const age = parseInt(document.getElementById("age").value, 10);
       const sex = document.getElementById("sex").value;
       const sitzZeit = parseFloat(document.getElementById("sitzStand").value);
+      norms.innerHTML = "";
 
       if (isNaN(age)) {
-        norms.innerText = "Bitte Alter eingeben.";
+        norms.innerText = "Bitte zuerst das Alter eingeben.";
         norms.classList.remove("hidden");
         return;
       }
@@ -115,14 +117,16 @@
         }
       }
 
-      norms.innerHTML = `<h3>Referenzwerte (${nearest} Jahre – ${sex === "men" ? "Männer" : "Frauen"})</h3>`;
+      norms.innerHTML = `<h3>Norwegische Referenzwerte (${nearest} Jahre – ${sex === 'men' ? 'Männer' : 'Frauen'})</h3>`;
       norms.innerHTML += `<table><tr><th>Perzentil</th><th>Zeit (s)</th></tr>
         ${Object.entries(P).map(([k,v]) => `<tr><td>${k}</td><td>${v}</td></tr>`).join("")}
-      </table><p>→ Die Zeit ist besser als bei <strong>${faster}%</strong> der Vergleichsgruppe.</p>`;
+      </table><p>→ Diese Zeit ist besser als bei <strong>${faster}%</strong> der Vergleichsgruppe, die den Test durchführen konnten.</p>`;
 
       norms.classList.remove("hidden");
+      btn.innerText = "📉 Normwerte verbergen";
       sitzVisible = true;
     }
   </script>
 </body>
 </html>
+
