@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>5x Sitz-Stand Test</title>
+  <style>
+    body { font-family: sans-serif; margin: 2rem; font-size: 16px; max-width: 600px; }
+    label { display: block; margin-top: 1rem; }
+    input, select { width: 100%; padding: 6px; font-size: 16px; margin-bottom: 10px; }
+    button { margin-top: 10px; padding: 10px 15px; font-size: 16px; }
+    #result, #normwerteSitz {
+      font-weight: bold;
+      margin-top: 20px;
+      white-space: pre-line;
+    }
+    table { width: 100%; border-collapse: collapse; margin-top: 1rem; }
+    th, td { border: 1px solid #ccc; padding: 6px; text-align: center; }
+    th { background: #f0f0f0; }
+    .hidden { display: none; }
+    .nav-buttons { margin-top: 2rem; }
+  </style>
+</head>
+<body>
+  <h1> Modified 30-Second Chair Stand Test (m30SCTS)</h1>
+  <p> Als Verlaufstest für Personen die nicht ohne Armhilfe aufstehen können. Gute Reliasbilität, Validität jedoch ungenügend untersucht und keine Normwerte vorhanden </p>
+  <p> Im Cenplex Behandlungsplan als  <strong>Messung</strong> enthalte und dort eintragen. </p>
+  <p>Durchführung: Stuhl mit Armlehne. Stuhlhöhe 43-46cm. Innerhalb 30s so oft wie möglich aufstehen-absitzen mit Hilfe der Arme. </p>
