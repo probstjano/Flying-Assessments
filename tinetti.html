@@ -22,21 +22,22 @@
 
   Ausführliches Protokoll hier: <a href="Tinetti_Protokoll.pdf" target="_blank">Tinetti Protokoll (PDF)</a>
 
-      <button type="button" onclick="calculateTINETTI()">✅ Score berechnen</button>
+
+  <form id="Tinettiform">
+    <div id="questions"></div>
+    <button type="button" onclick="calculateFiST()">✅ Score berechnen</button>
     <button type="button" onclick="downloadPDF()">📄 Als PDF speichern</button>
   </form>
+
   <p id="result"></p>
 
   <div class="nav-buttons">
     <a href="standard.html">⬅️ Zurück zu Standard-Assessments</a>
     <a href="index.html">🏠 Zur Startseite</a>
   </div>
-
-
-  <div id="result"></div>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script>
-    const fullQuestions = [
+    const questions = [
   {
     text: "Sitzbalance",
     options: [
@@ -150,36 +151,56 @@
   }
 ];
 
+  function renderForm() {
+      const container = document.getElementById("questions");
+      container.innerHTML = "";
+      questions.forEach((q, i) => {
+        const block = document.createElement("div");
+        block.className = "question-block";
+        const options = q.options.map((opt, idx) =>
+          `<option value="${parseInt(opt[0])}">${opt}</option>`).join("");
+        block.innerHTML = `
+          <div class="question">${i + 1}. ${q.text}</div>
+          <select name="q${i}" required>
+            <option value="" disabled selected>Antwort auswählen</option>
+            ${options}
+          </select>
+        `;
+        container.appendChild(block);
+      });
+    }
+
     function calculateTINETTI() {
-      const form = document.forms["fistForm"];
       let score = 0;
       for (let i = 0; i < questions.length; i++) {
-        score += parseInt(form["q" + i].value);
+        const val = parseInt(document.querySelector(`select[name='q${i}']`)?.value);
+        if (isNaN(val)) return alert("Bitte alle Fragen beantworten.");
+        score += val;
       }
-      const max = questions.length * 4;
-      document.getElementById("result").innerText = `Gesamt-Score: ${score}/${max}`;
+      const max = questions.reduce((sum, q) => {
+        return sum + Math.max(...q.options.map(o => parseInt(o[0])));
+      }, 0);
+      document.getElementById("result").innerText = `Gesamt-Score: ${score} / ${max}`;
     }
 
     async function generatePDF() {
       const { jsPDF } = window.jspdf;
       const doc = new jsPDF();
       let y = 10;
-      const items = useShort ? shortIndexes.map(i => fullQuestions[i]) : fullQuestions;
       let total = 0;
 
       doc.setFontSize(16);
-      doc.text(`BBS ${useShort ? "Kurzversion" : "Vollversion"} – Auswertung`, 10, y);
+      doc.text("Tinetti POMA – Auswertung", 10, y);
       y += 10;
 
-      for (let idx = 0; idx < items.length; idx++) {
-        const fullIndex = useShort ? shortIndexes[idx] : idx;
-        const q = items[idx];
-        const sel = document.querySelector(`select[name='q${fullIndex}']`);
+      for (let i = 0; i < questions.length; i++) {
+        const sel = document.querySelector(`select[name='q${i}']`);
+        if (!sel || sel.selectedIndex < 0) continue;
         const val = parseInt(sel.value);
         const label = sel.options[sel.selectedIndex].text;
         total += val;
         doc.setFontSize(12);
-        doc.text(`${fullIndex + 1}. ${q.text}`, 10, y);
+        doc.text(`${i + 1}. ${questions[i].text}`, 10, y);
         y += 6;
         doc.text(`Antwort: ${label}`, 10, y);
         y += 10;
@@ -189,8 +210,10 @@
         }
       }
 
-      const max = useShort ? 28 : 56;
       doc.setFontSize(14);
+      const max = questions.reduce((sum, q) => {
+        return sum + Math.max(...q.options.map(o => parseInt(o[0])));
+      }, 0);
       doc.text(`Gesamtscore: ${total} / ${max}`, 10, y);
       window.open(doc.output('bloburl'), '_blank');
     }
