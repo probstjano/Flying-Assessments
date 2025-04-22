@@ -9,7 +9,7 @@
     h1 { margin-bottom: 0.5rem; }
     .question-block { margin-bottom: 1.5rem; }
     .question { font-weight: bold; margin-bottom: 0.5rem; }
-    select, option, input[type="number"] { width: 100%; padding: 8px; font-size: 16px; margin-bottom: 1rem; }
+    select, input[type="number"] { width: 100%; padding: 8px; font-size: 16px; margin-bottom: 1rem; }
     button { margin-top: 20px; padding: 10px 15px; font-size: 16px; }
     #result { margin-top: 2rem; font-weight: bold; white-space: pre-line; }
     #normInfo { margin-top: 1rem; font-size: 0.9em; color: #333; }
@@ -35,7 +35,7 @@
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script>
-    const fullQuestions =  [
+    const fullQuestions = [
       { text: "Vom Sitzen zum Stehen", options: [
         "4 kann aufstehen ohne die Hände einzusetzen und sich selbstständig stabilisieren",
         "3 kann selbstständig mit Einsatz der Hände aufstehen",
@@ -50,7 +50,7 @@
         "1 braucht einige Versuche, um 30 Sekunden ohne Unterstützung zu stehen",
         "0 kann nicht ohne Unterstützung 30 Sekunden stehen"
       ]},
-      { text: "Sitzen ohne Rückenlehne, aber mit beiden Füßen auf dem Boden oder auf einer Fußbank", options: [
+      { text: "Sitzen ohne Rückenlehne", options: [
         "4 kann sicher und stabil zwei Minuten sitzen",
         "3 kann zwei Minuten unter Supervision sitzen",
         "2 kann 30 Sekunden sitzen",
@@ -65,74 +65,74 @@
         "0 braucht Hilfe um sich hinzusetzen"
       ]},
       { text: "Transfer", options: [
-        "4 kann den Transfer sicher mit minimalem Einsatz der Hände ausführen",
-        "3 kann den Transfer sicher ausführen, muss aber die Hände einsetzen",
-        "2 kann den Transfer mit verbaler Anweisung und/oder unter Supervision ausführen",
-        "1 braucht eine Person zur Hilfestellung",
-        "0 braucht zwei Personen zur Hilfestellung oder Supervision um sicher zu sein"
+        "4 sicher mit minimalem Einsatz der Hände",
+        "3 sicher, aber mit Einsatz der Hände",
+        "2 mit Anweisung und/oder Supervision",
+        "1 mit Hilfe einer Person",
+        "0 mit zwei Personen oder ständiger Unterstützung"
       ]},
-      { text: "Stehen mit geschlossenen Augen ohne Unterstützung", options: [
-        "4 kann zehn Sekunden sicher stehen",
-        "3 kann zehn Sekunden unter Supervision stehen",
-        "2 kann drei Sekunden stehen",
-        "1 kann nicht die Augen drei Sekunden geschlossen halten, steht aber stabil",
-        "0 braucht Hilfe, um nicht zu fallen"
+      { text: "Stehen mit geschlossenen Augen", options: [
+        "4 zehn Sekunden sicher",
+        "3 zehn Sekunden unter Supervision",
+        "2 drei Sekunden",
+        "1 steht stabil, aber nicht mit geschlossenen Augen",
+        "0 braucht Hilfe"
       ]},
-      { text: "Stehen mit Füßen dicht nebeneinander", options: [
-        "4 kann selbständig Füße nebeneinander stellen und 1 Minute sicher stehen",
-        "3 kann selbständig Füße nebeneinander stellen und unter Supervision 1 Minute stehen",
-        "2 kann selbständig Füße nebeneinander stellen und die Position 30 Sekunden halten",
-        "1 braucht Hilfe um die Position einzunehmen, kann aber 15 Sekunden mit geschlossenen Füßen stehen",
-        "0 braucht Hilfe um die Position einzunehmen, kann diese nicht für 15 Sekunden halten"
+      { text: "Stehen mit Füßen zusammen", options: [
+        "4 1 Minute sicher",
+        "3 1 Minute unter Supervision",
+        "2 30 Sekunden",
+        "1 15 Sekunden mit Hilfe",
+        "0 nicht möglich"
       ]},
-      { text: "Nach vorne greifen mit ausgestrecktem Arm im Stand", options: [
-        "4 kann mehr als 25 cm ohne zu fallen nach vorne greifen",
-        "3 kann mehr als 12 cm nach vorne greifen",
-        "2 kann mehr als 5 cm nach vorne greifen",
-        "1 kann nur minimal nach vorne greifen (weniger als 5 cm)",
-        "0 verliert das Gleichgewicht und benötigt Hilfe, um nicht zu fallen"
+      { text: "Nach vorne greifen", options: [
+        "4 mehr als 25 cm",
+        "3 mehr als 12 cm",
+        "2 mehr als 5 cm",
+        "1 weniger als 5 cm",
+        "0 Gleichgewichtsverlust, Hilfe nötig"
       ]},
-      { text: "Gegenstand vom Boden aufheben im Stand", options: [
-        "4 kann sicher einen Gegenstand vom Boden aufheben",
-        "3 kann den Gegenstand aufheben, benötigt jedoch Überwachung",
-        "2 kann den Gegenstand mit Hilfe oder Änderung der Körperposition aufheben",
-        "1 kann den Gegenstand nur mit Unterstützung aufheben",
-        "0 ist nicht in der Lage, den Gegenstand aufzuheben und verliert das Gleichgewicht"
+      { text: "Gegenstand vom Boden aufheben", options: [
+        "4 sicher",
+        "3 mit Überwachung",
+        "2 mit Hilfe oder anderer Technik",
+        "1 nur mit Unterstützung",
+        "0 nicht möglich, Gleichgewichtsverlust"
       ]},
-      { text: "Stehen, sich umsehen über rechte und linke Schulter", options: [
-        "4 kann sich sicher nach beiden Seiten umsehen",
-        "3 kann sich nach beiden Seiten unter Supervision umsehen",
-        "2 kann sich nur zu einer Seite sicher umsehen",
-        "1 zeigt Angst oder Unsicherheit beim Umdrehen",
-        "0 kann sich nicht sicher umsehen und verliert das Gleichgewicht"
+      { text: "Umdrehen über Schulter", options: [
+        "4 sicher nach beiden Seiten",
+        "3 unter Supervision",
+        "2 nur eine Seite sicher",
+        "1 unsicher",
+        "0 Gleichgewichtsverlust"
       ]},
-      { text: "Sich um 360° drehen", options: [
-        "4 kann sicher eine komplette Drehung in weniger als 4 Sekunden ausführen",
-        "3 kann sicher eine komplette Drehung in mehr als 4 Sekunden ausführen",
-        "2 benötigt mehrere Schritte um die Drehung zu vollenden",
-        "1 benötigt Unterstützung bei der Drehung",
-        "0 ist nicht in der Lage sich sicher zu drehen"
+      { text: "360° drehen", options: [
+        "4 sicher in < 4 Sekunden",
+        "3 sicher in > 4 Sekunden",
+        "2 mit vielen Schritten",
+        "1 mit Hilfe",
+        "0 nicht möglich"
       ]},
-      { text: "Einen Schritt vorwärts machen (rechte und linke Füße abwechselnd) und stehen bleiben", options: [
-        "4 kann einen Schritt sicher und kontrolliert ausführen",
-        "3 kann einen Schritt unter Supervision ausführen",
-        "2 zeigt Unsicherheit oder leichte Unterstützung erforderlich",
-        "1 benötigt Unterstützung beim Schritt",
-        "0 kann keinen Schritt ausführen, ohne das Gleichgewicht zu verlieren"
+      { text: "Schritt vorwärts", options: [
+        "4 sicher und kontrolliert",
+        "3 unter Supervision",
+        "2 leicht unsicher oder leicht gestützt",
+        "1 mit Unterstützung",
+        "0 nicht möglich"
       ]},
-      { text: "Stehen mit einem Fuß vor dem anderen (Tandemstellung)", options: [
-        "4 kann 30 Sekunden sicher stehen",
-        "3 kann 30 Sekunden unter Supervision stehen",
-        "2 kann weniger als 30 Sekunden stehen",
-        "1 benötigt Hilfe, um die Position einzunehmen oder zu halten",
-        "0 kann die Position nicht einnehmen oder halten"
+      { text: "Tandemstand", options: [
+        "4 30 Sekunden sicher",
+        "3 30 Sekunden mit Supervision",
+        "2 unter 30 Sekunden",
+        "1 mit Hilfe",
+        "0 nicht möglich"
       ]},
-      { text: "Auf einem Bein stehen", options: [
-        "4 kann 10 Sekunden sicher stehen",
-        "3 kann 10 Sekunden unter Supervision stehen",
-        "2 kann 5 Sekunden stehen",
-        "1 kann weniger als 3 Sekunden stehen",
-        "0 kann die Position nicht einnehmen oder halten"
+      { text: "Einbeinstand", options: [
+        "4 10 Sekunden sicher",
+        "3 10 Sekunden mit Supervision",
+        "2 5 Sekunden",
+        "1 unter 3 Sekunden",
+        "0 nicht möglich"
       ]}
     ];
 
@@ -145,70 +145,56 @@
         ? "🔁 Zur Vollversion (14 Items) wechseln"
         : "👉 Zur Kurzversion (7 Items) wechseln";
       renderForm();
-      calculateBBS(); // neu berechnen nach Wechsel
     }
 
     function renderForm() {
-  const container = document.getElementById("questions");
-  container.innerHTML = "";
-  const items = useShort ? shortIndexes.map(i => fullQuestions[i]) : fullQuestions;
+      const container = document.getElementById("questions");
+      container.innerHTML = "";
+      const items = useShort ? shortIndexes.map(i => fullQuestions[i]) : fullQuestions;
 
-  items.forEach((q, idx) => {
-    const fullIndex = useShort ? shortIndexes[idx] : idx;
-    const block = document.createElement("div");
-    block.className = "question-block";
-    const options = q.options.map((textOpt, i) =>
-      `<option value="${4 - i}">${textOpt}</option>`).join("");
-    block.innerHTML = `
-      <div class="question">${fullIndex + 1}. ${q.text}</div>
-      <select name="q${fullIndex}" required>
-        <option value="" disabled selected>Antwort auswählen</option>
-        ${options}
-      </select>
-    `;
-    container.appendChild(block);
-  });
-}
-
+      items.forEach((q, i) => {
+        const fullIndex = useShort ? shortIndexes[i] : i;
+        const block = document.createElement("div");
+        block.className = "question-block";
+        const options = q.options.map((textOpt, idx) =>
+          `<option value="${4 - idx}">${textOpt}</option>`).join("");
+        block.innerHTML = `
+          <div class="question">${fullIndex + 1}. ${q.text}</div>
+          <select name="q${fullIndex}" required>
+            <option value="" disabled selected>Antwort auswählen</option>
+            ${options}
+          </select>
+        `;
+        container.appendChild(block);
+      });
+    }
 
     function calculateNorm(age) {
       if (age < 70) return 56;
-      return Math.round((56 - (age - 70) * 0.7) * 10) / 10;
+      return Math.round((56 - ((age - 70) * 0.7)) * 10) / 10;
     }
 
-   function calculateBBS() {
-  const items = useShort ? shortIndexes.map(i => fullQuestions[i]) : fullQuestions;
-  let total = 0;
-
-  for (let idx = 0; idx < items.length; idx++) {
-    const fullIndex = useShort ? shortIndexes[idx] : idx;
-    const sel = document.querySelector(`select[name='q${fullIndex}']`);
-    if (!sel || sel.value === "") {
-      document.getElementById("result").innerText = "";
-      return;
+    function calculateBBS() {
+      const items = useShort ? shortIndexes.map(i => fullQuestions[i]) : fullQuestions;
+      let total = 0;
+      for (let idx = 0; idx < items.length; idx++) {
+        const fullIndex = useShort ? shortIndexes[idx] : idx;
+        const sel = document.querySelector(`select[name='q${fullIndex}']`);
+        if (!sel || sel.value === "") return alert("Bitte alle Fragen beantworten.");
+        total += parseInt(sel.value);
+      }
+      const max = useShort ? 28 : 56;
+      const age = parseInt(document.getElementById("age").value);
+      const norm = useShort ? "–" : calculateNorm(age);
+      document.getElementById("result").innerText =
+        `BBS Gesamtscore: ${total} / ${max}` + (useShort ? "" : `\nErwarteter Normwert (Alter ${age}): ${norm}`);
+      document.getElementById("normInfo").innerText = useShort ? "" :
+        "Ein 0-jähriger, selbstständig lebender Mensch ohne beeinträchtigende Erkrankungen erreicht wahrscheinlich einen Maximalwert von 56 Punkten auf der BBS. Ab dem 1. Lebensjahr nimmt der mittlere Wert um ca. 0,7 Punkte pro Jahr ab und die Streuung der Werte steigt an.";
     }
-    total += parseInt(sel.value);
-  }
-
-  const max = useShort ? 28 : 56;
-  const age = parseInt(document.getElementById("age").value);
-  const norm = useShort ? "–" : calculateNorm(age);
-
-  document.getElementById("result").innerText =
-    `BBS Gesamtscore: ${total} / ${max}` + (useShort ? "" : `\nErwarteter Normwert (Alter ${age}): ${norm}`);
-
-  document.getElementById("normInfo").innerText = useShort ? "" :
-    "Ein 0-jähriger, selbstständig lebender Mensch ohne beeinträchtigende Erkrankungen erreicht wahrscheinlich einen Maximalwert von 56 Punkten auf der BBS. Ab dem 1. Lebensjahr nimmt der mittlere Wert um ca. 0,7 Punkte pro Jahr ab und die Streuung der Werte steigt an.";
-}
-
 
     async function generatePDF() {
       const { jsPDF } = window.jspdf;
       const items = useShort ? shortIndexes.map(i => fullQuestions[i]) : fullQuestions;
-      const selects = document.querySelectorAll("select[name^='q']");
-      const age = parseInt(document.getElementById("age").value);
-      const norm = useShort ? "–" : calculateNorm(age);
-
       let doc = new jsPDF();
       let y = 10;
       let total = 0;
@@ -217,33 +203,27 @@
       doc.text(`BBS ${useShort ? "Kurzversion" : "Vollversion"} – Auswertung`, 10, y);
       y += 10;
 
-      items.forEach((q, i) => {
-        const sel = selects[i];
-        const val = parseInt(sel.value);
-        const label = sel.options[sel.selectedIndex].text;
-        if (!isNaN(val)) total += val;
+      items.forEach((q, idx) => {
+        const fullIndex = useShort ? shortIndexes[idx] : idx;
+        const sel = document.querySelector(`select[name='q${fullIndex}']`);
+        const val = parseInt(sel?.value || 0);
+        const label = sel?.options[sel.selectedIndex]?.text || "-";
+        total += val;
         doc.setFontSize(12);
-        doc.text(`${useShort ? shortIndexes[i] + 1 : i + 1}. ${q.text}`, 10, y);
-        y += 6;
-        doc.text(`Antwort: ${label}`, 10, y);
-        y += 10;
-        if (y > 270) {
-          doc.addPage();
-          y = 10;
-        }
+        doc.text(`${fullIndex + 1}. ${q.text}`, 10, y); y += 6;
+        doc.text(`Antwort: ${label}`, 10, y); y += 10;
+        if (y > 270) { doc.addPage(); y = 10; }
       });
 
+      const max = useShort ? 28 : 56;
+      const age = parseInt(document.getElementById("age").value);
+      const norm = useShort ? "–" : calculateNorm(age);
       doc.setFontSize(14);
-      doc.text(`Gesamtscore: ${total} / ${useShort ? 28 : 56}`, 10, y);
+      doc.text(`Gesamtscore: ${total} / ${max}`, 10, y); y += 7;
       if (!useShort) {
-        y += 7;
-        doc.text(`Erwarteter Normwert (Alter ${age}): ${norm}`, 10, y);
-        y += 7;
+        doc.text(`Erwarteter Normwert (Alter ${age}): ${norm}`, 10, y); y += 7;
         doc.setFontSize(10);
-        doc.text(
-          \"Ein 0-jähriger, selbstständig lebender Mensch ohne beeinträchtigende Erkrankungen erreicht wahrscheinlich einen Maximalwert von 56 Punkten auf der BBS. Ab dem 1. Lebensjahr nimmt der mittlere Wert um ca. 0,7 Punkte pro Jahr ab und die Streuung der Werte steigt an.\",
-          10, y, { maxWidth: 180 }
-        );
+        doc.text("Ein 0-jähriger, selbstständig lebender Mensch ohne beeinträchtigende Erkrankungen erreicht wahrscheinlich einen Maximalwert von 56 Punkten auf der BBS. Ab dem 1. Lebensjahr nimmt der mittlere Wert um ca. 0,7 Punkte pro Jahr ab und die Streuung der Werte steigt an.", 10, y, { maxWidth: 180 });
       }
 
       window.open(doc.output('bloburl'), '_blank');
@@ -253,5 +233,3 @@
   </script>
 </body>
 </html>
-
-  
