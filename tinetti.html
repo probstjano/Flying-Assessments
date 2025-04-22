@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Tinetti POMA</title>
   <style>
     body { font-family: sans-serif; margin: 2rem; font-size: 16px; max-width: 1000px; }
@@ -39,21 +39,21 @@
       { text: "Sitzbalance", options: ["0 – lehnt zur Seite oder rutscht im Stuhl", "1 – sicher, stabil"] },
       { text: "Aufstehen", options: ["0 – ohne Hilfe nicht möglich", "1 – möglich, aber braucht Arme", "2 – möglich ohne Benützung der Arme"] },
       { text: "Versuche, aufzustehen", options: ["0 – unmöglich ohne Hilfe", "1 – möglich, aber braucht mehr als einen Versuch", "2 – möglich, in einem Versuch"] },
-      { text: "Unmittelbare Stehbalance (erste 5 Sekunden)", options: ["0 – unsicher (macht kleine Schritte, deutliche Rumpfbewegungen)", "1 – sicher, aber benötigt Stock, Böckli oder anderes Hilfsmittel", "2 – sicher, ohne Hilfsmittel"] },
-      { text: "Stehbalance beim Versuch, Füsse nahe beieinander zu halten", options: ["0 – unsicher", "1 – sicher, aber Füsse weit voneinander (mehr als 10 cm) Oder benötigt Hilfsmittel", "2 – sicher, ohne Hilfsmittel"] },
-      { text: "Stoss (Füsse so nahe beieinander wie möglich)", options: ["0 – würde ohne Hilfe umfallen", "1 – macht Ausweichschritte, muss sich halten, fällt aber nicht um", "2 – sicher"] },
-      { text: "Augen geschlossen (Füsse nahe beieinander)", options: ["0 – unsicher", "1 – sicher"] },
-      { text: "Beginn des Gangs", options: ["0 – Zögern oder mehrere Versuche", "1 – kein Zögern"] },
+      { text: "Unmittelbare Stehbalance", options: ["0 – unsicher (kleine Schritte, Rumpfbewegung)", "1 – sicher mit Hilfsmittel", "2 – sicher ohne Hilfsmittel"] },
+      { text: "Stehbalance mit geschlossenen Füßen", options: ["0 – unsicher", "1 – sicher mit Abstand/Hilfsmittel", "2 – sicher ohne Hilfsmittel"] },
+      { text: "Stoss", options: ["0 – würde fallen", "1 – muss sich halten, fällt aber nicht", "2 – sicher"] },
+      { text: "Augen geschlossen", options: ["0 – unsicher", "1 – sicher"] },
+      { text: "Beginn des Gangs", options: ["0 – Zögern oder mehrfacher Versuch", "1 – kein Zögern"] },
       { text: "Schrittlänge rechts", options: ["0 – nicht vor linken Standfuß", "1 – vor linken Standfuß"] },
-      { text: "Schritthöhe rechts", options: ["0 – hebt nicht vollständig ab", "1 – hebt vollständig ab"] },
+      { text: "Schritthöhe rechts", options: ["0 – kein vollständiger Abhub", "1 – vollständiger Abhub"] },
       { text: "Schrittlänge links", options: ["0 – nicht vor rechten Standfuß", "1 – vor rechten Standfuß"] },
-      { text: "Schritthöhe links", options: ["0 – hebt nicht vollständig ab", "1 – hebt vollständig ab"] },
+      { text: "Schritthöhe links", options: ["0 – kein vollständiger Abhub", "1 – vollständiger Abhub"] },
       { text: "Gangsymmetrie", options: ["0 – ungleich", "1 – gleich"] },
       { text: "Schrittkontinuität", options: ["0 – diskontinuierlich", "1 – kontinuierlich"] },
-      { text: "Rumpfstabilität", options: ["0 – starkes Schwanken oder Hilfsmittel", "1 – vornübergebeugt oder braucht Arme", "2 – gerade, ohne Schwanken, keine Arme"] },
-      { text: "Schrittbreite", options: ["0 – breitbeinig (>5 cm)", "1 – Füße fast berührend"] },
+      { text: "Rumpfstabilität", options: ["0 – starkes Schwanken/Hilfsmittel", "1 – vornübergebeugt/Arme nötig", "2 – stabil, keine Hilfe"] },
+      { text: "Schrittbreite", options: ["0 – >5 cm", "1 – Füße berühren sich beinahe"] },
       { text: "Drehung um 360°", options: ["0 – diskontinuierlich", "1 – kontinuierlich"] },
-      { text: "Absitzen", options: ["0 – unsicher (zielt schlecht, fällt)", "1 – grob, benutzt Arme", "2 – sicher, kontrolliert"] }
+      { text: "Absitzen", options: ["0 – unsicher", "1 – grob/mit Armen", "2 – sicher/kontrolliert"] }
     ];
 
     const balanceIndexes = [0,1,2,3,4,5,6,14,16,17];
@@ -90,20 +90,20 @@
       }
 
       const total = balance + gait;
-let riskLevel = "";
-if (total < 19) riskLevel = "Hohes Sturzrisiko";
-else if (total <= 24) riskLevel = "Mittleres Sturzrisiko";
-else riskLevel = "Geringes Sturzrisiko";
+      let riskLevel = "";
+      if (total < 19) riskLevel = "Hohes Sturzrisiko";
+      else if (total <= 24) riskLevel = "Mittleres Sturzrisiko";
+      else riskLevel = "Geringes Sturzrisiko";
 
-const balRisk = balance < 12 ? "Sturzrisiko erhöht" : "besser als empfohlener cut-off";
-const gaitRisk = gait < 8 ? "Sturzrisiko erhöht" : "besser als empfohlener cut-off";
+      const balRisk = balance < 12 ? "Sturzrisiko erhöht" : "unauffällig";
+      const gaitRisk = gait < 8 ? "Sturzrisiko erhöht" : "unauffällig";
 
-document.getElementById("result").innerHTML =
-  `<strong>Gesamt-Score:</strong> ${total} / 28 → ${riskLevel}<br>` +
-  `<strong>Gleichgewicht:</strong> ${balance} / 16 → ${balRisk}<br>` +
-  `<strong>Gang:</strong> ${gait} / 12 → ${gaitRisk}<br><br>` +
-  `<em>Hinweis: Die Einteilung des Sturzrisikos variiert je nach Literaturquelle.</em>`;
-
+      document.getElementById("result").innerHTML =
+        `<strong>Gesamt-Score:</strong> ${total} / 28 → ${riskLevel}<br>` +
+        `<strong>Gleichgewicht:</strong> ${balance} / 16 → ${balRisk}<br>` +
+        `<strong>Gang:</strong> ${gait} / 12 → ${gaitRisk}<br><br>` +
+        `<em>Hinweis: Die Einteilung des Sturzrisikos variiert je nach Literaturquelle.</em>`;
+    }
 
     async function generatePDF() {
       const { jsPDF } = window.jspdf;
@@ -112,32 +112,4 @@ document.getElementById("result").innerHTML =
       let total = 0;
 
       doc.setFontSize(16);
-      doc.text("Tinetti POMA – Auswertung", 10, y);
-      y += 10;
-
-      for (let i = 0; i < questions.length; i++) {
-        const sel = document.querySelector(`select[name='q${i}']`);
-        if (!sel || sel.selectedIndex < 0) continue;
-        const val = parseInt(sel.value);
-        const label = sel.options[sel.selectedIndex].text;
-        total += val;
-        doc.setFontSize(12);
-        doc.text(`${i + 1}. ${questions[i].text}`, 10, y);
-        y += 6;
-        doc.text(`Antwort: ${label}`, 10, y);
-        y += 10;
-        if (y > 270) {
-          doc.addPage();
-          y = 10;
-        }
-      }
-
-      doc.setFontSize(14);
-      doc.text(`Gesamtscore: ${total} / 28`, 10, y);
-      window.open(doc.output('bloburl'), '_blank');
-    }
-
-    renderForm();
-  </script>
-</body>
-</html>
+      doc.text("Tinetti P
