@@ -25,16 +25,18 @@
 
   <button type="button" id="toggleBtn" onclick="toggleForm()">👉 Zur Kurzversion (7 Items) wechseln</button>
 
-  <form id="bbsForm">
-    <div id="questions"></div>
-    <button type="button" onclick="calculateTinetti()">✅ Score berechnen</button>
-    <div id="scoreDisplay"></div>
-
-    <button type="button" onclick="generatePDF()">📄 PDF erstellen</button>
+      <button type="button" onclick="calculateTINETTI()">✅ Score berechnen</button>
+    <button type="button" onclick="downloadPDF()">📄 Als PDF speichern</button>
   </form>
+  <p id="result"></p>
+
+  <div class="nav-buttons">
+    <a href="standard.html">⬅️ Zurück zu Standard-Assessments</a>
+    <a href="index.html">🏠 Zur Startseite</a>
+  </div>
+
 
   <div id="result"></div>
-
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script>
     const fullQuestions = [
