@@ -21,7 +21,6 @@
   <p>Test zur Erfassung der Kardiovaskulären und Muskulären Ausdauer. In der Innereren Medizin, speziell Pulmonale Rehabilitation, sehr gut validiert. </p>
   <p>Durchführung: Wenn möglich Stuhl ca 46cm hoch. So oft wie möglich innerhalb 1min aufstehen-absitzen ohne Arme zur Hilfe zu nehmen. Arme auf der Hüfte oder frei neben dem Körper. Nach 30s und 45s die Zeit durchgeben </p>
   <p>Im Cenplex-Behandlungsplan als <strong>Messung</strong> dokumentieren. Hier eintragen für Normwerte </p>
-
   <form>
     <label>Wiederholungen in 1 Minute:</label>
     <input type="number" id="reps" step="1" />
@@ -35,13 +34,16 @@
       <option value="women">Weiblich</option>
     </select>
 
-    <button type="button" onclick="calculate1MSTS()">✅ Einschätzung anzeigen</button>
     <button type="button" onclick="toggleNorms1MSTS()" id="toggleBtn1MSTS">📊 Normwerte anzeigen</button>
     <button type="button" onclick="generatePDF()">📄 Als PDF speichern</button>
   </form>
 
-  <div id="result"></div>
   <div id="normwerte1MSTS" class="hidden"></div>
+
+  <div class="nav-buttons">
+    <a href="standard.html">⬅️ Zurück zu Standard-Assessments</a>
+    <a href="index.html">🏠 Zur Startseite</a>
+  </div>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script>
@@ -79,41 +81,96 @@
     };
 
     function getNearestAgeGroup(age) {
-      const ageGroups = [20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75];
-      return ageGroups.reduce((prev, curr) =>
-        Math.abs(curr - age) < Math.abs(prev - age) ? curr : prev
+      const ageGroups = [20,25,30,35,40,45,50,55,60,65,70,75];
+      return ageGroups.reduce((a, b) =>
+        Math.abs(b - age) < Math.abs(a - age) ? b : a
       );
     }
 
-    function calculate1MSTS() {
+    function toggleNorms1MSTS() {
+      const btn = document.getElementById("toggleBtn1MSTS");
+      const div = document.getElementById("normwerte1MSTS");
+
+      if (normVisible) {
+        div.classList.add("hidden");
+        btn.innerText = "📊 Normwerte anzeigen";
+        normVisible = false;
+        return;
+      }
+
       const reps = parseInt(document.getElementById("reps").value);
       const age = parseInt(document.getElementById("age").value);
       const sex = document.getElementById("sex").value;
 
+      div.innerHTML = "";
+
       if (isNaN(reps) || isNaN(age)) {
-        alert("Bitte gültige Werte eingeben.");
+        div.innerText = "Bitte gültige Werte eingeben.";
+        div.classList.remove("hidden");
         return;
       }
 
-      const ageGroup = getNearestAgeGroup(age);
+      let ageGroup = getNearestAgeGroup(age);
+      if (age > 79) ageGroup = 75;
+
+      const P = normsCH[sex][ageGroup];
+      const percentiles = [2.5, 25, 50, 75, 97.5];
       let faster = "-";
 
-      if (age > 79) {
-        document.getElementById("result").innerText =
-          `→ Für dieses Alter sind keine Normwerte verfügbar.\nNormwerte für 75–79 Jahre (${sex === "men" ? "Männer" : "Frauen"}):\n` +
-          `P2.5: ${normsCH[sex][75][0]}, P25: ${normsCH[sex][75][1]}, P50: ${normsCH[sex][75][2]}, P75: ${normsCH[sex][75][3]}, P97.5: ${normsCH[sex][75][4]}`;
+      if (!P) {
+        div.innerText = "Keine Normdaten vorhanden.";
+        div.classList.remove("hidden");
         return;
       }
 
-      const values = normsCH[sex][ageGroup];
-      const percentiles = [2.5, 25, 50, 75, 97.5];
-
-      if (reps <= values[0]) faster = 2;
-      else if (reps >= values[4]) faster = 98;
+      if (reps <= P[0]) faster = 2;
+      else if (reps >= P[4]) faster = 98;
       else {
-        for (let i = 0; i < values.length - 1; i++) {
-          if (reps >= values[i] && reps <= values[i + 1]) {
+        for (let i = 0; i < P.length - 1; i++) {
+          if (reps >= P[i] && reps <= P[i + 1]) {
             const p0 = percentiles[i], p1 = percentiles[i + 1];
-            const v0 = values[i], v1 = values[i + 1];
+            const v0 = P[i], v1 = P[i + 1];
             const frac = (reps - v0) / (v1 - v0);
             faster = Math.round(p0 + frac * (p1 - p0));
+            break;
+          }
+        }
+      }
+
+      if (age > 79) {
+        div.innerHTML += `<p><em>Keine Normwerte verfügbar für dieses Alter. Angezeigt sind Werte für 75–79 Jahre.</em></p>`;
+      }
+
+      div.innerHTML += `
+        <h3>Schweizer Normwerte Allgemeinbevölkerung (${ageGroup} J. – ${sex === "men" ? "Männer" : "Frauen"})</h3>
+        <table><tr><th>Perzentil</th><th>Wiederholungen</th></tr>
+        ${percentiles.map((p, i) => `<tr><td>P${p}</td><td>${P[i]}</td></tr>`).join("")}
+        </table>
+        <p>→ Diese Wiederholungszahl liegt über dem Wert von <strong>${faster}%</strong> der Vergleichsgruppe.</p>
+      `;
+
+      div.classList.remove("hidden");
+      btn.innerText = "📉 Normwerte verbergen";
+      normVisible = true;
+    }
+
+    async function generatePDF() {
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF();
+      doc.setFontSize(16);
+      doc.text("1-Minute Sit-to-Stand Test", 10, 15);
+      doc.setFontSize(12);
+
+      const reps = document.getElementById("reps").value;
+      const age = document.getElementById("age").value;
+      const sex = document.getElementById("sex").value;
+      doc.text(`Wiederholungen: ${reps}`, 10, 30);
+      doc.text(`Alter: ${age}`, 10, 38);
+      doc.text(`Geschlecht: ${sex === "men" ? "Männlich" : "Weiblich"}`, 10, 46);
+
+      doc.text("Normdaten siehe Webtool.", 10, 60);
+      window.open(doc.output("bloburl"), "_blank");
+    }
+  </script>
+</body>
+</html>
