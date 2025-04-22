@@ -9,14 +9,19 @@
     h1 { margin-bottom: 0.5rem; }
     .question-block { margin-bottom: 1.5rem; }
     .question { font-weight: bold; margin-bottom: 0.5rem; }
-    select, option { width: 100%; padding: 8px; font-size: 16px; }
+    select, option, input[type="number"] { width: 100%; padding: 8px; font-size: 16px; margin-bottom: 1rem; }
     button { margin-top: 20px; padding: 10px 15px; font-size: 16px; }
     #result { margin-top: 2rem; font-weight: bold; white-space: pre-line; }
+    #normInfo { margin-top: 1rem; font-size: 0.9em; color: #333; }
   </style>
 </head>
 <body>
   <h1>Berg Balance Skala (BBS)</h1>
   <p>Zur Einschätzung des Gleichgewichts und Sturzrisikos. Bitte wählen Sie für jedes Item die passende Bewertung.</p>
+
+  <label for="age">Alter der getesteten Person:</label>
+  <input type="number" id="age" value="70" min="0" max="120" />
+
   <button type="button" id="toggleBtn" onclick="toggleForm()">👉 Zur Kurzversion (7 Items) wechseln</button>
 
   <form id="bbsForm">
@@ -26,9 +31,11 @@
   </form>
 
   <div id="result"></div>
+  <div id="normInfo"></div>
+
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script>
-    const fullQuestions = [
+    const fullQuestions =  [
       { text: "Vom Sitzen zum Stehen", options: [
         "4 kann aufstehen ohne die Hände einzusetzen und sich selbstständig stabilisieren",
         "3 kann selbstständig mit Einsatz der Hände aufstehen",
@@ -138,6 +145,7 @@
         ? "🔁 Zur Vollversion (14 Items) wechseln"
         : "👉 Zur Kurzversion (7 Items) wechseln";
       renderForm();
+      calculateBBS(); // neu berechnen nach Wechsel
     }
 
     function renderForm() {
@@ -162,10 +170,9 @@
       });
     }
 
-     function calculateNorm(age) {
+    function calculateNorm(age) {
       if (age < 70) return 56;
-      const norm = 56 - ((age - 70) * 0.7);
-      return Math.round(norm * 10) / 10;
+      return Math.round((56 - (age - 70) * 0.7) * 10) / 10;
     }
 
     function calculateBBS() {
@@ -173,7 +180,7 @@
       let total = 0;
       for (let sel of selects) {
         const val = parseInt(sel.value);
-        if (isNaN(val)) return alert("Bitte alle Fragen beantworten.");
+        if (isNaN(val)) return; // keine Alert, um Nutzbarkeit bei Wechsel zu verbessern
         total += val;
       }
 
@@ -181,8 +188,8 @@
       const age = parseInt(document.getElementById("age").value);
       const norm = useShort ? "–" : calculateNorm(age);
 
-      document.getElementById("result").innerText = `BBS Gesamtscore: ${total} / ${max}` +
-        (useShort ? "" : `\nErwarteter Normwert (Alter ${age}): ${norm}`);
+      document.getElementById("result").innerText =
+        `BBS Gesamtscore: ${total} / ${max}` + (useShort ? "" : `\nErwarteter Normwert (Alter ${age}): ${norm}`);
 
       document.getElementById("normInfo").innerText = useShort ? "" :
         "Ein 0-jähriger, selbstständig lebender Mensch ohne beeinträchtigende Erkrankungen erreicht wahrscheinlich einen Maximalwert von 56 Punkten auf der BBS. Ab dem 1. Lebensjahr nimmt der mittlere Wert um ca. 0,7 Punkte pro Jahr ab und die Streuung der Werte steigt an.";
@@ -192,6 +199,8 @@
       const { jsPDF } = window.jspdf;
       const items = useShort ? shortIndexes.map(i => fullQuestions[i]) : fullQuestions;
       const selects = document.querySelectorAll("select[name^='q']");
+      const age = parseInt(document.getElementById("age").value);
+      const norm = useShort ? "–" : calculateNorm(age);
 
       let doc = new jsPDF();
       let y = 10;
@@ -217,18 +226,17 @@
         }
       });
 
-      const max = useShort ? 28 : 56;
-      const age = parseInt(document.getElementById("age").value);
-      const norm = useShort ? "–" : calculateNorm(age);
-
       doc.setFontSize(14);
-      doc.text(`Gesamtscore: ${total} / ${max}`, 10, y);
+      doc.text(`Gesamtscore: ${total} / ${useShort ? 28 : 56}`, 10, y);
       if (!useShort) {
         y += 7;
         doc.text(`Erwarteter Normwert (Alter ${age}): ${norm}`, 10, y);
         y += 7;
         doc.setFontSize(10);
-        doc.text("Ein 0-jähriger, selbstständig lebender Mensch ohne beeinträchtigende Erkrankungen erreicht wahrscheinlich einen Maximalwert von 56 Punkten auf der BBS. Ab dem 1. Lebensjahr nimmt der mittlere Wert um ca. 0,7 Punkte pro Jahr ab und die Streuung der Werte steigt an.", 10, y, { maxWidth: 190 });
+        doc.text(
+          \"Ein 0-jähriger, selbstständig lebender Mensch ohne beeinträchtigende Erkrankungen erreicht wahrscheinlich einen Maximalwert von 56 Punkten auf der BBS. Ab dem 1. Lebensjahr nimmt der mittlere Wert um ca. 0,7 Punkte pro Jahr ab und die Streuung der Werte steigt an.\",
+          10, y, { maxWidth: 180 }
+        );
       }
 
       window.open(doc.output('bloburl'), '_blank');
@@ -238,3 +246,5 @@
   </script>
 </body>
 </html>
+
+  
