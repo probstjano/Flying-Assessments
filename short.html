@@ -17,7 +17,11 @@
 </head>
 <body>
   <h1>Berg Balance Skala (BBS)</h1>
-  <p>Zur Einschätzung des Gleichgewichts und Sturzrisikos. Bitte wählen Sie für jedes Item die passende Bewertung.</p>
+  <p>Einer der am umfassendsten untersuchten Assessments für das Gleichgewicht mit guter Psychometrischer Güte und Reliabilität. Geriatrie, MS, CVI, Parkinson </p>
+  <p> Auch in einer verkürzten Version möglich. Diese ist schneller, benötigt weniger Material ist aber weniger gut untersucht und bietet keine Norm oder Cut-Off Werte </p>
+  <p> Im Cenplex Behandlungsplan als <strong> Messung </strong> hinterlegt. Hier durchführen und Summenscore übertragen </p>
+
+  Ausführliches Protokoll hier: <a href="BBS_Protokoll.pdf" target="_blank">BBS Protokoll (PDF)</a>
 
   <button type="button" id="toggleBtn" onclick="toggleForm()">👉 Zur Kurzversion (7 Items) wechseln</button>
 
@@ -206,8 +210,10 @@
         const age = parseInt(document.getElementById("age").value);
         const norm = calculateNorm(age);
         document.getElementById("result").innerText = `Erwarteter Normwert (Alter ${age}): ${norm}`;
+        document.getElementById("result").innerText = 
+  `Erwarteter Normwert (Alter ${age}): ${norm} Punkte\nCut-off für erhöhtes Sturzrisiko: < 45 Punkte. (BBS aber nicht empfohlen zur alleinigen Beurteilung des Sturzrisikos)`;
         document.getElementById("normInfo").innerText =
-          "Ein 0-jähriger, selbstständig lebender Mensch ohne beeinträchtigende Erkrankungen erreicht wahrscheinlich einen Maximalwert von 56 Punkten auf der BBS. Ab dem 1. Lebensjahr nimmt der mittlere Wert um ca. 0,7 Punkte pro Jahr ab und die Streuung der Werte steigt an.";
+          "Ein 70-jähriger, selbstständig lebender Mensch ohne beeinträchtigende Erkrankungen erreicht wahrscheinlich einen Maximalwert von 56 Punkten auf der BBS. Ab dem 1. Lebensjahr nimmt der mittlere Wert um ca. 0,7 Punkte pro Jahr ab und die Streuung der Werte steigt deutlich an.";
         normBtn.innerText = "❌ Normwerte verbergen";
         normVisible = true;
       } else {
