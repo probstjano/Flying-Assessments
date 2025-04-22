@@ -117,13 +117,39 @@
         }
       }
 
-      norms.innerHTML = `<h3>Norwegische Referenzwerte (${nearest} Jahre – ${sex === 'men' ? 'Männer' : 'Frauen'})</h3>`;
-      norms.innerHTML += `<table><tr><th>Perzentil</th><th>Zeit (s)</th></tr>
+      norms.innerHTML += `<h3>Norwegische Referenzwerte zuhause lebender Personen (${nearest} Jahre – ${sex === 'men' ? 'Männer' : 'Frauen'})</h3>`;
+      norms.innerHTML += `<table><tr><th>Perzentil</th><th>Wert (s)</th></tr>
         ${Object.entries(P).map(([k,v]) => `<tr><td>${k}</td><td>${v}</td></tr>`).join("")}
-      </table><p>→ Diese Zeit ist besser als bei <strong>${faster}%</strong> der Vergleichsgruppe, die den Test durchführen konnten.</p>`;
+      </table><p>→ Die Sitz-Stand Zeit ist schneller als bei: <strong>${faster}%</strong> der Vergleichsgruppe, die den Test durchführen konnten.</p>`;
+
+      const bohannon = {
+        men: {
+          "60–69": { mean: "13.3", unable: "15.1%" },
+          "70–79": { mean: "13.8", unable: "16.2%" },
+          "80–89": { mean: "15.1", unable: "34.4%" },
+          "90+":   { mean: "16.4", unable: "62.5%" }
+        },
+        women: {
+          "60–69": { mean: "13.9", unable: "13.7%" },
+          "70–79": { mean: "15.1", unable: "22.0%" },
+          "80–89": { mean: "16.9", unable: "46.0%" },
+          "90+":   { mean: "18.5", unable: "83.5%" }
+        }
+      };
+
+      let ageGroup = "90+";
+      if (age < 70) ageGroup = "60–69";
+      else if (age < 80) ageGroup = "70–79";
+      else if (age < 90) ageGroup = "80–89";
+
+      const b = bohannon[sex][ageGroup];
+      norms.innerHTML += `<h3>Mittelwert  & Anzeil der Personen die Sitz-Stand Test nitch durchführen können (Gesamtbevölkerung inkl. Pflegeheime/Institutionen) – ${ageGroup}</h3>
+        <table><tr><th>Geschlecht</th><th>MW (s)</th><th>% nicht fähig</th></tr>
+        <tr><td>${sex === 'men' ? 'Männer' : 'Frauen'}</td><td>${b.mean}</td><td>${b.unable}</td></tr>
+      </table>`;
 
       norms.classList.remove("hidden");
-      btn.innerText = "📉 Normwerte verbergen";
+      btn.innerText = "📉 Normwerte sit-stand verbergen";
       sitzVisible = true;
     }
   </script>
