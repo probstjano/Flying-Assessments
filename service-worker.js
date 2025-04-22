@@ -13,6 +13,9 @@ const ASSETS_TO_CACHE = [
   'Assessment-Leitfaden.pdf',
   'FiST.html',
   'FSMC.html',
+  'SARA.html',
+  'BBS.html',
+  'BBS.pdf',
   'PSFS_GAS.html'
   
 ];
