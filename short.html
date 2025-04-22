@@ -162,6 +162,12 @@
       });
     }
 
+     function calculateNorm(age) {
+      if (age < 70) return 56;
+      const norm = 56 - ((age - 70) * 0.7);
+      return Math.round(norm * 10) / 10;
+    }
+
     function calculateBBS() {
       const selects = document.querySelectorAll("select[name^='q']");
       let total = 0;
@@ -170,8 +176,16 @@
         if (isNaN(val)) return alert("Bitte alle Fragen beantworten.");
         total += val;
       }
+
       const max = useShort ? 28 : 56;
-      document.getElementById("result").innerText = `BBS Gesamtscore: ${total} / ${max}`;
+      const age = parseInt(document.getElementById("age").value);
+      const norm = useShort ? "–" : calculateNorm(age);
+
+      document.getElementById("result").innerText = `BBS Gesamtscore: ${total} / ${max}` +
+        (useShort ? "" : `\nErwarteter Normwert (Alter ${age}): ${norm}`);
+
+      document.getElementById("normInfo").innerText = useShort ? "" :
+        "Ein 0-jähriger, selbstständig lebender Mensch ohne beeinträchtigende Erkrankungen erreicht wahrscheinlich einen Maximalwert von 56 Punkten auf der BBS. Ab dem 1. Lebensjahr nimmt der mittlere Wert um ca. 0,7 Punkte pro Jahr ab und die Streuung der Werte steigt an.";
     }
 
     async function generatePDF() {
@@ -204,8 +218,19 @@
       });
 
       const max = useShort ? 28 : 56;
+      const age = parseInt(document.getElementById("age").value);
+      const norm = useShort ? "–" : calculateNorm(age);
+
       doc.setFontSize(14);
       doc.text(`Gesamtscore: ${total} / ${max}`, 10, y);
+      if (!useShort) {
+        y += 7;
+        doc.text(`Erwarteter Normwert (Alter ${age}): ${norm}`, 10, y);
+        y += 7;
+        doc.setFontSize(10);
+        doc.text("Ein 0-jähriger, selbstständig lebender Mensch ohne beeinträchtigende Erkrankungen erreicht wahrscheinlich einen Maximalwert von 56 Punkten auf der BBS. Ab dem 1. Lebensjahr nimmt der mittlere Wert um ca. 0,7 Punkte pro Jahr ab und die Streuung der Werte steigt an.", 10, y, { maxWidth: 190 });
+      }
+
       window.open(doc.output('bloburl'), '_blank');
     }
 
