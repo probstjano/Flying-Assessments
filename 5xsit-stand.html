@@ -117,12 +117,21 @@
         }
       }
 
-      norms.innerHTML += `<p style="margin-bottom:1rem; font-style:italic;">
-  <strong>Interpretationshilfe:</strong><br>
-  >15 Sek = geringe Muskelkraft (Sarkopenie-Verdacht) · 
-  >12 Sek = Sturzgefahr abklärungswürdig · 
-  >16 Sek = Parkinson: erhöhte Sturzgefahr 
-</p>`;
+      let cutoffHinweis = "";
+if (sitzZeit > 12) {
+  cutoffHinweis += "<strong>Interpretationshilfe:</strong><br>";
+  if (sitzZeit > 15)
+    cutoffHinweis += ">15 Sek = geringe Muskelkraft (Sarkopenie-Verdacht)<br>";
+  if (sitzZeit > 12)
+    cutoffHinweis += ">12 Sek = Sturzgefahr abklärungswürdig<br>";
+  if (sitzZeit > 16)
+    cutoffHinweis += ">16 Sek = Parkinson: erhöhte Sturzgefahr<br>";
+}
+
+if (cutoffHinweis) {
+  norms.innerHTML += `<p style="margin-bottom:1rem; font-style:italic;">${cutoffHinweis}</p>`;
+}
+
       norms.innerHTML += `<h3>Norwegische Referenzwerte zuhause lebender Personen (${nearest} Jahre – ${sex === 'men' ? 'Männer' : 'Frauen'})</h3>`;
       norms.innerHTML += `<table><tr><th>Perzentil</th><th>Wert (s)</th></tr>
         ${Object.entries(P).map(([k,v]) => `<tr><td>${k}</td><td>${v}</td></tr>`).join("")}
