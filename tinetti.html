@@ -105,11 +105,34 @@
         `<em>Hinweis: Die Einteilung des Sturzrisikos variiert je nach Literaturquelle.</em>`;
     }
 
-    async function generatePDF() {
-      const { jsPDF } = window.jspdf;
-      const doc = new jsPDF();
-      let y = 10;
-      let total = 0;
+   async function generatePDF() {
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF();
+  let y = 10;
+  let total = 0;
 
-      doc.setFontSize(16);
-      doc.text("Tinetti P
+  doc.setFontSize(16);
+  doc.text("Tinetti POMA – Auswertung", 10, y);
+  y += 10;
+
+  for (let i = 0; i < questions.length; i++) {
+    const sel = document.querySelector(`select[name='q${i}']`);
+    if (!sel || sel.selectedIndex < 0) continue;
+    const val = parseInt(sel.value);
+    const label = sel.options[sel.selectedIndex].text;
+    total += val;
+    doc.setFontSize(12);
+    doc.text(`${i + 1}. ${questions[i].text}`, 10, y);
+    y += 6;
+    doc.text(`Antwort: ${label}`, 10, y);
+    y += 10;
+    if (y > 270) {
+      doc.addPage();
+      y = 10;
+    }
+  }
+
+  doc.setFontSize(14);
+  doc.text(`Gesamtscore: ${total} / 28`, 10, y);
+  window.open(doc.output('bloburl'), '_blank');
+}
