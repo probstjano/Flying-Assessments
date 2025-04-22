@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>PSFS & GAS – Funktionelle Zielskalen</title>
+  <title>Modified 30-Second Chair Stand Test</title>
   <style>
     body { font-family: sans-serif; margin: 10px; font-size: 16px; max-width: 700px; }
     h2 { margin-top: 25px; }
@@ -28,11 +28,10 @@
   <p> Als Verlaufstest für Personen die nicht ohne Armhilfe aufstehen können. Gute Reliasbilität, Validität jedoch ungenügend untersucht und keine Normwerte vorhanden </p>
   <p> Im Cenplex Behandlungsplan als  <strong>Messung</strong> enthalte und dort eintragen. </p>
   <p>Durchführung: Stuhl mit Armlehne. Stuhlhöhe 43-46cm. Innerhalb 30s so oft wie möglich aufstehen-absitzen mit Hilfe der Arme. </p>
-  </tbody>
 
   <div class="nav-buttons">
     <a href="standard.html">⬅️ Zurück zu Standard-Assessments</a>
     <a href="index.html">🏠 Zur Startseite</a>
   </div>
-</body>
+ </body>
 </html>
