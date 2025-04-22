@@ -23,9 +23,9 @@
 </head>
 <body>
   <h1>5x Sitz-Stand Test</h1>
-  <p>Nur wenn dieser Teil des SPPB einzeln durchgeführt wurde. Bei vollständigem SPPB dort eintragen.</p>
-  <p>Durchführung laut SPPB-Protokoll. Ergebnis eintragen im Behandlungsplan unter <strong>Messung</strong>.</p>
-  <p><a href="SPPB_Protokoll.pdf" target="_blank">📄 SPPB Protokoll (PDF)</a></p>
+  <p>Test für die Kraft/Schnellkraft der unteren Extremitäten. Teil des SPPB. Korreliert gut mit der Kraft der Kniestrecker aber auch abhängig vom Gleichgewicht </p>
+  <p> Im Cenplex Behandlungsplan als  <strong>Messung</strong> enthalte und dort eintragen. Hier eintragen für Normwerte </p>
+  <p> siehe SPPB Protokoll für Durchführung <a href="SPPB_Protokoll.pdf" target="_blank">📄 SPPB Protokoll (PDF)</a></p>
 
   <label>5x Sitz-Stand Zeit (Sekunden):</label>
   <input type="number" id="sitzStand" step="0.01" />
@@ -117,6 +117,12 @@
         }
       }
 
+      norms.innerHTML += `<p style="margin-bottom:1rem; font-style:italic;">
+  <strong>Interpretationshilfe:</strong><br>
+  >15 Sek = geringe Muskelkraft (Sarkopenie-Verdacht) · 
+  >12 Sek = Sturzgefahr abklärungswürdig · 
+  >16 Sek = Parkinson: erhöhte Sturzgefahr 
+</p>`;
       norms.innerHTML += `<h3>Norwegische Referenzwerte zuhause lebender Personen (${nearest} Jahre – ${sex === 'men' ? 'Männer' : 'Frauen'})</h3>`;
       norms.innerHTML += `<table><tr><th>Perzentil</th><th>Wert (s)</th></tr>
         ${Object.entries(P).map(([k,v]) => `<tr><td>${k}</td><td>${v}</td></tr>`).join("")}
@@ -143,7 +149,7 @@
       else if (age < 90) ageGroup = "80–89";
 
       const b = bohannon[sex][ageGroup];
-      norms.innerHTML += `<h3>Mittelwert  & Anzeil der Personen die Sitz-Stand Test nitch durchführen können (Gesamtbevölkerung inkl. Pflegeheime/Institutionen) – ${ageGroup}</h3>
+      norms.innerHTML += `<h3>Mittelwert  & Anzeil der Personen die Sitz-Stand Test nicht durchführen können (Gesamtbevölkerung inkl. Pflegeheime/Institutionen) – ${ageGroup}</h3>
         <table><tr><th>Geschlecht</th><th>MW (s)</th><th>% nicht fähig</th></tr>
         <tr><td>${sex === 'men' ? 'Männer' : 'Frauen'}</td><td>${b.mean}</td><td>${b.unable}</td></tr>
       </table>`;
