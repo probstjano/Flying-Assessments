@@ -29,7 +29,7 @@
     <button type="button" onclick="downloadPDF()">📄 Als PDF speichern</button>
   </form>
 
-  <p id="result"></p>
+ <p id="result"></p>
 
   <div class="nav-buttons">
     <a href="standard.html">⬅️ Zurück zu Standard-Assessments</a>
@@ -175,25 +175,27 @@
 
 
 
-    function calculateTINETTI() {
-      let balance = 0, gait = 0;
-      for (let i = 0; i < questions.length; i++) {
-        const val = parseInt(document.querySelector(`select[name='q${i}']`)?.value);
-        if (isNaN(val)) return alert("Bitte alle Fragen beantworten.");
-        if (balanceIndexes.includes(i)) balance += val;
-        else if (gaitIndexes.includes(i)) gait += val;
-      }
-      const total = balance + gait;
+   function calculateTINETTI() {
+  let balance = 0, gait = 0;
+  for (let i = 0; i < questions.length; i++) {
+    const val = parseInt(document.querySelector(`select[name='q${i}']`)?.value);
+    if (isNaN(val)) return alert("Bitte alle Fragen beantworten.");
+    if (balanceIndexes.includes(i)) balance += val;
+    else if (gaitIndexes.includes(i)) gait += val;
+  }
+  const total = balance + gait;
 
-      document.getElementById("result").innerText =
-        `Tinetti/POMA Gesamt: ${total} ` +
-        `Gleichgewicht: ${balance} `  +
-        `Gang: ${motoric}`;
-      const max = questions.reduce((sum, q) => {
-        return sum + Math.max(...q.options.map(o => parseInt(o[0])));
-      }, 0);
-      document.getElementById("result").innerText = `Gesamt-Score: ${score} / ${max}`;
-    }
+  const max = questions.reduce((sum, q) => {
+    return sum + Math.max(...q.options.map(o => parseInt(o[0])));
+  }, 0);
+
+  document.getElementById("result").innerHTML =
+  `<strong>Tinetti/POMA Gesamt:</strong> ${total} / ${max}<br>` +
+  `<strong>Gleichgewicht:</strong> ${balance}<br>` +
+  `<strong>Gang:</strong> ${gait}`;
+
+}
+
 
     async function generatePDF() {
       const { jsPDF } = window.jspdf;
