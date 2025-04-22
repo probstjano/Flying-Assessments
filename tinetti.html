@@ -151,6 +151,9 @@
   }
 ];
 
+    const balanceindexes [0, 1, 2, 3, 4, 5, 6]
+    const gaitindexes [7,8,9,10,11, 12, 13, 15]
+
   function renderForm() {
       const container = document.getElementById("questions");
       container.innerHTML = "";
@@ -170,13 +173,16 @@
       });
     }
 
+
     function calculateTINETTI() {
-      let score = 0;
+      let balance = 0, gait = 0;
       for (let i = 0; i < questions.length; i++) {
         const val = parseInt(document.querySelector(`select[name='q${i}']`)?.value);
         if (isNaN(val)) return alert("Bitte alle Fragen beantworten.");
-        score += val;
+        if (balanceIndexes.includes(i)) balance += val;
+        else if (gaitIndexes.includes(i)) gait += val;
       }
+      const total = balance + gait;
       const max = questions.reduce((sum, q) => {
         return sum + Math.max(...q.options.map(o => parseInt(o[0])));
       }, 0);
