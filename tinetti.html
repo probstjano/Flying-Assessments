@@ -95,8 +95,8 @@
       else if (total <= 24) riskLevel = "Mittleres Sturzrisiko";
       else riskLevel = "Geringes Sturzrisiko";
 
-      const balRisk = balance < 12 ? "Sturzrisiko erhöht" : "unauffällig";
-      const gaitRisk = gait < 8 ? "Sturzrisiko erhöht" : "unauffällig";
+      const balRisk = balance < 12 ? "Sturzrisiko erhöht" : "besser als empfohlener cut-off Wert";
+      const gaitRisk = gait < 8 ? "Sturzrisiko erhöht" : "besser als empfohlener cut-off Wert";
 
       document.getElementById("result").innerHTML =
         `<strong>Gesamt-Score:</strong> ${total} / 28 → ${riskLevel}<br>` +
