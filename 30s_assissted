@@ -2,23 +2,25 @@
 <html lang="de">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>5x Sitz-Stand Test</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>PSFS & GAS – Funktionelle Zielskalen</title>
   <style>
-    body { font-family: sans-serif; margin: 2rem; font-size: 16px; max-width: 600px; }
-    label { display: block; margin-top: 1rem; }
-    input, select { width: 100%; padding: 6px; font-size: 16px; margin-bottom: 10px; }
-    button { margin-top: 10px; padding: 10px 15px; font-size: 16px; }
-    #result, #normwerteSitz {
-      font-weight: bold;
-      margin-top: 20px;
-      white-space: pre-line;
+    body { font-family: sans-serif; margin: 10px; font-size: 16px; max-width: 700px; }
+    h2 { margin-top: 25px; }
+    p, li { margin-bottom: 10px; }
+    .nav-buttons {
+      margin-top: 30px;
     }
-    table { width: 100%; border-collapse: collapse; margin-top: 1rem; }
-    th, td { border: 1px solid #ccc; padding: 6px; text-align: center; }
-    th { background: #f0f0f0; }
-    .hidden { display: none; }
-    .nav-buttons { margin-top: 2rem; }
+    .nav-buttons a {
+      display: inline-block;
+      margin-right: 10px;
+      padding: 10px 15px;
+      background: #eee;
+      border-radius: 8px;
+      text-decoration: none;
+      color: #000;
+    }
+    .nav-buttons a:hover { background: #ddd; }
   </style>
 </head>
 <body>
@@ -26,3 +28,11 @@
   <p> Als Verlaufstest für Personen die nicht ohne Armhilfe aufstehen können. Gute Reliasbilität, Validität jedoch ungenügend untersucht und keine Normwerte vorhanden </p>
   <p> Im Cenplex Behandlungsplan als  <strong>Messung</strong> enthalte und dort eintragen. </p>
   <p>Durchführung: Stuhl mit Armlehne. Stuhlhöhe 43-46cm. Innerhalb 30s so oft wie möglich aufstehen-absitzen mit Hilfe der Arme. </p>
+  </tbody>
+
+  <div class="nav-buttons">
+    <a href="standard.html">⬅️ Zurück zu Standard-Assessments</a>
+    <a href="index.html">🏠 Zur Startseite</a>
+  </div>
+</body>
+</html>
