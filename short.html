@@ -10,7 +10,7 @@
     .question { font-weight: bold; margin-bottom: 0.5rem; }
     select, input[type="number"] { width: 100%; padding: 8px; font-size: 16px; margin-bottom: 1rem; }
     button { margin-top: 20px; padding: 10px 15px; font-size: 16px; }
-    #result { margin-top: 2rem; font-weight: bold; white-space: pre-line; }
+    #scoreDisplay, #result { margin-top: 2rem; font-weight: bold; white-space: pre-line; }
     #normInfo { margin-top: 1rem; font-size: 0.9em; color: #333; }
     #normBlock { display: none; margin-top: 1rem; }
   </style>
@@ -24,17 +24,21 @@
   <form id="bbsForm">
     <div id="questions"></div>
     <button type="button" onclick="calculateBBS()">✅ Score berechnen</button>
+    <div id="scoreDisplay"></div>
 
     <div id="normBlock">
       <label for="age">Alter der getesteten Person:</label>
       <input type="number" id="age" value="70" min="0" max="120" />
-      <button type="button" onclick="toggleNorm()">📊 Normwerte / Cut-Offs anzeigen</button>
+      <button type="button" id="normToggleBtn" onclick="toggleNorm()">📊 Normwerte / Cut-Offs anzeigen</button>
     </div>
 
-    <div id="result"></div>
-    <div id="normInfo"></div>
+    <button type="button" onclick="generatePDF()">📄 PDF erstellen</button>
   </form>
 
+  <div id="result"></div>
+  <div id="normInfo"></div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script>
     const fullQuestions = [
       { text: "Vom Sitzen zum Stehen", options: [
@@ -148,6 +152,7 @@
         ? "🔁 Zur Vollversion (14 Items) wechseln"
         : "👉 Zur Kurzversion (7 Items) wechseln";
       renderForm();
+      document.getElementById("scoreDisplay").innerText = "";
       document.getElementById("result").innerText = "";
       document.getElementById("normInfo").innerText = "";
       document.getElementById("normBlock").style.display = "none";
@@ -191,27 +196,64 @@
       }
       const max = useShort ? 28 : 56;
       currentScore = total;
-      document.getElementById("result").innerText = `BBS Gesamtscore: ${total} / ${max}`;
+      document.getElementById("scoreDisplay").innerText = `BBS Gesamtscore: ${total} / ${max}`;
       if (!useShort) document.getElementById("normBlock").style.display = "block";
     }
 
     function toggleNorm() {
+      const normBtn = document.getElementById("normToggleBtn");
       if (!normVisible) {
         const age = parseInt(document.getElementById("age").value);
         const norm = calculateNorm(age);
-        document.getElementById("result").innerText += `\nErwarteter Normwert (Alter ${age}): ${norm}`;
+        document.getElementById("result").innerText = `Erwarteter Normwert (Alter ${age}): ${norm}`;
         document.getElementById("normInfo").innerText =
           "Ein 0-jähriger, selbstständig lebender Mensch ohne beeinträchtigende Erkrankungen erreicht wahrscheinlich einen Maximalwert von 56 Punkten auf der BBS. Ab dem 1. Lebensjahr nimmt der mittlere Wert um ca. 0,7 Punkte pro Jahr ab und die Streuung der Werte steigt an.";
+        normBtn.innerText = "❌ Normwerte verbergen";
         normVisible = true;
       } else {
-        document.getElementById("result").innerText = `BBS Gesamtscore: ${currentScore} / ${useShort ? 28 : 56}`;
+        document.getElementById("result").innerText = "";
         document.getElementById("normInfo").innerText = "";
+        normBtn.innerText = "📊 Normwerte / Cut-Offs anzeigen";
         normVisible = false;
       }
+    }
+
+    async function generatePDF() {
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF();
+      let y = 10;
+      const items = useShort ? shortIndexes.map(i => fullQuestions[i]) : fullQuestions;
+      let total = 0;
+
+      doc.setFontSize(16);
+      doc.text(`BBS ${useShort ? "Kurzversion" : "Vollversion"} – Auswertung`, 10, y);
+      y += 10;
+
+      for (let idx = 0; idx < items.length; idx++) {
+        const fullIndex = useShort ? shortIndexes[idx] : idx;
+        const q = items[idx];
+        const sel = document.querySelector(`select[name='q${fullIndex}']`);
+        const val = parseInt(sel.value);
+        const label = sel.options[sel.selectedIndex].text;
+        total += val;
+        doc.setFontSize(12);
+        doc.text(`${fullIndex + 1}. ${q.text}`, 10, y);
+        y += 6;
+        doc.text(`Antwort: ${label}`, 10, y);
+        y += 10;
+        if (y > 270) {
+          doc.addPage();
+          y = 10;
+        }
+      }
+
+      const max = useShort ? 28 : 56;
+      doc.setFontSize(14);
+      doc.text(`Gesamtscore: ${total} / ${max}`, 10, y);
+      window.open(doc.output('bloburl'), '_blank');
     }
 
     renderForm();
   </script>
 </body>
 </html>
-
