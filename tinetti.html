@@ -91,18 +91,17 @@
 
       const total = balance + gait;
       let riskLevel = "";
-      if (total < 19) riskLevel = "❗ Hohes Sturzrisiko";
-      else if (total <= 24) riskLevel = "⚠️ Mittleres Sturzrisiko";
-      else riskLevel = "✅ Geringes Sturzrisiko";
+      if (total < 19) riskLevel = "Hohes Sturzrisiko";
+      else if (total <= 24) riskLevel = "Mittleres Sturzrisiko";
+      else riskLevel = "Geringes Sturzrisiko";
 
-      const balRisk = balance < 12 ? "⚠️ Gleichgewichts-Sturzrisiko erhöht" : "✅ Gleichgewicht unauffällig";
-      const gaitRisk = gait < 8 ? "⚠️ Gang-Sturzrisiko erhöht" : "✅ Gang unauffällig";
+      const balRisk = balance < 12 ? "Sturzrisiko erhöht";
+      const gaitRisk = gait < 8 ? "Gang-Sturzrisiko erhöht";
 
       document.getElementById("result").innerHTML =
-        `<strong>Gesamt-Score:</strong> ${total} / 28<br>` +
+        `<strong>Gesamt-Score:</strong> ${total} / 28<br> → ${riskLevel}<br>` +
         `<strong>Gleichgewicht:</strong> ${balance} / 16 → ${balRisk}<br>` +
         `<strong>Gang:</strong> ${gait} / 12 → ${gaitRisk}<br><br>` +
-        `<strong>Sturzrisiko-Gesamt:</strong> ${riskLevel}<br><br>` +
         `<em>Hinweis: Die Einteilung des Sturzrisikos variiert je nach Literaturquelle.</em>`;
     }
 
