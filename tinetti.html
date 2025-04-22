@@ -51,10 +51,14 @@
       { text: "Schritthöhe linkes Schwungbein", options: ["0 – linker Fuss hebt nicht vollständig vom Boden ab", "1 – linker Fuss hebt vollständig vom Boden ab"] },
       { text: "Gangsymmetrie", options: ["0 – Schrittlänge links und rechts sind nicht gleich", "1 – Schrittlänge links und rechts sind gleich"] },
       { text: "Schrittkontinuität", options: ["0 – Schritte anhalten oder Diskontinuität", "1 – Schritte sind kontinuierlich"] },
-      { text: "Wegabweichung (mindestens 3 m entlang einer gerade Linie)", options: ["0 – deutliche Deviation", "1 – leichte Deviation oder benötigt Hilfsmittel", "2 – gerade ohne Hilfsmittel"] }
+      { text: "Rumpfstabilität", options: ["0 – ausgeprägtes SChwanken oder benütz Hilfsmittel", "1 – Kein SChwanken aber vornübergebeugt oder braucht Arme", "2 – gerade, kein Schwanken, braucht Arme nicht"] },
+      { text: "Schrittbreite", options: ["0 – Gang breitbeinig (mehr als 5cm) ", "1 – Füsse berühren sich ebinahe beim Gehen"] },
+      { text: "Drehung um 360°", options: ["0 – diskontinuierliche Schritte", "1 – kontinuierliche Schritte] },
+      { text: "Absitzen", options: ["0 – unsicher (schätzt Distanz fallsch ein, fällt im Stuhl", "1 – benützt Arme oder macht grobe Bewegungen", "2 – sicher mit feiner Bewegung"] }
+                                           
     ];
 
-    const balanceIndexes = [0, 1, 2, 3, 4, 5, 6];
+    const balanceIndexes = [0, 1, 2, 3, 4, 5, 6, 15, 15];
     const gaitIndexes = [7, 8, 9, 10, 11, 12, 13, 14];
 
     function renderForm() {
@@ -94,8 +98,8 @@
       const total = balance + gait;
       document.getElementById("result").innerHTML =
         `<strong>Tinetti/POMA Gesamt:</strong> ${total} / ${max}<br>` +
-        `<strong>Gleichgewicht:</strong> ${balance}<br>` +
-        `<strong>Gang:</strong> ${gait}`;
+        `<strong>Gleichgewicht:</strong> ${balance}/16<br>` +
+        `<strong>Gang:</strong> ${gait}/ 12`;
     }
 
     async function generatePDF() {
