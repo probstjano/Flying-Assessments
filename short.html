@@ -29,7 +29,7 @@
     <div id="normBlock">
       <label for="age">Alter der getesteten Person:</label>
       <input type="number" id="age" value="70" min="0" max="120" />
-      <button type="button" onclick="showNorm()">📊 Normwerte / Cut-Offs anzeigen</button>
+      <button type="button" onclick="toggleNorm()">📊 Normwerte / Cut-Offs anzeigen</button>
     </div>
 
     <button type="button" onclick="generatePDF()">📄 PDF erstellen</button>
@@ -140,8 +140,10 @@
       ]}
     ];
 
-    const shortIndexes = [0, 5, 7, 8, 9, 12, 13];
+   const shortIndexes = [0, 5, 7, 8, 9, 12, 13];
     let useShort = false;
+    let currentScore = null;
+    let normVisible = false;
 
     function toggleForm() {
       useShort = !useShort;
@@ -152,6 +154,7 @@
       document.getElementById("result").innerText = "";
       document.getElementById("normInfo").innerText = "";
       document.getElementById("normBlock").style.display = "none";
+      normVisible = false;
     }
 
     function renderForm() {
@@ -191,16 +194,26 @@
         total += parseInt(sel.value);
       }
       const max = useShort ? 28 : 56;
+      currentScore = total;
       document.getElementById("result").innerText = `BBS Gesamtscore: ${total} / ${max}`;
       if (!useShort) document.getElementById("normBlock").style.display = "block";
+      document.getElementById("normInfo").innerText = "";
+      normVisible = false;
     }
 
-    function showNorm() {
-      const age = parseInt(document.getElementById("age").value);
-      const norm = calculateNorm(age);
-      document.getElementById("result").innerText += `\nErwarteter Normwert (Alter ${age}): ${norm}`;
-      document.getElementById("normInfo").innerText =
-        "Ein 0-jähriger, selbstständig lebender Mensch ohne beeinträchtigende Erkrankungen erreicht wahrscheinlich einen Maximalwert von 56 Punkten auf der BBS. Ab dem 1. Lebensjahr nimmt der mittlere Wert um ca. 0,7 Punkte pro Jahr ab und die Streuung der Werte steigt an.";
+    function toggleNorm() {
+      if (!normVisible) {
+        const age = parseInt(document.getElementById("age").value);
+        const norm = calculateNorm(age);
+        document.getElementById("result").innerText += `\nErwarteter Normwert (Alter ${age}): ${norm}`;
+        document.getElementById("normInfo").innerText =
+          "Ein 0-jähriger, selbstständig lebender Mensch ohne beeinträchtigende Erkrankungen erreicht wahrscheinlich einen Maximalwert von 56 Punkten auf der BBS. Ab dem 1. Lebensjahr nimmt der mittlere Wert um ca. 0,7 Punkte pro Jahr ab und die Streuung der Werte steigt an.";
+        normVisible = true;
+      } else {
+        document.getElementById("result").innerText = `BBS Gesamtscore: ${currentScore} / ${useShort ? 28 : 56}`;
+        document.getElementById("normInfo").innerText = "";
+        normVisible = false;
+      }
     }
 
     renderForm();
