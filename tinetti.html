@@ -17,151 +17,56 @@
 </head>
 <body>
   <h1>Tinetti POMA</h1>
-  <p> Assessment für Gleichgewicht und Gang. V.a an älteren Menschen/Geriatrie untersucht. Empfohlen als Teil Sturzrisiko-Assessments, weniger als Verlaufszeichen  </p>
+  <p> Assessment für Gleichgewicht und Gang. V.a an älteren Menschen/Geriatrie untersucht. Empfohlen als Teil Sturzrisiko-Assessments, weniger als Verlaufszeichen </p>
   <p> Im Cenplex Behandlungsplan als <strong> Messung </strong> hinterlegt. Hier durchführen und Summenscore übertragen </p>
-
   Ausführliches Protokoll hier: <a href="Tinetti_Protokoll.pdf" target="_blank">Tinetti Protokoll (PDF)</a>
-
 
   <form id="Tinettiform">
     <div id="questions"></div>
     <button type="button" onclick="calculateTINETTI()">✅ Score berechnen</button>
-    <button type="button" onclick="downloadPDF()">📄 Als PDF speichern</button>
+    <button type="button" onclick="generatePDF()">📄 Als PDF speichern</button>
   </form>
 
- <p id="result"></p>
+  <p id="result"></p>
 
   <div class="nav-buttons">
     <a href="standard.html">⬅️ Zurück zu Standard-Assessments</a>
     <a href="index.html">🏠 Zur Startseite</a>
   </div>
+
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script>
     const questions = [
-  {
-    text: "Sitzbalance",
-    options: [
-      "0 – lehnt zur Seite oder rutscht im Stuhl",
-      "1 – sicher, stabil"
-    ]
-  },
-  {
-    text: "Aufstehen",
-    options: [
-      "0 – ohne Hilfe nicht möglich",
-      "1 – möglich, aber braucht Arme",
-      "2 – möglich ohne Benützung der Arme"
-    ]
-  },
-  {
-    text: "Versuche, aufzustehen",
-    options: [
-      "0 – unmöglich ohne Hilfe",
-      "1 – möglich, aber braucht mehr als einen Versuch",
-      "2 – möglich, in einem Versuch"
-    ]
-  },
-  {
-    text: "Unmittelbare Stehbalance (erste 5 Sekunden)",
-    options: [
-      "0 – unsicher (macht kleine Schritte, deutliche Rumpfbewegungen)",
-      "1 – sicher, aber benötigt Stock, Böckli oder anderes Hilfsmittel",
-      "2 – sicher, ohne Hilfsmittel"
-    ]
-  },
-  {
-    text: "Stehbalance beim Versuch, Füsse nahe beieinander zu halten",
-    options: [
-      "0 – unsicher",
-      "1 – sicher, aber Füsse weit voneinander (mehr als 10 cm) Oder benötigt Hilfsmittel",
-      "2 – sicher, ohne Hilfsmittel"
-    ]
-  },
-  {
-    text: "Stoss (Füsse so nahe beieinander wie möglich, Untersucher stösst 3x mit Handteller auf Sternum des Pat.)",
-    options: [
-      "0 – würde ohne Hilfe umfallen",
-      "1 – macht Ausweichschritte, muss sich halten, fällt aber nicht um",
-      "2 – sicher"
-    ]
-  },
-  {
-    text: "Augen geschlossen (Füsse so nahe beieinander wie möglich)",
-    options: [
-      "0 – unsicher",
-      "1 – sicher"
-    ]
-  },
-  {
-    text: "Beginn des Gangs (nach dem Befehl zu gehen)",
-    options: [
-      "0 – irgend ein Zögern oder verschiedene Versuche",
-      "1 – kein Zögern"
-    ]
-  },
-  {
-    text: "Schrittlänge rechtes Schwungbein",
-    options: [
-      "0 – kommt nicht vor linken Standfuss beim Gang",
-      "1 – kommt vor linken Standfuss"
-    ]
-  },
-  {
-    text: "Schritthöhe rechtes Schwungbein",
-    options: [
-      "0 – rechter Fuss hebt nicht vollständig vom Boden ab",
-      "1 – rechter Fuss hebt vollständig vom Boden ab"
-    ]
-  },
-  {
-    text: "Schrittlänge linkes Schwungbein",
-    options: [
-      "0 – kommt nicht vor rechten Standfuss beim Gang",
-      "1 – kommt vor rechten Standfuss"
-    ]
-  },
-  {
-    text: "Schritthöhe linkes Schwungbein",
-    options: [
-      "0 – linker Fuss hebt nicht vollständig vom Boden ab",
-      "1 – linker Fuss hebt vollständig vom Boden ab"
-    ]
-  },
-  {
-    text: "Gangsymmetrie",
-    options: [
-      "0 – Schrittlänge links und rechts sind nicht gleich",
-      "1 – Schrittlänge links und rechts sind gleich"
-    ]
-  },
-  {
-    text: "Schrittkontinuität",
-    options: [
-      "0 – Schritte anhalten oder Diskontinuität",
-      "1 – Schritte sind kontinuierlich"
-    ]
-  },
-  {
-    text: "Wegabweichung (mindestens 3 m entlang einer gerade Linie)",
-    options: [
-      "0 – deutliche Deviation",
-      "1 – leichte Deviation oder benötigt Hilfsmittel",
-      "2 – gerade ohne Hilfsmittel"
-    ]
-  }
-];
+      { text: "Sitzbalance", options: ["0 – lehnt zur Seite oder rutscht im Stuhl", "1 – sicher, stabil"] },
+      { text: "Aufstehen", options: ["0 – ohne Hilfe nicht möglich", "1 – möglich, aber braucht Arme", "2 – möglich ohne Benützung der Arme"] },
+      { text: "Versuche, aufzustehen", options: ["0 – unmöglich ohne Hilfe", "1 – möglich, aber braucht mehr als einen Versuch", "2 – möglich, in einem Versuch"] },
+      { text: "Unmittelbare Stehbalance (erste 5 Sekunden)", options: ["0 – unsicher (macht kleine Schritte, deutliche Rumpfbewegungen)", "1 – sicher, aber benötigt Stock, Böckli oder anderes Hilfsmittel", "2 – sicher, ohne Hilfsmittel"] },
+      { text: "Stehbalance beim Versuch, Füsse nahe beieinander zu halten", options: ["0 – unsicher", "1 – sicher, aber Füsse weit voneinander (mehr als 10 cm) Oder benötigt Hilfsmittel", "2 – sicher, ohne Hilfsmittel"] },
+      { text: "Stoss (Füsse so nahe beieinander wie möglich, Untersucher stösst 3x mit Handteller auf Sternum des Pat.)", options: ["0 – würde ohne Hilfe umfallen", "1 – macht Ausweichschritte, muss sich halten, fällt aber nicht um", "2 – sicher"] },
+      { text: "Augen geschlossen (Füsse so nahe beieinander wie möglich)", options: ["0 – unsicher", "1 – sicher"] },
+      { text: "Beginn des Gangs (nach dem Befehl zu gehen)", options: ["0 – irgend ein Zögern oder verschiedene Versuche", "1 – kein Zögern"] },
+      { text: "Schrittlänge rechtes Schwungbein", options: ["0 – kommt nicht vor linken Standfuss beim Gang", "1 – kommt vor linken Standfuss"] },
+      { text: "Schritthöhe rechtes Schwungbein", options: ["0 – rechter Fuss hebt nicht vollständig vom Boden ab", "1 – rechter Fuss hebt vollständig vom Boden ab"] },
+      { text: "Schrittlänge linkes Schwungbein", options: ["0 – kommt nicht vor rechten Standfuss beim Gang", "1 – kommt vor rechten Standfuss"] },
+      { text: "Schritthöhe linkes Schwungbein", options: ["0 – linker Fuss hebt nicht vollständig vom Boden ab", "1 – linker Fuss hebt vollständig vom Boden ab"] },
+      { text: "Gangsymmetrie", options: ["0 – Schrittlänge links und rechts sind nicht gleich", "1 – Schrittlänge links und rechts sind gleich"] },
+      { text: "Schrittkontinuität", options: ["0 – Schritte anhalten oder Diskontinuität", "1 – Schritte sind kontinuierlich"] },
+      { text: "Wegabweichung (mindestens 3 m entlang einer gerade Linie)", options: ["0 – deutliche Deviation", "1 – leichte Deviation oder benötigt Hilfsmittel", "2 – gerade ohne Hilfsmittel"] }
+    ];
 
-    const balanceIndexes = [0, 1, 2, 3, 4, 5, 6]; 
-    const gaitIndexes = [7,8,9,10,11, 12, 13, 14]; 
+    const balanceIndexes = [0, 1, 2, 3, 4, 5, 6];
+    const gaitIndexes = [7, 8, 9, 10, 11, 12, 13, 14];
 
-  function renderForm() {
+    function renderForm() {
       const container = document.getElementById("questions");
       container.innerHTML = "";
       questions.forEach((q, i) => {
         const block = document.createElement("div");
         block.className = "question-block";
-        const options = q.options.map((opt, idx) =>
-          `<option value="${parseInt(opt[0])}">${opt}</option>`).join("");
+        const options = q.options.map(opt => {
+          const val = parseInt(opt.split(" – ")[0]);
+          return `<option value="${val}">${opt}</option>`;
+        }).join("");
         block.innerHTML = `
           <div class="question">${i + 1}. ${q.text}</div>
           <select name="q${i}" required>
@@ -173,29 +78,25 @@
       });
     }
 
+    function calculateTINETTI() {
+      let balance = 0, gait = 0;
+      for (let i = 0; i < questions.length; i++) {
+        const val = parseInt(document.querySelector(`select[name='q${i}']`)?.value);
+        if (isNaN(val)) return alert("Bitte alle Fragen beantworten.");
+        if (balanceIndexes.includes(i)) balance += val;
+        else if (gaitIndexes.includes(i)) gait += val;
+      }
 
+      const max = questions.reduce((sum, q) => {
+        return sum + Math.max(...q.options.map(o => parseInt(o.split(" – ")[0])));
+      }, 0);
 
-   function calculateTINETTI() {
-  let balance = 0, gait = 0;
-  for (let i = 0; i < questions.length; i++) {
-    const val = parseInt(document.querySelector(`select[name='q${i}']`)?.value);
-    if (isNaN(val)) return alert("Bitte alle Fragen beantworten.");
-    if (balanceIndexes.includes(i)) balance += val;
-    else if (gaitIndexes.includes(i)) gait += val;
-  }
-  const total = balance + gait;
-
-  const max = questions.reduce((sum, q) => {
-    return sum + Math.max(...q.options.map(o => parseInt(o[0])));
-  }, 0);
-
-  document.getElementById("result").innerHTML =
-  `<strong>Tinetti/POMA Gesamt:</strong> ${total} / ${max}<br>` +
-  `<strong>Gleichgewicht:</strong> ${balance}<br>` +
-  `<strong>Gang:</strong> ${gait}`;
-
-}
-
+      const total = balance + gait;
+      document.getElementById("result").innerHTML =
+        `<strong>Tinetti/POMA Gesamt:</strong> ${total} / ${max}<br>` +
+        `<strong>Gleichgewicht:</strong> ${balance}<br>` +
+        `<strong>Gang:</strong> ${gait}`;
+    }
 
     async function generatePDF() {
       const { jsPDF } = window.jspdf;
@@ -224,10 +125,10 @@
         }
       }
 
-      doc.setFontSize(14);
       const max = questions.reduce((sum, q) => {
-        return sum + Math.max(...q.options.map(o => parseInt(o[0])));
+        return sum + Math.max(...q.options.map(o => parseInt(o.split(" – ")[0])));
       }, 0);
+      doc.setFontSize(14);
       doc.text(`Gesamtscore: ${total} / ${max}`, 10, y);
       window.open(doc.output('bloburl'), '_blank');
     }
