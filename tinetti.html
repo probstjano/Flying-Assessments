@@ -22,8 +22,6 @@
 
   Ausführliches Protokoll hier: <a href="Tinetti_Protokoll.pdf" target="_blank">Tinetti Protokoll (PDF)</a>
 
-  <button type="button" id="toggleBtn" onclick="toggleForm()">👉 Zur Kurzversion (7 Items) wechseln</button>
-
       <button type="button" onclick="calculateTINETTI()">✅ Score berechnen</button>
     <button type="button" onclick="downloadPDF()">📄 Als PDF speichern</button>
   </form>
@@ -152,17 +150,14 @@
   }
 ];
 
-    function calculateTINETTI()  {
-      const form = document.forms["demmiForm"];
+    function calculateTINETTI() {
+      const form = document.forms["fistForm"];
       let score = 0;
       for (let i = 0; i < questions.length; i++) {
         score += parseInt(form["q" + i].value);
       }
-    }
-      const max = useShort ? 28 : 56;
-      currentScore = total;
-      document.getElementById("scoreDisplay").innerText = `BBS Gesamtscore: ${total} / ${max}`;
-      if (!useShort) document.getElementById("normBlock").style.display = "block";
+      const max = questions.length * 4;
+      document.getElementById("result").innerText = `Gesamt-Score: ${score}/${max}`;
     }
 
     async function generatePDF() {
