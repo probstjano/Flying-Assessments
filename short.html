@@ -13,7 +13,7 @@
     button { margin-top: 20px; padding: 10px 15px; font-size: 16px; }
     #result { margin-top: 2rem; font-weight: bold; white-space: pre-line; }
     #normInfo { margin-top: 1rem; font-size: 0.9em; color: #333; }
-    #ageInputBlock { display: none; margin-top: 1rem; }
+    #normBlock { display: none; margin-top: 1rem; }
   </style>
 </head>
 <body>
@@ -25,18 +25,19 @@
   <form id="bbsForm">
     <div id="questions"></div>
     <button type="button" onclick="calculateBBS()">✅ Score berechnen</button>
-    <div id="ageInputBlock">
+
+    <div id="normBlock">
       <label for="age">Alter der getesteten Person:</label>
       <input type="number" id="age" value="70" min="0" max="120" />
       <button type="button" onclick="showNorm()">📊 Normwerte / Cut-Offs anzeigen</button>
     </div>
+
     <button type="button" onclick="generatePDF()">📄 PDF erstellen</button>
   </form>
 
   <div id="result"></div>
   <div id="normInfo"></div>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script>
     const fullQuestions = [
       { text: "Vom Sitzen zum Stehen", options: [
@@ -139,9 +140,8 @@
       ]}
     ];
 
- const shortIndexes = [0, 5, 7, 8, 9, 12, 13];
+    const shortIndexes = [0, 5, 7, 8, 9, 12, 13];
     let useShort = false;
-    let currentScore = null;
 
     function toggleForm() {
       useShort = !useShort;
@@ -149,9 +149,9 @@
         ? "🔁 Zur Vollversion (14 Items) wechseln"
         : "👉 Zur Kurzversion (7 Items) wechseln";
       renderForm();
-      document.getElementById("ageInputBlock").style.display = "none";
-      document.getElementById("normInfo").innerText = "";
       document.getElementById("result").innerText = "";
+      document.getElementById("normInfo").innerText = "";
+      document.getElementById("normBlock").style.display = "none";
     }
 
     function renderForm() {
@@ -176,6 +176,11 @@
       });
     }
 
+    function calculateNorm(age) {
+      if (age < 70) return 56;
+      return Math.round((56 - ((age - 70) * 0.7)) * 10) / 10;
+    }
+
     function calculateBBS() {
       const items = useShort ? shortIndexes.map(i => fullQuestions[i]) : fullQuestions;
       let total = 0;
@@ -186,17 +191,8 @@
         total += parseInt(sel.value);
       }
       const max = useShort ? 28 : 56;
-      currentScore = total;
       document.getElementById("result").innerText = `BBS Gesamtscore: ${total} / ${max}`;
-
-      if (!useShort) {
-        document.getElementById("ageInputBlock").style.display = "block";
-      }
-    }
-
-    function calculateNorm(age) {
-      if (age < 70) return 56;
-      return Math.round((56 - ((age - 70) * 0.7)) * 10) / 10;
+      if (!useShort) document.getElementById("normBlock").style.display = "block";
     }
 
     function showNorm() {
@@ -211,3 +207,4 @@
   </script>
 </body>
 </html>
+
