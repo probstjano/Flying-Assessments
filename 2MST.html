@@ -24,7 +24,7 @@
 </head>
 <body>
   <h1>2-Minuten Step Test</h1>
-  <p>Test zur Beurteilung der kardiovaskulären Ausdauerleistungsfähigkeit. In älteren Populationen gut untersucht.</p>
+  <p>Test zur Beurteilung der kardiovaskulären Ausdauerleistungsfähigkeit. In älteren Populationen gut untersucht mit guter Übereinstimmung mit wetieren Kardiovaksulären Ausdauertests inkl 6min Gehtest</p>
   <p>Im Cenplex-Behandlungsplan als <strong>Messung</strong> hinterlegt. Hier eintragen für Normwerte.</p>
   <p>Detailliertes Protokoll hier:
     <a href="2MST.pdf" target="_blank">2MST Protokoll (PDF)</a></p>
@@ -108,14 +108,16 @@
       }
       if (steps > norms[norms.length - 1]) percentile = ">90";
 
-      resultDiv.innerHTML =
-        `Anzahl Schritte: ${steps}<br>→ Dieser Wert ist besser als ca. <strong>${percentile}</strong>% der Vergleichsgruppe (${ageGroup}, ${sex === 'men' ? 'Männer' : 'Frauen'}).`;
+      
 
       normDiv.innerHTML =
-        `<h3>Schweizer Normwerte (${ageGroup}, ${sex === 'men' ? 'Männer' : 'Frauen'})</h3>
+        `<h3>US-Amerikansiche Normwerte 1999 (${ageGroup}, ${sex === 'men' ? 'Männer' : 'Frauen'})</h3>
         <table><tr><th>Perzentil</th><th>Schritte</th></tr>
         ${percentiles.map((p, i) => `<tr><td>P${p}</td><td>${norms[i]}</td></tr>`).join("")}
         </table>`;
+
+      resultDiv.innerHTML =
+        `Anzahl Schritte: ${steps}<br>→ Dieser Wert ist besser als ca. <strong>${percentile}</strong>% der Vergleichsgruppe (${ageGroup}, ${sex === 'men' ? 'Männer' : 'Frauen'}).`;
       normDiv.classList.remove("hidden");
     }
 
