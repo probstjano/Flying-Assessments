@@ -25,7 +25,9 @@
 </head>
 <body>
   <h1>2-Minuten Step Test</h1>
-  <p>Test zur Einschätzung der kardiovaskulären Ausdauerleistungsfähigkeit bei älteren Erwachsenen.</p>
+  <p>Test zur Einschätzung der kardiovaskulären Ausdauerleistungsfähigkeit. Vor allem gut untersuch bei älteren Erwachsenen mit Normwerten. Gute Übereinstimmung mit anderen ausdauertests und 6 Minuten Gehtest, eignet sich als Verlaufsparameter </p>
+  <p> Im Cenplex Behandlungsplan als <stron> Messung </stron> vorhanden. Hier eintragen für Normwerte </p>
+  <p> <strong> Durchführung: </strong> Ausführliches Protokoll hier: </p>
   <form>
     <label>Anzahl Schritte in 2 Minuten:</label>
     <input type="number" id="steps" min="0" step="1">
@@ -107,7 +109,7 @@
 
       resultDiv.innerHTML = `Anzahl Schritte: ${steps}<br>→ Besser als ca. <strong>${percentile}</strong>% der Vergleichsgruppe (${ageGroup}, ${sex === 'men' ? 'Männer' : 'Frauen'})`;
 
-      normDiv.innerHTML = `<h3>Schweizer Normwerte (${ageGroup})</h3>
+      normDiv.innerHTML = `<h3>US Amerikanische Normwerte 1999 (${ageGroup})</h3>
         <table><tr><th>Perzentil</th><th>Schritte</th></tr>
         ${percentiles.map((p, i) => `<tr><td>${p} %</td><td>${norms[i]}</td></tr>`).join("")}
         </table>`;
