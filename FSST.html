@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Four Square Step Test (FSST)</title>
+  <title>Four Square Step Test (FSST)/ Modified FFST </title>
   <style>
     body { font-family: sans-serif; margin: 2rem; font-size: 16px; max-width: 700px; }
     label { display: block; margin-top: 1rem; }
@@ -24,15 +24,16 @@
   </style>
 </head>
 <body>
-  <h1>Four Square Step Test (FSST)</h1>
-  <p>Test zur Beurteilung der dynamischen Stabilität. Es wird gemessen, wie schnell eine Person vier markierte Bereiche auf dem Boden in einer bestimmten Reihenfolge durchqueren kann.</p>
-  <p>Im Cenplex-Behandlungsplan als <strong>Messung</strong> dokumentieren.</p>
+  <h1>Four Square Step Test (FSST)/Modified FFST </h1>
+  <p>Test dynmaischen Gleichgewichts/Schrittsichereit. Gute Reliabilität. Keine Normwerte und Cut-off Werte nur auf Basis sehr kleiner Stichproben!.</p>
+  <p> Test ursprünglich mit 2 Stöcken am Boden, modifizierte Version, bei der mit Tape ein Kreuz markiert wird ist beschrieben und reliabel. Cut-off Werte aber keine untersucht! </p>
+  <p>Im Cenplex-Behandlungsplan als <strong>Messung</strong> hinterlegt und dort eintragen.</p>
   <p>Detailliertes Protokoll hier: 
-    <a href="Four Step Square Test.pdf" target="_blank">Four Step Square Test – PDF</a>
+    <a href="FSST_Protokoll.pdf" target="_blank">Four Step Square Test – Protokoll</a>
   </p>
 
   <form>
-    <label>Benötigte Zeit für schnelleren Durchgang (Sekunden):</label>
+    <label>Benötigte Zeit für schnelleren von zwei Durchgängen (Sekunden):</label>
     <input type="number" id="zeit" step="0.01" min="0">
     <button type="button" onclick="zeigeErgebnis()">✅ Ergebnis anzeigen</button>
     <button type="button" onclick="generatePDF()">📄 Als PDF speichern</button>
