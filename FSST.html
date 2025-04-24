@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Four Square Step Test (FSST)</title>
+  <style>
+    body { font-family: sans-serif; margin: 2rem; font-size: 16px; max-width: 700px; }
+    label { display: block; margin-top: 1rem; }
+    input { width: 100%; padding: 6px; font-size: 16px; margin-bottom: 10px; }
+    button { margin-top: 10px; padding: 10px 15px; font-size: 16px; }
+    #result { font-weight: bold; margin-top: 20px; white-space: pre-line; }
+    .nav-buttons { margin-top: 2rem; }
+    .nav-buttons a {
+      display: inline-block;
+      margin-right: 10px;
+      padding: 10px 15px;
+      background: #eee;
+      border-radius: 8px;
+      text-decoration: none;
+      color: #000;
+    }
+    .nav-buttons a:hover { background: #ddd; }
+  </style>
+</head>
+<body>
+  <h1>Four Square Step Test (FSST)</h1>
+  <p>Test zur Beurteilung der dynamischen Stabilität. Es wird gemessen, wie schnell eine Person vier markierte Bereiche auf dem Boden in einer bestimmten Reihenfolge durchqueren kann.</p>
+  <p>Im Cenplex-Behandlungsplan als <strong>Messung</strong> dokumentieren.</p>
+  <p>Detailliertes Protokoll hier: 
+    <a href="Four Step Square Test.pdf" target="_blank">Four Step Square Test – PDF</a>
+  </p>
+
+  <form>
+    <label>Benötigte Zeit für schnelleren Durchgang (Sekunden):</label>
+    <input type="number" id="zeit" step="0.01" min="0">
+    <button type="button" onclick="zeigeErgebnis()">✅ Ergebnis anzeigen</button>
+    <button type="button" onclick="generatePDF()">📄 Als PDF speichern</button>
+  </form>
+
+  <div id="result"></div>
+
+  <div class="nav-buttons">
+    <a href="standard.html">⬅️ Zurück zu Standard-Assessments</a>
+    <a href="index.html">🏠 Zur Startseite</a>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script>
+    function zeigeErgebnis() {
+      const zeit = parseFloat(document.getElementById("zeit").value);
+      if (isNaN(zeit)) {
+        document.getElementById("result").innerText = "Bitte eine gültige Zeit eingeben.";
+        return;
+      }
+
+      document.getElementById("result").innerText = 
+        `Erfasste Zeit: ${zeit} Sekunden\n\nHinweis:\n– Ältere Erwachsene: >15s = erhöhtes Sturzrisiko\n– Schlaganfall: >15s oder Versuch nicht erfolgreich\n– Parkinson: >9,68s = erhöhtes Sturzrisiko\n– Vestibularstörung: >12s = erhöhtes Sturzrisiko\n– Amputation: >24s = erhöhtes Sturzrisiko`;
+    }
+
+    async function generatePDF() {
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF();
+      let y = 10;
+
+      doc.setFontSize(16);
+      doc.text("Four Square Step Test – Auswertung", 10, y);
+      y += 10;
+
+      const text = document.getElementById("result").innerText.split("\n");
+      doc.setFontSize(12);
+      text.forEach(line => {
+        doc.text(line, 10, y);
+        y += 8;
+      });
+
+      window.open(doc.output('bloburl'), '_blank');
+    }
+  </script>
+</body>
+</html>
