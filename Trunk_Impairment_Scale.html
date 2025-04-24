@@ -2,95 +2,102 @@
 <html lang="de">
 <head>
   <meta charset="UTF-8" />
-  <title>Trunk Impairment Scale (TIS)</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Trunk Impairment Scale</title>
   <style>
-    body { font-family: sans-serif; max-width: 800px; margin: 2rem; font-size: 16px; }
-    .question-block { margin-bottom: 1.5rem; }
-    select { width: 100%; padding: 8px; font-size: 16px; margin-top: 5px; }
+    body { font-family: sans-serif; margin: 20px; max-width: 800px; }
+    .item-block { margin-bottom: 1rem; }
+    select { width: 100%; padding: 8px; font-size: 16px; }
     button { margin-top: 20px; padding: 10px 15px; font-size: 16px; }
-    #result { margin-top: 2rem; font-weight: bold; white-space: pre-line; }
-    .nav-buttons { margin-top: 2rem; }
+    #result { margin-top: 20px; font-weight: bold; white-space: pre-line; }
     .hidden { display: none; }
   </style>
 </head>
 <body>
   <h1>Trunk Impairment Scale (TIS)</h1>
+  <p>Bitte Antworten auswählen. Der Test bricht automatisch ab, wenn die statische Sitzbalance nicht erfüllt ist.</p>
   <form id="tisForm">
-    <div class="question-block">
-      <label for="item1">Statische Sitzbalance – Item 1:<br>Patient hält die Startposition ohne Unterstützung für 10 Sekunden</label>
-      <select id="item1" onchange="handleItem1()">
-        <option value="">Antwort auswählen</option>
-        <option value="0">• Nein (0 Punkte)</option>
-        <option value="2">• Ja (2 Punkte)</option>
-      </select>
-    </div>
-
-    <div id="staticRest" class="hidden">
-      <div class="question-block">
-        <label for="item2">Item 2: Therapeut überkreuzt das nicht-paretische Bein über das hemiplegische</label>
-        <select id="item2">
-          <option value="">Antwort auswählen</option>
-          <option value="0">• Fällt oder kann Position nicht 10s halten (0)</option>
-          <option value="2">• Hält Position 10s (2)</option>
-        </select>
-      </div>
-
-      <div class="question-block">
-        <label for="item3">Item 3: Patient überkreuzt selbst das nicht-paretische Bein über das hemiplegische</label>
-        <select id="item3">
-          <option value="">Antwort auswählen</option>
-          <option value="0">• Fällt (0)</option>
-          <option value="1">• Kann nicht ohne Armhilfe überkreuzen (1)</option>
-          <option value="2">• Überkreuzt mit Rumpfverlagerung &gt;10 cm oder Handhilfe (2)</option>
-          <option value="3">• Überkreuzt ohne Verlagerung/Hilfe (3)</option>
-        </select>
-      </div>
-    </div>
-
+    <div id="items"></div>
     <button type="button" onclick="calculateTIS()">✅ Score berechnen</button>
-    <div id="result"></div>
   </form>
 
-  <div class="nav-buttons">
-    <a href="standard.html">⬅️ Zurück zu Standard-Assessments</a>
-    <a href="index.html">🏠 Zur Startseite</a>
-  </div>
+  <div id="result"></div>
 
   <script>
-    function handleItem1() {
-      const val = document.getElementById('item1').value;
-      const rest = document.getElementById('staticRest');
-      if (val === "2") {
-        rest.classList.remove("hidden");
-      } else {
-        rest.classList.add("hidden");
-        document.getElementById("result").innerText = "Test abgebrochen nach Item 1 – Score: 0 Punkte";
-      }
+    const items = [
+      { id: "s1", text: "Statisches Sitzen: Ausgangsposition ohne Unterstützung 10 Sek. halten", options: ["0 – Nein", "2 – Ja"], section: "static" },
+      { id: "s2", text: "Therapeut kreuzt nicht-betroffenes Bein über betroffenes", options: ["0 – Fällt oder braucht Armstütze", "2 – 10 Sek. stabil"], section: "static" },
+      { id: "s3", text: "Patient kreuzt selbst das nicht-betroffene Bein über das betroffene", options: ["0 – Fällt", "1 – Schafft es nicht ohne Armstütze", "2 – Mit Hilfe oder Rumpfverschiebung", "3 – Ohne Hilfe, ohne Verschiebung"], section: "static" },
+
+      { id: "d1", text: "Berührt mit betroffenem Ellbogen Bett/Tisch, kehrt zurück", options: ["0 – Fällt oder braucht Hilfe", "1 – Führt aus"], section: "dynamic" },
+      { id: "d2", text: "Wiederholung: korrektes Verkürzen/Verlängern?", options: ["0 – Nein", "1 – Ja"], section: "dynamic", dependsOn: "d1", requiredValue: "1" },
+      { id: "d3", text: "Wiederholung: ohne Kompensation?", options: ["0 – Mit Kompensation", "1 – Ohne Kompensation"], section: "dynamic", dependsOn: "d2", requiredValue: "1" },
+      { id: "d4", text: "Berührt mit nicht-betroffenem Ellbogen Bett/Tisch, kehrt zurück", options: ["0 – Fällt oder braucht Hilfe", "1 – Führt aus"], section: "dynamic" },
+      { id: "d5", text: "Wiederholung: korrektes Verkürzen/Verlängern?", options: ["0 – Nein", "1 – Ja"], section: "dynamic", dependsOn: "d4", requiredValue: "1" },
+      { id: "d6", text: "Wiederholung: ohne Kompensation?", options: ["0 – Mit Kompensation", "1 – Ohne Kompensation"], section: "dynamic", dependsOn: "d5", requiredValue: "1" },
+      { id: "d7", text: "Heben des Beckens auf betroffener Seite", options: ["0 – Keine Bewegung/Fehlbewegung", "1 – Korrekt"], section: "dynamic" },
+      { id: "d8", text: "Wiederholung: ohne Kompensation?", options: ["0 – Mit Kompensation", "1 – Ohne Kompensation"], section: "dynamic", dependsOn: "d7", requiredValue: "1" },
+      { id: "d9", text: "Heben des Beckens auf nicht-betroffener Seite", options: ["0 – Keine Bewegung/Fehlbewegung", "1 – Korrekt"], section: "dynamic" },
+
+      { id: "c1", text: "Rotation oberer Rumpf 6x, Hemiseite zuerst", options: ["0 – Seite nicht 3x bewegt", "1 – Asymmetrisch", "2 – Symmetrisch"], section: "coord" },
+      { id: "c2", text: "Wiederholung in 6 Sek.", options: ["0 – Asymmetrisch", "1 – Symmetrisch"], section: "coord" },
+      { id: "c3", text: "Rotation unterer Rumpf 6x, Hemiseite zuerst", options: ["0 – Seite nicht 3x bewegt", "1 – Asymmetrisch", "2 – Symmetrisch"], section: "coord" },
+      { id: "c4", text: "Wiederholung in 6 Sek.", options: ["0 – Asymmetrisch", "1 – Symmetrisch"], section: "coord" },
+    ];
+
+    function renderForm() {
+      const container = document.getElementById("items");
+      items.forEach(item => {
+        const block = document.createElement("div");
+        block.className = "item-block";
+        block.id = `block-${item.id}`;
+        if (item.dependsOn) block.classList.add("hidden");
+
+        const select = item.options.map((opt, i) => {
+          const val = parseInt(opt.split("–")[0]);
+          return `<option value="${val}">${opt}</option>`;
+        }).join("");
+
+        block.innerHTML = `<label>${item.text}</label>
+          <select id="${item.id}" onchange="checkDependencies()"> 
+            <option value="">Antwort auswählen</option>
+            ${select}
+          </select>`;
+        container.appendChild(block);
+      });
+    }
+
+    function checkDependencies() {
+      items.forEach(item => {
+        if (item.dependsOn) {
+          const dep = document.getElementById(item.dependsOn);
+          const block = document.getElementById(`block-${item.id}`);
+          if (dep && dep.value === item.requiredValue) block.classList.remove("hidden");
+          else {
+            block.classList.add("hidden");
+            document.getElementById(item.id).value = "";
+          }
+        }
+      });
     }
 
     function calculateTIS() {
-      const item1 = parseInt(document.getElementById("item1").value);
-      if (isNaN(item1)) {
-        alert("Bitte Item 1 beantworten.");
+      const s1 = document.getElementById("s1").value;
+      if (s1 !== "2") {
+        document.getElementById("result").innerText = "Test abgebrochen: Ausgangsposition konnte nicht gehalten werden.\nGesamtscore: 0/21";
         return;
       }
 
-      if (item1 === 0) {
-        document.getElementById("result").innerText = "Test abgebrochen nach Item 1 – Score: 0 Punkte";
-        return;
-      }
+      let score = 0;
+      items.forEach(item => {
+        const el = document.getElementById(item.id);
+        if (el && el.value !== "") score += parseInt(el.value);
+      });
 
-      const item2 = parseInt(document.getElementById("item2").value);
-      const item3 = parseInt(document.getElementById("item3").value);
-
-      if (isNaN(item2) || isNaN(item3)) {
-        alert("Bitte alle angezeigten Fragen beantworten.");
-        return;
-      }
-
-      const total = item1 + item2 + item3;
-      document.getElementById("result").innerText = `Teilscore – Statische Sitzbalance: ${total} von 7 Punkten`;
+      document.getElementById("result").innerText = `Gesamtscore: ${score} / 21`;
     }
+
+    renderForm();
   </script>
 </body>
 </html>
