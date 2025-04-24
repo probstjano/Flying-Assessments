@@ -15,7 +15,8 @@
 </head>
 <body>
   <h1>Trunk Impairment Scale (TIS)</h1>
-  <p>Bitte Antworten auswählen. Der Test bricht automatisch ab, wenn die statische Sitzbalance nicht erfüllt ist.</p>
+  <p>Der Test wird automatisch abgebrochen, wenn die erste statische Sitzbalance (Item 1) nicht erfüllt ist.</p>
+
   <form id="tisForm">
     <div id="items"></div>
     <button type="button" onclick="calculateTIS()">✅ Score berechnen</button>
@@ -25,24 +26,27 @@
 
   <script>
     const items = [
-      { id: "s1", text: "Statisches Sitzen: Ausgangsposition ohne Unterstützung 10 Sek. halten", options: ["0 – Nein", "2 – Ja"], section: "static" },
-      { id: "s2", text: "Therapeut kreuzt nicht-betroffenes Bein über betroffenes", options: ["0 – Fällt oder braucht Armstütze", "2 – 10 Sek. stabil"], section: "static" },
-      { id: "s3", text: "Patient kreuzt selbst das nicht-betroffene Bein über das betroffene", options: ["0 – Fällt", "1 – Schafft es nicht ohne Armstütze", "2 – Mit Hilfe oder Rumpfverschiebung", "3 – Ohne Hilfe, ohne Verschiebung"], section: "static" },
+      { id: "s1", text: "Item 1 – Ausgangsposition ohne Unterstützung 10 Sek. halten", options: ["0 – Nein", "2 – Ja"], section: "static" },
+      { id: "s2", text: "Item 2 – Therapeut kreuzt nicht-betroffenes Bein über betroffenes", options: ["0 – Fällt oder braucht Armstütze", "2 – 10 Sek. stabil"], dependsOn: "s1", requiredValue: "2" },
+      { id: "s3", text: "Item 3 – Patient kreuzt selbst das nicht-betroffene Bein über das betroffene", options: ["0 – Fällt", "1 – Schafft es nicht ohne Armstütze", "2 – Mit Hilfe oder Rumpfverschiebung", "3 – Ohne Hilfe, ohne Verschiebung"], dependsOn: "s1", requiredValue: "2" },
 
-      { id: "d1", text: "Berührt mit betroffenem Ellbogen Bett/Tisch, kehrt zurück", options: ["0 – Fällt oder braucht Hilfe", "1 – Führt aus"], section: "dynamic" },
-      { id: "d2", text: "Wiederholung: korrektes Verkürzen/Verlängern?", options: ["0 – Nein", "1 – Ja"], section: "dynamic", dependsOn: "d1", requiredValue: "1" },
-      { id: "d3", text: "Wiederholung: ohne Kompensation?", options: ["0 – Mit Kompensation", "1 – Ohne Kompensation"], section: "dynamic", dependsOn: "d2", requiredValue: "1" },
-      { id: "d4", text: "Berührt mit nicht-betroffenem Ellbogen Bett/Tisch, kehrt zurück", options: ["0 – Fällt oder braucht Hilfe", "1 – Führt aus"], section: "dynamic" },
-      { id: "d5", text: "Wiederholung: korrektes Verkürzen/Verlängern?", options: ["0 – Nein", "1 – Ja"], section: "dynamic", dependsOn: "d4", requiredValue: "1" },
-      { id: "d6", text: "Wiederholung: ohne Kompensation?", options: ["0 – Mit Kompensation", "1 – Ohne Kompensation"], section: "dynamic", dependsOn: "d5", requiredValue: "1" },
-      { id: "d7", text: "Heben des Beckens auf betroffener Seite", options: ["0 – Keine Bewegung/Fehlbewegung", "1 – Korrekt"], section: "dynamic" },
-      { id: "d8", text: "Wiederholung: ohne Kompensation?", options: ["0 – Mit Kompensation", "1 – Ohne Kompensation"], section: "dynamic", dependsOn: "d7", requiredValue: "1" },
-      { id: "d9", text: "Heben des Beckens auf nicht-betroffener Seite", options: ["0 – Keine Bewegung/Fehlbewegung", "1 – Korrekt"], section: "dynamic" },
+      { id: "d1", text: "Item 4 – Mit betroffenem Ellbogen Tisch/Bett berühren", options: ["0 – Fällt oder keine Berührung", "1 – Führt aus"], dependsOn: "s1", requiredValue: "2" },
+      { id: "d2", text: "Item 5 – Wiederholung: korrektes Verkürzen/Verlängern?", options: ["0 – Nein", "1 – Ja"], dependsOn: "d1", requiredValue: "1" },
+      { id: "d3", text: "Item 6 – Wiederholung: ohne Kompensation?", options: ["0 – Mit Kompensation", "1 – Ohne Kompensation"], dependsOn: "d2", requiredValue: "1" },
 
-      { id: "c1", text: "Rotation oberer Rumpf 6x, Hemiseite zuerst", options: ["0 – Seite nicht 3x bewegt", "1 – Asymmetrisch", "2 – Symmetrisch"], section: "coord" },
-      { id: "c2", text: "Wiederholung in 6 Sek.", options: ["0 – Asymmetrisch", "1 – Symmetrisch"], section: "coord" },
-      { id: "c3", text: "Rotation unterer Rumpf 6x, Hemiseite zuerst", options: ["0 – Seite nicht 3x bewegt", "1 – Asymmetrisch", "2 – Symmetrisch"], section: "coord" },
-      { id: "c4", text: "Wiederholung in 6 Sek.", options: ["0 – Asymmetrisch", "1 – Symmetrisch"], section: "coord" },
+      { id: "d4", text: "Item 7 – Mit nicht-betroffenem Ellbogen Tisch/Bett berühren", options: ["0 – Fällt oder keine Berührung", "1 – Führt aus"], dependsOn: "s1", requiredValue: "2" },
+      { id: "d5", text: "Item 8 – Wiederholung: korrektes Verkürzen/Verlängern?", options: ["0 – Nein", "1 – Ja"], dependsOn: "d4", requiredValue: "1" },
+      { id: "d6", text: "Item 9 – Wiederholung: ohne Kompensation?", options: ["0 – Mit Kompensation", "1 – Ohne Kompensation"], dependsOn: "d5", requiredValue: "1" },
+
+      { id: "d7", text: "Item 10 – Becken an betroffener Seite anheben", options: ["0 – Keine Bewegung", "1 – Korrekt"], dependsOn: "s1", requiredValue: "2" },
+      { id: "d8", text: "Item 11 – Wiederholung: ohne Kompensation?", options: ["0 – Mit Kompensation", "1 – Ohne Kompensation"], dependsOn: "d7", requiredValue: "1" },
+
+      { id: "d9", text: "Item 12 – Becken an nicht-betroffener Seite anheben", options: ["0 – Keine Bewegung", "1 – Korrekt"], dependsOn: "s1", requiredValue: "2" },
+
+      { id: "c1", text: "Item 13 – Oberkörperrotation 6x, Hemiseite zuerst", options: ["0 – Nicht 3x bewegt", "1 – Asymmetrisch", "2 – Symmetrisch"], dependsOn: "s1", requiredValue: "2" },
+      { id: "c2", text: "Item 14 – Wiederholung in 6 Sek.", options: ["0 – Asymmetrisch", "1 – Symmetrisch"], dependsOn: "c1", requiredValue: "2" },
+      { id: "c3", text: "Item 15 – Unterkörperrotation 6x, Hemiseite zuerst", options: ["0 – Nicht 3x bewegt", "1 – Asymmetrisch", "2 – Symmetrisch"], dependsOn: "s1", requiredValue: "2" },
+      { id: "c4", text: "Item 16 – Wiederholung in 6 Sek.", options: ["0 – Asymmetrisch", "1 – Symmetrisch"], dependsOn: "c3", requiredValue: "2" },
     ];
 
     function renderForm() {
@@ -51,32 +55,34 @@
         const block = document.createElement("div");
         block.className = "item-block";
         block.id = `block-${item.id}`;
+
         if (item.dependsOn) block.classList.add("hidden");
 
-        const select = item.options.map((opt, i) => {
+        const optionsHTML = item.options.map(opt => {
           const val = parseInt(opt.split("–")[0]);
           return `<option value="${val}">${opt}</option>`;
         }).join("");
 
-        block.innerHTML = `<label>${item.text}</label>
-          <select id="${item.id}" onchange="checkDependencies()"> 
+        block.innerHTML = `
+          <label>${item.text}</label>
+          <select id="${item.id}" onchange="updateVisibility()">
             <option value="">Antwort auswählen</option>
-            ${select}
+            ${optionsHTML}
           </select>`;
         container.appendChild(block);
       });
     }
 
-    function checkDependencies() {
+    function updateVisibility() {
       items.forEach(item => {
-        if (item.dependsOn) {
-          const dep = document.getElementById(item.dependsOn);
-          const block = document.getElementById(`block-${item.id}`);
-          if (dep && dep.value === item.requiredValue) block.classList.remove("hidden");
-          else {
-            block.classList.add("hidden");
-            document.getElementById(item.id).value = "";
-          }
+        if (!item.dependsOn) return;
+        const condition = document.getElementById(item.dependsOn)?.value;
+        const block = document.getElementById(`block-${item.id}`);
+        if (condition === item.requiredValue) {
+          block.classList.remove("hidden");
+        } else {
+          block.classList.add("hidden");
+          document.getElementById(item.id).value = "";
         }
       });
     }
@@ -84,14 +90,15 @@
     function calculateTIS() {
       const s1 = document.getElementById("s1").value;
       if (s1 !== "2") {
-        document.getElementById("result").innerText = "Test abgebrochen: Ausgangsposition konnte nicht gehalten werden.\nGesamtscore: 0/21";
+        document.getElementById("result").innerText = "Test abgebrochen: Startposition nicht gehalten.\nGesamtscore: 0 / 21";
         return;
       }
 
       let score = 0;
       items.forEach(item => {
         const el = document.getElementById(item.id);
-        if (el && el.value !== "") score += parseInt(el.value);
+        if (!el || el.classList.contains("hidden") || el.value === "") return;
+        score += parseInt(el.value);
       });
 
       document.getElementById("result").innerText = `Gesamtscore: ${score} / 21`;
