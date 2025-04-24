@@ -1,1 +1,197 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Trunk Impairment Scale (TIS)</title>
+  <style>
+    body { font-family: sans-serif; margin: 2rem; font-size: 16px; max-width: 800px; }
+    .question-block { margin-bottom: 1rem; }
+    .question { font-weight: bold; margin-bottom: 0.5rem; }
+    select { width: 100%; padding: 6px; font-size: 16px; margin-bottom: 10px; }
+    button { margin-top: 20px; padding: 10px 15px; font-size: 16px; }
+    #result { margin-top: 2rem; font-weight: bold; white-space: pre-line; }
+    .hidden { display: none; }
+    .nav-buttons { margin-top: 2rem; }
+    .nav-buttons a {
+      display: inline-block; margin-right: 10px; padding: 10px 15px;
+      background: #eee; border-radius: 8px; text-decoration: none; color: #000;
+    }
+    .nav-buttons a:hover { background: #ddd; }
+  </style>
+</head>
+<body>
+  <h1>Trunk Impairment Scale (TIS)</h1>
+  <p>Beurteilung der Rumpfkontrolle bei neurologischen Patient*innen. Dynamische Struktur: bei bestimmten Antworten wird die Testung automatisch beendet.</p>
+
+  <form id="tisForm">
+    <div id="questions"></div>
+    <button type="button" onclick="calculateTIS()">✅ Score berechnen</button>
+    <button type="button" onclick="generatePDF()">📄 Als PDF speichern</button>
+  </form>
+
+  <div id="result"></div>
+
+  <div class="nav-buttons">
+    <a href="standard.html">⬅️ Zurück zu Standard-Assessments</a>
+    <a href="index.html">🏠 Zur Startseite</a>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script>
+    const items = [
+      { text: "1. Patient hält die Ausgangsposition ohne Unterstützung für 10 Sekunden.", options: [{ label: "Ja", value: 2 }, { label: "Nein", value: 0 }] },
+      { text: "2. Therapeut kreuzt das nicht-betroffene Bein über das hemiplegische.", options: [
+        { label: "Fällt oder kann Sitzposition ohne Armstütze nicht halten", value: 0 },
+        { label: "Hält Sitzposition für 10 Sekunden", value: 2 }
+      ]},
+      { text: "3. Patient kreuzt selbst das nicht-betroffene Bein über das hemiplegische.", options: [
+        { label: "Fällt", value: 0 },
+        { label: "Kann ohne Armhilfe nicht kreuzen", value: 1 },
+        { label: "Kreuzt mit Rumpfverschiebung oder Handhilfe", value: 2 },
+        { label: "Kreuzt ohne Rumpfverschiebung oder Hilfe", value: 3 }
+      ]},
+      { text: "4. Ellbogen hemiplegische Seite berührt Tisch / Bett – Rückkehr zur Ausgangsposition.", options: [
+        { label: "Fällt oder benötigt Armstütze oder Ellbogen berührt nicht", value: 0 },
+        { label: "Bewegt sich aktiv ohne Hilfe, Ellbogen berührt", value: 1 }
+      ]},
+      { text: "5. Wiederholung von 4 – beurteilen von Verkürzung / Verlängerung.", options: [
+        { label: "Keine oder gegenteilige Bewegung", value: 0 },
+        { label: "Angemessene Verkürzung / Verlängerung", value: 1 }
+      ]},
+      { text: "6. Wiederholung von 4 – beurteilen von Kompensation.", options: [
+        { label: "Kompensation durch Arm, Hüfte, Knie oder Fuß", value: 0 },
+        { label: "Bewegung ohne Kompensation", value: 1 }
+      ]},
+      { text: "7. Ellbogen nicht-betroffene Seite berührt Tisch / Bett – Rückkehr zur Ausgangsposition.", options: [
+        { label: "Fällt oder benötigt Armstütze oder Ellbogen berührt nicht", value: 0 },
+        { label: "Bewegt sich aktiv ohne Hilfe, Ellbogen berührt", value: 1 }
+      ]},
+      { text: "8. Wiederholung von 7 – Verkürzung / Verlängerung", options: [
+        { label: "Keine oder gegenteilige Bewegung", value: 0 },
+        { label: "Angemessene Verkürzung / Verlängerung", value: 1 }
+      ]},
+      { text: "9. Wiederholung von 7 – Kompensation", options: [
+        { label: "Kompensation", value: 0 },
+        { label: "Ohne Kompensation", value: 1 }
+      ]},
+      { text: "10. Becken an hemiplegischer Seite wird angehoben und kehrt zurück", options: [
+        { label: "Keine oder gegenteilige Bewegung", value: 0 },
+        { label: "Angemessene Verkürzung / Verlängerung", value: 1 }
+      ]},
+      { text: "11. Wiederholung von 10 – Kompensation", options: [
+        { label: "Kompensation durch Arm oder Fuß", value: 0 },
+        { label: "Bewegung ohne Kompensation", value: 1 }
+      ]},
+      { text: "12. Becken an nicht-betroffener Seite wird angehoben und kehrt zurück", options: [
+        { label: "Keine oder gegenteilige Bewegung", value: 0 },
+        { label: "Angemessene Verkürzung / Verlängerung", value: 1 }
+      ]},
+      { text: "13. Wiederholung von 12 – Kompensation", options: [
+        { label: "Kompensation", value: 0 },
+        { label: "Ohne Kompensation", value: 1 }
+      ]},
+      { text: "14. Oberkörperrotation 6× (hemiplegische Seite zuerst, Kopf fixiert)", options: [
+        { label: "Hemiplegische Seite nicht 3× bewegt", value: 0 },
+        { label: "Asymmetrische Rotation", value: 1 },
+        { label: "Symmetrische Rotation", value: 2 }
+      ]},
+      { text: "15. Wiederholung von 14 in 6 Sekunden", options: [
+        { label: "Asymmetrische Rotation", value: 0 },
+        { label: "Symmetrische Rotation", value: 1 }
+      ]},
+      { text: "16. Unterkörperrotation 6× (hemiplegische Seite zuerst, Oberkörper fixiert)", options: [
+        { label: "Hemiplegische Seite nicht 3× bewegt", value: 0 },
+        { label: "Asymmetrische Rotation", value: 1 },
+        { label: "Symmetrische Rotation", value: 2 }
+      ]},
+      { text: "17. Wiederholung von 16 in 6 Sekunden", options: [
+        { label: "Asymmetrische Rotation", value: 0 },
+        { label: "Symmetrische Rotation", value: 1 }
+      ]}
+    ];
+
+    function renderForm() {
+      const container = document.getElementById("questions");
+      items.forEach((item, i) => {
+        const block = document.createElement("div");
+        block.className = "question-block";
+        block.id = "qblock" + i;
+        const options = item.options.map(o => `<option value="${o.value}">${o.label}</option>`).join("");
+        block.innerHTML = `
+          <div class="question">${item.text}</div>
+          <select name="q${i}" onchange="handleDynamic(${i})">
+            <option value="" disabled selected>Antwort auswählen</option>
+            ${options}
+          </select>`;
+        container.appendChild(block);
+      });
+    }
+
+    function handleDynamic(index) {
+      if (index === 0) {
+        const val = parseInt(document.querySelector(`select[name='q0']`).value);
+        for (let i = 1; i < items.length; i++) {
+          document.getElementById(`qblock${i}`).style.display = val === 0 ? "none" : "block";
+        }
+        if (val === 0) {
+          document.getElementById("result").innerText = "Test abgebrochen nach Item 1 – Punktzahl: 0";
+        } else {
+          document.getElementById("result").innerText = "";
+        }
+      }
+    }
+
+    function calculateTIS() {
+      const val0 = parseInt(document.querySelector("select[name='q0']").value);
+      if (val0 === 0) return;
+
+      let score = 0;
+      for (let i = 0; i < items.length; i++) {
+        const sel = document.querySelector(`select[name='q${i}']`);
+        if (sel && sel.value !== "") {
+          score += parseInt(sel.value);
+        }
+      }
+
+      document.getElementById("result").innerText = `Gesamtscore: ${score} Punkte\n(max. 21 Punkte – Statisch: 5 · Dynamisch: 10 · Koordination: 6)`;
+    }
+
+    async function generatePDF() {
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF();
+      let y = 10;
+
+      doc.setFontSize(16);
+      doc.text("Trunk Impairment Scale – Auswertung", 10, y);
+      y += 10;
+
+      for (let i = 0; i < items.length; i++) {
+        const sel = document.querySelector(`select[name='q${i}']`);
+        if (!sel || sel.selectedIndex < 0) continue;
+        const label = sel.options[sel.selectedIndex].text;
+        doc.setFontSize(12);
+        doc.text(`${i + 1}. ${items[i].text}`, 10, y);
+        y += 6;
+        doc.text(`Antwort: ${label}`, 10, y);
+        y += 10;
+        if (y > 270) {
+          doc.addPage(); y = 10;
+        }
+      }
+
+      const res = document.getElementById("result").innerText;
+      if (res) {
+        doc.setFontSize(14);
+        doc.text(res, 10, y);
+      }
+
+      window.open(doc.output("bloburl"), "_blank");
+    }
+
+    renderForm();
+  </script>
+</body>
+</html>
+
 
