@@ -198,7 +198,7 @@
         const corrected = document.getElementById("correctedMarker");
 
         const posRaw = Math.min(Math.max((speed / maxSpeed) * pxWidth, 0), pxWidth);
-        const posCorr = Math.min(Math.max(((speed - 0.12) / maxSpeed) * pxWidth, 0), pxWidth);
+        const posCorr = Math.min(Math.max(((speed + 0.12) / maxSpeed) * pxWidth, 0), pxWidth);
 
         marker.style.left = `${posRaw}px`;
         corrected.style.left = `${posCorr}px`;
