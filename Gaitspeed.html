@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="de">
 <head>
@@ -31,16 +30,14 @@
 </head>
 <body>
   <h1>Gehgeschwindigkeit</h1>
-<p>Gehgeschwindigkeit ist einer der am besten untersuchten Gesundheitsmarker im Alter.</p>
-<p>Im Cenplex-Plan als <strong>Messung</strong> vorhanden. Hier eintragen für Normwerte und Score-Übertragung.</p> 
-<p>Gemessen wird die übliche/gewohnte Geschwindigkeit. Verschiedene Distanzen mit oder ohne Anlaufstrecke werden teils verwendet. 
-Im Domizilphysio ist meist nur eine 4 m- oder 3 m-Strecke ohne Anlauf realistisch (Teil des SPPB).</p>
-<p>Detailliertes Protokoll des SPPB inkl. Gehgeschwindigkeit: 
-<a href="SPPB_Protokoll.pdf" target="_blank">SPPB Protokoll (PDF)</a></p>
-<p><strong>Wichtig:</strong> Die 4 m-Messung ohne Anlauf reduziert die gemessene Geschwindigkeit um ca. 0,12 m/s im Vergleich zu anderen Verfahren.
-Dies sollte beim Interpretieren der Graphik berücksichtigt werden. Die hier verwendeten Normwerte basieren aber vollständig auf dem 4 m-Verfahren des SPPB.</p>
-
-
+  <p>Gehgeschwindigkeit ist einer der am besten untersuchten Gesundheitsmarker im Alter.</p>
+  <p>Im Cenplex-Plan als <strong>Messung</strong> vorhanden. Hier eintragen für Normwerte und Score-Übertragung.</p> 
+  <p>Gemessen wird die übliche/gewohnte Geschwindigkeit. Verschiedene Distanzen mit oder ohne Anlaufstrecke werden teils verwendet. 
+  Im Domizilphysio ist meist nur eine 4 m- oder 3 m-Strecke ohne Anlauf realistisch (Teil des SPPB).</p>
+  <p>Detailliertes Protokoll des SPPB inkl. Gehgeschwindigkeit: 
+    <a href="SPPB_Protokoll.pdf" target="_blank">SPPB Protokoll (PDF)</a></p>
+  <p><strong>Wichtig:</strong> Die 4 m-Messung ohne Anlauf reduziert die gemessene Geschwindigkeit um ca. 0,12 m/s im Vergleich zu anderen Verfahren.
+  Dies sollte beim Interpretieren der Graphik berücksichtigt werden. Die hier verwendeten Normwerte basieren vollständig auf dem 4 m-Verfahren des SPPB.</p>
 
   <form>
     <label>Strecke:</label>
@@ -115,7 +112,7 @@ Dies sollte beim Interpretieren der Graphik berücksichtigt werden. Die hier ver
       const sex = document.getElementById("sex").value;
       const dist = parseFloat(document.querySelector('input[name="strecke"]:checked').value);
       const zeit = parseFloat(document.getElementById("gehzeit").value);
-      const speed = (dist && zeit) ? dist / zeit : null;
+      const speed = (dist && zeit && zeit > 0) ? dist / zeit : null;
 
       if (isNaN(age) || isNaN(speed)) {
         norms.innerText = "Bitte Alter und gültige Gehzeit eingeben.";
@@ -135,4 +132,48 @@ Dies sollte beim Interpretieren der Graphik berücksichtigt werden. Die hier ver
         women: {
           60: { P5: 0.89, P10: 0.95, P25: 1.07, P50: 1.22, P75: 1.37, P90: 1.52, P95: 1.61 },
           65: { P5: 0.82, P10: 0.88, P25: 1.00, P50: 1.16, P75: 1.31, P90: 1.46, P95: 1.56 },
-          70
+          70: { P5: 0.74, P10: 0.81, P25: 0.92, P50: 1.09, P75: 1.24, P90: 1.39, P95: 1.48 },
+          75: { P5: 0.67, P10: 0.73, P25: 0.85, P50: 1.02, P75: 1.18, P90: 1.32, P95: 1.41 },
+          80: { P5: 0.60, P10: 0.66, P25: 0.79, P50: 0.96, P75: 1.12, P90: 1.25, P95: 1.33 },
+          85: { P5: 0.54, P10: 0.59, P25: 0.73, P50: 0.90, P75: 1.06, P90: 1.17, P95: 1.25 }
+        }
+      };
+
+      const nearest = [60, 65, 70, 75, 80, 85].reduce((a, b) =>
+        Math.abs(b - age) < Math.abs(a - age) ? b : a
+      );
+
+      const P = gaitNorms[sex][nearest];
+      let faster = "-";
+
+      if (!isNaN(speed)) {
+        const percentiles = [5,10,25,50,75,90,95];
+        const values = percentiles.map(p => P["P"+p]);
+        if (speed <= values[0]) faster = 5;
+        else if (speed >= values[6]) faster = 95;
+        else {
+          for (let i = 0; i < values.length - 1; i++) {
+            if (speed >= values[i] && speed <= values[i+1]) {
+              const p0 = percentiles[i], p1 = percentiles[i+1];
+              const v0 = values[i], v1 = values[i+1];
+              const frac = (speed - v0) / (v1 - v0);
+              faster = Math.round(p0 + frac * (p1 - p0));
+              break;
+            }
+          }
+        }
+      }
+
+      norms.innerHTML = `<h3>Norwegische Referenzwerte – Gehgeschwindigkeit (${nearest} Jahre – ${sex === 'men' ? 'Männer' : 'Frauen'})</h3>`;
+      norms.innerHTML += `<table><tr><th>Perzentil</th><th>m/s</th></tr>
+        ${Object.entries(P).map(([k, v]) => `<tr><td>${k}</td><td>${v}</td></tr>`).join("")}
+      </table><p>→ Geschwindigkeit ist schneller als bei: <strong>${faster}%</strong> der Vergleichsgruppe.</p>`;
+
+      norms.classList.remove("hidden");
+      btn.innerText = "📉 Normwerte verbergen";
+      gaitVisible = true;
+    }
+  </script>
+</body>
+</html>
+
