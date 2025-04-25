@@ -8,7 +8,7 @@
   <style>
     body { font-family: sans-serif; margin: 2rem; font-size: 16px; max-width: 700px; }
     label { display: block; margin-top: 1rem; font-weight: bold; }
-    .input-group { margin-bottom: 0.5rem; }
+    .input-group { margin-bottom: 1rem; }
     input[type="number"] {
       width: 100%;
       padding: 6px;
@@ -17,7 +17,6 @@
     }
     small {
       display: block;
-      margin-bottom: 1rem;
       color: #555;
       font-size: 13px;
     }
@@ -48,70 +47,38 @@
 
   <form id="ctsibForm">
     <div class="section">
-      <label>Bedingung 1: Augen offen, fester Untergrund</label>
+      <label for="b1">Bedingung 1: Augen offen, fester Untergrund</label>
       <div class="input-group">
-        <input type="number" min="0" max="30" step="0.01" placeholder="Versuch 1 (Sekunden)" id="b1t1" />
-        <small>Max. 30 Sekunden – Bester von 3 Versuchen</small>
-      </div>
-      <div class="input-group">
-        <input type="number" min="0" max="30" step="0.01" placeholder="Versuch 2 (Sekunden)" id="b1t2" />
-        <small>Max. 30 Sekunden – Bester von 3 Versuchen</small>
-      </div>
-      <div class="input-group">
-        <input type="number" min="0" max="30" step="0.01" placeholder="Versuch 3 (Sekunden)" id="b1t3" />
+        <input type="number" id="b1" min="0" max="30" step="0.01" placeholder="Zeit in Sekunden" />
         <small>Max. 30 Sekunden – Bester von 3 Versuchen</small>
       </div>
     </div>
 
     <div class="section">
-      <label>Bedingung 2: Augen geschlossen, fester Untergrund</label>
+      <label for="b2">Bedingung 2: Augen geschlossen, fester Untergrund</label>
       <div class="input-group">
-        <input type="number" min="0" max="30" step="0.01" placeholder="Versuch 1 (Sekunden)" id="b2t1" />
-        <small>Max. 30 Sekunden – Bester von 3 Versuchen</small>
-      </div>
-      <div class="input-group">
-        <input type="number" min="0" max="30" step="0.01" placeholder="Versuch 2 (Sekunden)" id="b2t2" />
-        <small>Max. 30 Sekunden – Bester von 3 Versuchen</small>
-      </div>
-      <div class="input-group">
-        <input type="number" min="0" max="30" step="0.01" placeholder="Versuch 3 (Sekunden)" id="b2t3" />
+        <input type="number" id="b2" min="0" max="30" step="0.01" placeholder="Zeit in Sekunden" />
         <small>Max. 30 Sekunden – Bester von 3 Versuchen</small>
       </div>
     </div>
 
     <div class="section">
-      <label>Bedingung 3: Augen offen, Schaumunterlage</label>
+      <label for="b3">Bedingung 3: Augen offen, Schaumunterlage</label>
       <div class="input-group">
-        <input type="number" min="0" max="30" step="0.01" placeholder="Versuch 1 (Sekunden)" id="b3t1" />
-        <small>Max. 30 Sekunden – Bester von 3 Versuchen</small>
-      </div>
-      <div class="input-group">
-        <input type="number" min="0" max="30" step="0.01" placeholder="Versuch 2 (Sekunden)" id="b3t2" />
-        <small>Max. 30 Sekunden – Bester von 3 Versuchen</small>
-      </div>
-      <div class="input-group">
-        <input type="number" min="0" max="30" step="0.01" placeholder="Versuch 3 (Sekunden)" id="b3t3" />
+        <input type="number" id="b3" min="0" max="30" step="0.01" placeholder="Zeit in Sekunden" />
         <small>Max. 30 Sekunden – Bester von 3 Versuchen</small>
       </div>
     </div>
 
     <div class="section">
-      <label>Bedingung 4: Augen geschlossen, Schaumunterlage</label>
+      <label for="b4">Bedingung 4: Augen geschlossen, Schaumunterlage</label>
       <div class="input-group">
-        <input type="number" min="0" max="30" step="0.01" placeholder="Versuch 1 (Sekunden)" id="b4t1" />
-        <small>Max. 30 Sekunden – Bester von 3 Versuchen</small>
-      </div>
-      <div class="input-group">
-        <input type="number" min="0" max="30" step="0.01" placeholder="Versuch 2 (Sekunden)" id="b4t2" />
-        <small>Max. 30 Sekunden – Bester von 3 Versuchen</small>
-      </div>
-      <div class="input-group">
-        <input type="number" min="0" max="30" step="0.01" placeholder="Versuch 3 (Sekunden)" id="b4t3" />
+        <input type="number" id="b4" min="0" max="30" step="0.01" placeholder="Zeit in Sekunden" />
         <small>Max. 30 Sekunden – Bester von 3 Versuchen</small>
       </div>
     </div>
 
-    <button type="button" onclick="calculateCTSIB()">✅ Beste Zeiten berechnen</button>
+    <button type="button" onclick="calculateCTSIB()">✅ Zeit berechnen</button>
     <button type="button" onclick="downloadPDF()">📄 Als PDF speichern</button>
   </form>
 
@@ -123,25 +90,14 @@
   </div>
 
   <script>
-    function getMax(id1, id2, id3) {
-      const vals = [id1, id2, id3].map(id => parseFloat(document.getElementById(id).value) || 0);
-      return Math.max(...vals);
-    }
-
     function calculateCTSIB() {
-      const max1 = getMax("b1t1", "b1t2", "b1t3");
-      const max2 = getMax("b2t1", "b2t2", "b2t3");
-      const max3 = getMax("b3t1", "b3t2", "b3t3");
-      const max4 = getMax("b4t1", "b4t2", "b4t3");
-      const total = (max1 + max2 + max3 + max4).toFixed(2);
+      const values = [1,2,3,4].map(n => parseFloat(document.getElementById("b" + n).value) || 0);
+      const total = values.reduce((a, b) => a + b, 0).toFixed(2);
 
       document.getElementById("result").innerText =
-        `Beste Zeiten (Sekunden):\n` +
-        `Bedingung 1: ${max1}\n` +
-        `Bedingung 2: ${max2}\n` +
-        `Bedingung 3: ${max3}\n` +
-        `Bedingung 4: ${max4}\n\n` +
-        `Gesamtdauer: ${total} Sekunden (max. 120)`;
+        `Eingetragene Zeiten (Sekunden):\n` +
+        values.map((v, i) => `Bedingung ${i+1}: ${v}`).join("\n") +
+        `\n\nGesamtdauer: ${total} Sekunden (max. 120)`;
     }
 
     function downloadPDF() {
@@ -153,13 +109,11 @@
       doc.text("Modified CTSIB – Auswertung", 10, y);
       y += 10;
 
-      for (let b = 1; b <= 4; b++) {
-        for (let t = 1; t <= 3; t++) {
-          const val = document.getElementById(`b${b}t${t}`).value || "-";
-          doc.setFontSize(12);
-          doc.text(`Bedingung ${b}, Versuch ${t}: ${val} Sekunden`, 10, y);
-          y += 7;
-        }
+      for (let i = 1; i <= 4; i++) {
+        const val = document.getElementById("b" + i).value || "-";
+        doc.setFontSize(12);
+        doc.text(`Bedingung ${i}: ${val} Sekunden`, 10, y);
+        y += 7;
       }
 
       y += 5;
