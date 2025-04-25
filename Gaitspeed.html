@@ -1,0 +1,134 @@
+
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Gehgeschwindigkeit</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <style>
+    body { font-family: sans-serif; margin: 2rem; font-size: 16px; max-width: 600px; }
+    label { display: block; margin-top: 1rem; }
+    input, select { width: 100%; padding: 6px; font-size: 16px; margin-bottom: 10px; }
+    button { margin-top: 10px; padding: 10px 15px; font-size: 16px; }
+    #result, #normwerteGait { font-weight: bold; margin-top: 20px; white-space: pre-line; }
+    .hidden { display: none; }
+    .nav-buttons { margin-top: 2rem; }
+    .nav-buttons a {
+      display: inline-block;
+      margin-right: 10px;
+      padding: 10px 15px;
+      background: #eee;
+      border-radius: 8px;
+      text-decoration: none;
+      color: #000;
+    }
+    .nav-buttons a:hover { background: #ddd; }
+    table { width: 100%; border-collapse: collapse; margin-top: 1rem; }
+    th, td { border: 1px solid #ccc; padding: 6px; text-align: center; }
+    th { background: #f0f0f0; }
+  </style>
+</head>
+<body>
+  <h1>Gehgeschwindigkeit</h1>
+  <p>Gehgeschwindigkeit bestens untersucht als wichtiger Gesundheitsmarker im Alter. </p>
+  <p>Im Cenplex Plan als <strong>Messung</strong> vorhanden. Hier eintragen für Normwerte und Score übertragen </p> 
+    <p> Gemessen wird die "übliche/Gewohnte" Geschgeschwindiket. Verschiedenste Distanzen mit/ohne Anlaufstrecke werden verwendet. Im Domizilphysio ist meist nur 4m ohne Anlaufstrecke realisitsch (Teil des SPPB)
+    Detailliertes Protokoll des SPPB inkl Gehgeschwindigkeit: <a href="SPPB_Protokoll.pdf" target="_blank">SPPB Protokoll (PDF)
+  </p>
+  <p> Wichitg: Die 4m Messung der Gehgeschwindigkeit ohne Anlaufstrecke reuziert die gemessene Geschwindigkeit um ca 0.12m/s im Vergleich zu anderen Verfahren. Dies ist beim Betrachten der Graphik zu berücksichtigen. Die angefügten Normwerte basieren aber alle auf dem 4m Verfahren des SPPN </p>
+
+  <form>
+    <label>Strecke:</label>
+    <label><input type="radio" name="strecke" value="3" checked> 3 m</label>
+    <label><input type="radio" name="strecke" value="4"> 4 m</label>
+
+    <label>Zeit (Sek.):</label>
+    <input type="number" id="gehzeit" step="0.01">
+
+    <label>Alter:</label>
+    <input type="number" id="age" min="60" max="120">
+
+    <label>Geschlecht:</label>
+    <select id="sex">
+      <option value="men">Männlich</option>
+      <option value="women">Weiblich</option>
+    </select>
+
+    <button type="button" onclick="calculateGait()">✅ Geschwindigkeit berechnen</button>
+    <button type="button" onclick="downloadPDF()">📄 Als PDF speichern</button>
+    <button type="button" onclick="toggleNormsGait()">📊 Normwerte anzeigen</button>
+  </form>
+
+  <div id="result"></div>
+  <div id="normwerteGait" class="hidden"></div>
+
+  <div class="nav-buttons">
+    <a href="standard.html">⬅️ Zurück zu Standard-Assessments</a>
+    <a href="index.html">🏠 Zur Startseite</a>
+  </div>
+
+  <script>
+    let gaitVisible = false;
+
+    function calculateGait() {
+      const dist = parseFloat(document.querySelector('input[name="strecke"]:checked').value);
+      const zeit = parseFloat(document.getElementById("gehzeit").value);
+      const speed = (!isNaN(dist) && !isNaN(zeit) && zeit > 0) ? (dist / zeit).toFixed(2) : "-";
+      document.getElementById("result").innerText = `Gehgeschwindigkeit: ${speed} m/s`;
+    }
+
+    function downloadPDF() {
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF();
+      let y = 10;
+      const dist = document.querySelector('input[name="strecke"]:checked').value;
+      const zeit = document.getElementById("gehzeit").value || "-";
+      const speed = (dist && zeit && zeit > 0) ? (dist / zeit).toFixed(2) : "-";
+
+      doc.setFontSize(16);
+      doc.text("Auswertung Gehgeschwindigkeit", 10, y);
+      y += 10;
+      doc.setFontSize(12);
+      doc.text(`Strecke: ${dist} m`, 10, y += 7);
+      doc.text(`Zeit: ${zeit} s`, 10, y += 7);
+      doc.text(`Gehgeschwindigkeit: ${speed} m/s`, 10, y += 7);
+      doc.save("gehgeschwindigkeit.pdf");
+    }
+
+    function toggleNormsGait() {
+      const btn = document.querySelector("button[onclick='toggleNormsGait()']");
+      const norms = document.getElementById("normwerteGait");
+
+      if (gaitVisible) {
+        norms.classList.add("hidden");
+        btn.innerText = "📊 Normwerte anzeigen";
+        gaitVisible = false;
+        return;
+      }
+
+      const age = parseInt(document.getElementById("age").value);
+      const sex = document.getElementById("sex").value;
+      const dist = parseFloat(document.querySelector('input[name="strecke"]:checked').value);
+      const zeit = parseFloat(document.getElementById("gehzeit").value);
+      const speed = (dist && zeit) ? dist / zeit : null;
+
+      if (isNaN(age) || isNaN(speed)) {
+        norms.innerText = "Bitte Alter und gültige Gehzeit eingeben.";
+        norms.classList.remove("hidden");
+        return;
+      }
+
+      const gaitNorms = {
+        men: {
+          60: { P5: 0.88, P10: 0.95, P25: 1.08, P50: 1.22, P75: 1.35, P90: 1.50, P95: 1.58 },
+          65: { P5: 0.85, P10: 0.92, P25: 1.04, P50: 1.18, P75: 1.33, P90: 1.47, P95: 1.57 },
+          70: { P5: 0.81, P10: 0.88, P25: 0.99, P50: 1.13, P75: 1.29, P90: 1.44, P95: 1.54 },
+          75: { P5: 0.74, P10: 0.81, P25: 0.91, P50: 1.05, P75: 1.22, P90: 1.37, P95: 1.46 },
+          80: { P5: 0.65, P10: 0.72, P25: 0.83, P50: 0.97, P75: 1.14, P90: 1.30, P95: 1.35 },
+          85: { P5: 0.56, P10: 0.64, P25: 0.74, P50: 0.89, P75: 1.06, P90: 1.22, P95: 1.25 }
+        },
+        women: {
+          60: { P5: 0.89, P10: 0.95, P25: 1.07, P50: 1.22, P75: 1.37, P90: 1.52, P95: 1.61 },
+          65: { P5: 0.82, P10: 0.88, P25: 1.00, P50: 1.16, P75: 1.31, P90: 1.46, P95: 1.56 },
+          70
