@@ -177,6 +177,11 @@
     ${Object.entries(P).map(([k, v]) => `<tr><td>${k}</td><td>${v}</td></tr>`).join("")}
   </table><p>→ Geschwindigkeit ist schneller als bei: <strong>${faster}%</strong> der Vergleichsgruppe.</p>`;
 
+  norms.innerHTML += `
+  <h3>Interpretationsgrafik:</h3>
+  <img src="walking_speeds.jpg" alt="Walking Speed Interpretation" style="width:100%; margin-top:10px; border:1px solid #ccc;"/>
+`;
+
   norms.classList.remove("hidden");
   btn.innerText = "📉 Normwerte & Cut-Offs verbergen";
   gaitVisible = true;
