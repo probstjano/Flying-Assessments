@@ -43,7 +43,7 @@
 
     const items = [
       // STATIC
-      { id: "s1", section: "static", text: "1. Patient hält Startposition 10 Sekunden ohne Unterstützung", options: [{ text: "Nein", value: 0 }, { text: "Ja", value: 2 }], nextIf: 2 },
+      { id: "s1", section: "static", text: "1. Patient hält Startposition 10 Sekunden ohne Unterstützung", options: [{ text: "Nein", value: 0 }, { text: "Ja", value: 2 }] },
       { id: "s2", section: "static", text: "2. Therapeut kreuzt nicht-betroffenes Bein über hemiplegisches", options: [
         { text: "Fällt oder kann Position nicht halten", value: 0 },
         { text: "Hält Position 10 Sekunden", value: 2 }
@@ -55,52 +55,52 @@
         { text: "Kreuzt ohne Rücklage oder Hilfe", value: 3 }
       ]},
 
-      // DYNAMIC – 3 + 3 + 2 + 2 = 10
+      // DYNAMIC
       { id: "d1", section: "dynamic", text: "4. Patient berührt mit hemiplegischem Ellbogen Bett/Tisch", options: [
         { text: "Fällt oder berührt nicht", value: 0 },
         { text: "Ellbogen berührt aktiv, ohne Hilfe", value: 1 }
-      ], nextIf: 1 },
-      { id: "d2", section: "dynamic", text: "5. Wiederholung Item 4: Verkürzung/Verlängerung", options: [
+      ]},
+      { id: "d2", section: "dynamic", parent: "d1", nextIf: 1, text: "5. Wiederholung Item 4: Verkürzung/Verlängerung", options: [
         { text: "Keine oder falsche Bewegung", value: 0 },
         { text: "Richtige Bewegung", value: 1 }
-      ], parent: "d1", nextIf: 1 },
-      { id: "d3", section: "dynamic", text: "6. Wiederholung Item 4: Kompensation", options: [
+      ]},
+      { id: "d3", section: "dynamic", parent: "d2", nextIf: 1, text: "6. Wiederholung Item 4: Kompensation", options: [
         { text: "Mit Kompensation (Arm, Hüfte, Fuß)", value: 0 },
         { text: "Ohne Kompensation", value: 1 }
-      ], parent: "d2", nextIf: 1 },
+      ]},
 
       { id: "d4", section: "dynamic", text: "7. Patient berührt mit nicht-betroffenem Ellbogen Bett/Tisch", options: [
         { text: "Fällt oder berührt nicht", value: 0 },
         { text: "Ellbogen berührt aktiv, ohne Hilfe", value: 1 }
-      ], nextIf: 1 },
-      { id: "d5", section: "dynamic", text: "8. Wiederholung Item 7: Verkürzung/Verlängerung", options: [
+      ]},
+      { id: "d5", section: "dynamic", parent: "d4", nextIf: 1, text: "8. Wiederholung Item 7: Verkürzung/Verlängerung", options: [
         { text: "Keine oder falsche Bewegung", value: 0 },
         { text: "Richtige Bewegung", value: 1 }
-      ], parent: "d4", nextIf: 1 },
-      { id: "d6", section: "dynamic", text: "9. Wiederholung Item 7: Kompensation", options: [
+      ]},
+      { id: "d6", section: "dynamic", parent: "d5", nextIf: 1, text: "9. Wiederholung Item 7: Kompensation", options: [
         { text: "Mit Kompensation", value: 0 },
         { text: "Ohne Kompensation", value: 1 }
-      ], parent: "d5", nextIf: 1 },
+      ]},
 
       { id: "d7", section: "dynamic", text: "10. Hebt Becken auf hemiplegischer Seite", options: [
         { text: "Keine oder falsche Bewegung", value: 0 },
         { text: "Richtige Bewegung", value: 1 }
-      ], nextIf: 1 },
-      { id: "d8", section: "dynamic", text: "11. Wiederholung Item 10: Kompensation", options: [
+      ]},
+      { id: "d8", section: "dynamic", parent: "d7", nextIf: 1, text: "11. Wiederholung Item 10: Kompensation", options: [
         { text: "Mit Kompensation", value: 0 },
         { text: "Ohne Kompensation", value: 1 }
-      ], parent: "d7", nextIf: 1 },
+      ]},
 
       { id: "d9", section: "dynamic", text: "12. Hebt Becken auf nicht-betroffener Seite", options: [
         { text: "Keine oder falsche Bewegung", value: 0 },
         { text: "Richtige Bewegung", value: 1 }
-      ], nextIf: 1 },
-      { id: "d10", section: "dynamic", text: "13. Wiederholung Item 12: Kompensation", options: [
+      ]},
+      { id: "d10", section: "dynamic", parent: "d9", nextIf: 1, text: "13. Wiederholung Item 12: Kompensation", options: [
         { text: "Mit Kompensation", value: 0 },
         { text: "Ohne Kompensation", value: 1 }
-      ], parent: "d9", nextIf: 1 },
+      ]},
 
-      // COORDINATION – max 6
+      // COORDINATION
       { id: "c1", section: "coordination", text: "14. Rotation oberer Rumpf 6× (hemiplegische Seite zuerst)", options: [
         { text: "Hemiplegische Seite nicht 3× bewegt", value: 0 },
         { text: "Asymmetrische Rotation", value: 1 },
@@ -124,17 +124,19 @@
     function renderForm() {
       const container = document.getElementById("form");
       container.innerHTML = "";
-      let allow = true;
+
+      // Abbruch nach Item 1 bei "Nein"
+      if (state.values["s1"] === 0) {
+        container.innerHTML = "<p>Test abgebrochen – Patient konnte Startposition nicht halten.</p>";
+        showResults();
+        return;
+      }
 
       for (let item of items) {
-        if (!allow) break;
-
-        const value = state.values[item.id];
-        const show = (
-          !item.parent || state.values[item.parent] === item.nextIf
-        ) && (item.id !== "s1" || value !== 0);
-
-        if (show) {
+        // Nur anzeigen, wenn entweder kein parent oder der parent erfüllt ist
+        const parentPassed = !item.parent || state.values[item.parent] === item.nextIf;
+        if (item.id === "s1" || parentPassed) {
+          const value = state.values[item.id];
           const block = document.createElement("div");
           block.className = "question-block";
           block.innerHTML = `
@@ -145,8 +147,6 @@
             </select>`;
           container.appendChild(block);
         }
-
-        if (value === undefined) allow = false;
       }
 
       showResults();
