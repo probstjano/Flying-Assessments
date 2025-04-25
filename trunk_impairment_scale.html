@@ -2,239 +2,191 @@
 <html lang="de">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Trunk Impairment Scale</title>
   <style>
-    body { font-family: sans-serif; margin: 2rem; max-width: 800px; }
-    .question-block { margin-bottom: 1rem; }
-    select { width: 100%; padding: 5px; font-size: 16px; margin-top: 5px; }
-    button { margin-top: 1.5rem; padding: 10px 15px; font-size: 16px; }
+    body { font-family: sans-serif; margin: 2rem; max-width: 900px; font-size: 16px; }
+    .question-block { margin-bottom: 1.5rem; }
+    .question { font-weight: bold; margin-bottom: 0.5rem; }
+    select { width: 100%; padding: 8px; font-size: 16px; }
+    button { margin-top: 20px; padding: 10px 15px; font-size: 16px; }
     #result { margin-top: 2rem; font-weight: bold; white-space: pre-line; }
-    .hidden { display: none; }
+    .nav-buttons { margin-top: 2rem; }
+    .nav-buttons a {
+      display: inline-block; margin-right: 10px; padding: 10px 15px;
+      background: #eee; border-radius: 8px; text-decoration: none; color: #000;
+    }
+    .nav-buttons a:hover { background: #ddd; }
   </style>
 </head>
 <body>
-  <h1>Trunk Impairment Scale</h1>
-  <form id="tisForm">
-    <div id="questions"></div>
-    <button type="button" onclick="calculateTIS()">✅ Score berechnen</button>
-    <button type="button" onclick="generatePDF()">📄 Als PDF speichern</button>
-  </form>
+  <h1>Trunk Impairment Scale (TIS)</h1>
+  <p>Assessment zur Erfassung der Rumpfkontrolle, insbesondere nach Schlaganfall. Die Teststruktur ist dynamisch: bestimmte Items werden nur angezeigt, wenn vorherige bestanden wurden.</p>
+
+  <div id="form"></div>
+  <button onclick="exportPDF()">📄 Als PDF speichern</button>
+
   <div id="result"></div>
+
+  <div class="nav-buttons">
+    <a href="standard.html">⬅️ Zurück zu Standard-Assessments</a>
+    <a href="index.html">🏠 Zur Startseite</a>
+  </div>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script>
+    const { jsPDF } = window.jspdf;
+
+    const state = {
+      values: {},
+      score: { static: 0, dynamic: 0, coordination: 0 }
+    };
+
     const items = [
-      {
-        id: "s1",
-        section: "Statische Sitzbalance",
-        question: "1. Patient hält die Ausgangsposition ohne Unterstützung für 10 Sekunden",
-        options: ["0 – Nein", "2 – Ja"],
-        nextIf: 2,
-        next: ["s2"]
-      },
-      {
-        id: "s2",
-        section: "Statische Sitzbalance",
-        question: "2. Therapeut überkreuzt das nicht-betroffene Bein über das hemiplegische Bein",
-        options: ["0 – Fällt oder kann Position nicht ohne Armstütze halten", "2 – Hält Position für 10 Sekunden"],
-        next: ["s3"]
-      },
-      {
-        id: "s3",
-        section: "Statische Sitzbalance",
-        question: "3. Patient überkreuzt selbst das nicht-betroffene Bein über das hemiplegische",
-        options: [
-          "0 – Fällt",
-          "1 – Kann nicht ohne Armstütze überkreuzen",
-          "2 – Überkreuzt, aber mit Rumpfverschiebung >10 cm oder Hilfe mit Hand",
-          "3 – Überkreuzt ohne Rumpfverschiebung oder Hilfe"
-        ],
-        next: ["d1"]
-      },
-      {
-        id: "d1",
-        section: "Dynamische Sitzbalance",
-        question: "4. Patient berührt mit hemiplegischem Ellenbogen Bett oder Tisch und kehrt zurück",
-        options: [
-          "0 – Fällt oder benötigt Armstütze oder Ellenbogen berührt nicht",
-          "1 – Aktive Bewegung, Ellenbogen berührt"
-        ],
-        nextIf: 1,
-        next: ["d2"]
-      },
-      {
-        id: "d2",
-        section: "Dynamische Sitzbalance",
-        question: "5. Wiederholung von 4: Rumpfverkürzung/-verlängerung?",
-        options: ["0 – Keine oder gegenteilige Bewegung", "1 – Angemessene Bewegung"],
-        nextIf: 1,
-        next: ["d3"]
-      },
-      {
-        id: "d3",
-        section: "Dynamische Sitzbalance",
-        question: "6. Wiederholung von 4: Kompensation?",
-        options: ["0 – Mit Kompensation", "1 – Ohne Kompensation"],
-        next: ["d4"]
-      },
-      {
-        id: "d4",
-        section: "Dynamische Sitzbalance",
-        question: "7. Patient berührt mit nicht-betroffenem Ellenbogen Bett/Tisch und kehrt zurück",
-        options: [
-          "0 – Fällt oder benötigt Armstütze oder Ellenbogen berührt nicht",
-          "1 – Aktive Bewegung, Ellenbogen berührt"
-        ],
-        nextIf: 1,
-        next: ["d5"]
-      },
-      {
-        id: "d5",
-        section: "Dynamische Sitzbalance",
-        question: "8. Wiederholung von 7: Rumpfverkürzung/-verlängerung?",
-        options: ["0 – Keine oder gegenteilige Bewegung", "1 – Angemessene Bewegung"],
-        nextIf: 1,
-        next: ["d6"]
-      },
-      {
-        id: "d6",
-        section: "Dynamische Sitzbalance",
-        question: "9. Wiederholung von 7: Kompensation?",
-        options: ["0 – Mit Kompensation", "1 – Ohne Kompensation"],
-        next: ["d7"]
-      },
-      {
-        id: "d7",
-        section: "Dynamische Sitzbalance",
-        question: "10. Patient hebt Becken hemiplegisch ab und kehrt zurück",
-        options: ["0 – Keine oder gegenteilige Bewegung", "1 – Angemessene Bewegung"],
-        nextIf: 1,
-        next: ["d8"]
-      },
-      {
-        id: "d8",
-        section: "Dynamische Sitzbalance",
-        question: "11. Wiederholung von 10: Kompensation?",
-        options: ["0 – Mit Kompensation", "1 – Ohne Kompensation"],
-        next: ["d9"]
-      },
-      {
-        id: "d9",
-        section: "Dynamische Sitzbalance",
-        question: "12. Patient hebt Becken nicht-betroffen ab und kehrt zurück",
-        options: ["0 – Keine oder gegenteilige Bewegung", "1 – Angemessene Bewegung"],
-        nextIf: 1,
-        next: ["d10"]
-      },
-      {
-        id: "d10",
-        section: "Dynamische Sitzbalance",
-        question: "13. Wiederholung von 12: Kompensation?",
-        options: ["0 – Mit Kompensation", "1 – Ohne Kompensation"],
-        next: ["c1"]
-      },
-      {
-        id: "c1",
-        section: "Koordination",
-        question: "14. Rotiert Oberkörper 6x (je Schulter 3x), hemiplegische Seite zuerst",
-        options: ["0 – Hemiplegische Seite nicht 3x bewegt", "1 – Asymmetrische Rotation", "2 – Symmetrische Rotation"],
-        next: ["c2"]
-      },
-      {
-        id: "c2",
-        section: "Koordination",
-        question: "15. Wiederholung von 14 innerhalb 6 Sekunden",
-        options: ["0 – Asymmetrisch", "1 – Symmetrisch"],
-        next: ["c3"]
-      },
-      {
-        id: "c3",
-        section: "Koordination",
-        question: "16. Rotiert Unterkörper 6x (je Knie 3x), hemiplegische Seite zuerst",
-        options: ["0 – Hemiplegische Seite nicht 3x bewegt", "1 – Asymmetrisch", "2 – Symmetrisch"],
-        next: ["c4"]
-      },
-      {
-        id: "c4",
-        section: "Koordination",
-        question: "17. Wiederholung von 16 innerhalb 6 Sekunden",
-        options: ["0 – Asymmetrisch", "1 – Symmetrisch"]
-      }
+      { id: "s1", section: "static", text: "1. Patient hält Startposition 10 Sekunden ohne Unterstützung", options: [{text: "Nein", value: 0}, {text: "Ja", value: 2}], nextIf: 2 },
+      { id: "s2", section: "static", text: "2. Therapeut kreuzt nicht-betroffenes Bein über hemiplegisches", options: [{text: "Fällt oder braucht Unterstützung", value: 0}, {text: "Hält Position 10 Sekunden", value: 2}] },
+      { id: "s3", section: "static", text: "3. Patient kreuzt selbst nicht-betroffenes Bein über hemiplegisches", options: [
+        {text: "Fällt", value: 0},
+        {text: "Kann nicht ohne Armhilfe kreuzen", value: 1},
+        {text: "Kreuzt mit >10 cm Rücklage oder Hilfe", value: 2},
+        {text: "Kreuzt ohne Hilfe oder Rücklage", value: 3}
+      ]},
+
+      { id: "d1", section: "dynamic", text: "4. Patient berührt Bett/Tisch mit hemiplegischem Ellbogen", options: [
+        {text: "Fällt oder berührt nicht", value: 0},
+        {text: "Bewegt aktiv ohne Hilfe, Ellbogen berührt", value: 1}
+      ], nextIf: 1 },
+      { id: "d2", section: "dynamic", text: "5. Wiederholung von Item 4 (Bewegungsmuster)", options: [
+        {text: "Keine oder falsche Verkürzung/Verlängerung", value: 0},
+        {text: "Richtige Verkürzung/Verlängerung", value: 1}
+      ], parent: "d1", nextIf: 1 },
+      { id: "d3", section: "dynamic", text: "6. Wiederholung von Item 4 (Kompensation)", options: [
+        {text: "Mit Kompensation", value: 0},
+        {text: "Ohne Kompensation", value: 1}
+      ], parent: "d2", nextIf: 1 },
+
+      { id: "d4", section: "dynamic", text: "7. Patient berührt Bett/Tisch mit nicht-betroffenem Ellbogen", options: [
+        {text: "Fällt oder berührt nicht", value: 0},
+        {text: "Bewegt aktiv ohne Hilfe, Ellbogen berührt", value: 1}
+      ], nextIf: 1 },
+      { id: "d5", section: "dynamic", text: "8. Wiederholung von Item 7 (Bewegungsmuster)", options: [
+        {text: "Keine oder falsche Verkürzung/Verlängerung", value: 0},
+        {text: "Richtige Verkürzung/Verlängerung", value: 1}
+      ], parent: "d4", nextIf: 1 },
+      { id: "d6", section: "dynamic", text: "9. Wiederholung von Item 7 (Kompensation)", options: [
+        {text: "Mit Kompensation", value: 0},
+        {text: "Ohne Kompensation", value: 1}
+      ], parent: "d5", nextIf: 1 },
+
+      { id: "d7", section: "dynamic", text: "10. Hebt Becken auf hemiplegischer Seite", options: [
+        {text: "Keine oder falsche Bewegung", value: 0},
+        {text: "Richtige Bewegung", value: 1}
+      ], nextIf: 1 },
+      { id: "d8", section: "dynamic", text: "11. Wiederholung von Item 10 (Kompensation)", options: [
+        {text: "Mit Kompensation", value: 0},
+        {text: "Ohne Kompensation", value: 1}
+      ], parent: "d7", nextIf: 1 },
+
+      { id: "d9", section: "dynamic", text: "12. Hebt Becken auf nicht-betroffener Seite", options: [
+        {text: "Keine oder falsche Bewegung", value: 0},
+        {text: "Richtige Bewegung", value: 1}
+      ], nextIf: 1 },
+      { id: "d10", section: "dynamic", text: "13. Wiederholung von Item 12 (Kompensation)", options: [
+        {text: "Mit Kompensation", value: 0},
+        {text: "Ohne Kompensation", value: 1}
+      ], parent: "d9", nextIf: 1 },
+
+      { id: "c1", section: "coordination", text: "14. Rotiert oberen Rumpf 6x (hemiplegische Seite zuerst)", options: [
+        {text: "Hemiplegische Seite nicht 3x bewegt", value: 0},
+        {text: "Asymmetrische Rotation", value: 1},
+        {text: "Symmetrische Rotation", value: 2}
+      ]},
+      { id: "c2", section: "coordination", text: "15. Wiederholung von Item 14 in 6 Sekunden", options: [
+        {text: "Asymmetrisch", value: 0},
+        {text: "Symmetrisch", value: 1}
+      ]},
+      { id: "c3", section: "coordination", text: "16. Rotiert unteren Rumpf 6x (hemiplegische Seite zuerst)", options: [
+        {text: "Hemiplegische Seite nicht 3x bewegt", value: 0},
+        {text: "Asymmetrisch", value: 1},
+        {text: "Symmetrisch", value: 2}
+      ]},
+      { id: "c4", section: "coordination", text: "17. Wiederholung von Item 16 in 6 Sekunden", options: [
+        {text: "Asymmetrisch", value: 0},
+        {text: "Symmetrisch", value: 1}
+      ]}
     ];
 
-    let answers = {};
-    const container = document.getElementById("questions");
+    function renderForm() {
+      const container = document.getElementById("form");
+      container.innerHTML = "";
+      for (let i = 0; i < items.length; i++) {
+        const item = items[i];
+        if (item.parent && state.values[item.parent] != item.nextIf) continue;
+        if (item.nextIf !== undefined && state.values[item.id] !== undefined && state.values[item.id] != item.nextIf) continue;
 
-    function renderItem(id) {
-      if (document.getElementById(id)) return;
+        if (item.id === "s1" && state.values["s1"] === 0) break;
 
-      const item = items.find(i => i.id === id);
-      if (!item) return;
+        if (state.values[item.id] !== undefined) continue;
 
-      const block = document.createElement("div");
-      block.className = "question-block";
-      block.id = item.id;
-      block.innerHTML = `<label><strong>${item.section}</strong><br>${item.question}</label><select onchange="handleChange('${item.id}', this)">` +
-        `<option disabled selected>Antwort auswählen</option>` +
-        item.options.map(opt => `<option value="${parseInt(opt)}">${opt}</option>`).join("") +
-        `</select>`;
-      container.appendChild(block);
-    }
-
-    function handleChange(id, select) {
-      const val = parseInt(select.value);
-      answers[id] = val;
-      const item = items.find(i => i.id === id);
-
-      // Abbruchbedingung (nur bei statischem Item 1)
-      if (id === "s1" && val === 0) {
-        document.getElementById("questions").innerHTML = "";
-        document.getElementById("questions").innerHTML = "<p><strong>Test abgebrochen – statische Sitzbalance nicht möglich.</strong></p>";
-        answers = { s1: 0 };
-        return;
+        const block = document.createElement("div");
+        block.className = "question-block";
+        block.innerHTML = `<div class="question">${item.text}</div>
+          <select onchange="handleChange('${item.id}', this.value)">
+            <option value="" disabled selected>Antwort auswählen</option>
+            ${item.options.map(opt => `<option value="${opt.value}">${opt.text}</option>`).join("")}
+          </select>`;
+        container.appendChild(block);
+        break;
       }
 
-      if (item.nextIf == null || item.nextIf === val) {
-        item.next?.forEach(renderItem);
+      if (Object.keys(state.values).length === items.length || state.values["s1"] === 0) {
+        showResults();
       }
     }
 
-    function calculateTIS() {
-      let scores = { statisch: 0, dynamisch: 0, koordination: 0 };
-      for (const [id, val] of Object.entries(answers)) {
-        if (id.startsWith("s")) scores.statisch += val;
-        else if (id.startsWith("d")) scores.dynamisch += val;
-        else if (id.startsWith("c")) scores.koordination += val;
-      }
-      const total = scores.statisch + scores.dynamisch + scores.koordination;
+    function handleChange(id, value) {
+      const item = items.find(i => i.id === id);
+      value = parseInt(value);
+      state.values[id] = value;
+      state.score[item.section] += value;
+      renderForm();
+    }
+
+    function showResults() {
+      const total = state.score.static + state.score.dynamic + state.score.coordination;
       document.getElementById("result").innerText =
-        `Gesamtpunktzahl: ${total}/21\n\n` +
-        `Statische Sitzbalance: ${scores.statisch}/5\n` +
-        `Dynamische Sitzbalance: ${scores.dynamisch}/10\n` +
-        `Koordination: ${scores.koordination}/6`;
+        `Gesamtscore: ${total} / 21\n` +
+        `Statische Balance: ${state.score.static} / 5\n` +
+        `Dynamische Balance: ${state.score.dynamic} / 10\n` +
+        `Koordination: ${state.score.coordination} / 6`;
     }
 
-    async function generatePDF() {
-      const { jsPDF } = window.jspdf;
+    function exportPDF() {
       const doc = new jsPDF();
+      let y = 10;
       doc.setFontSize(16);
-      doc.text("Trunk Impairment Scale – Auswertung", 10, 10);
-      let y = 20;
-      for (const id in answers) {
-        const item = items.find(i => i.id === id);
-        const optionText = item.options.find(opt => parseInt(opt) === answers[id]);
-        doc.setFontSize(12);
-        doc.text(`${item.question}`, 10, y); y += 6;
-        doc.text(`Antwort: ${optionText}`, 10, y); y += 10;
-        if (y > 270) { doc.addPage(); y = 10; }
-      }
-      doc.text(document.getElementById("result").innerText, 10, y);
-      window.open(doc.output('bloburl'), '_blank');
+      doc.text("Trunk Impairment Scale – Auswertung", 10, y);
+      y += 10;
+      items.forEach(item => {
+        if (state.values[item.id] !== undefined) {
+          const label = item.text.split(":")[1] || item.text;
+          const value = item.options.find(o => o.value === state.values[item.id])?.text || "";
+          doc.setFontSize(12);
+          doc.text(`${label.trim()}: ${value}`, 10, y);
+          y += 7;
+        }
+      });
+      y += 10;
+      doc.setFontSize(14);
+      doc.text(`Gesamtscore: ${state.score.static + state.score.dynamic + state.score.coordination} / 21`, 10, y);
+      y += 7;
+      doc.text(`Statische Balance: ${state.score.static} / 5`, 10, y += 7);
+      doc.text(`Dynamische Balance: ${state.score.dynamic} / 10`, 10, y += 7);
+      doc.text(`Koordination: ${state.score.coordination} / 6`, 10, y += 7);
+      window.open(doc.output("bloburl"), "_blank");
     }
 
-    // Start mit erstem Item
-    renderItem("s1");
+    renderForm();
   </script>
 </body>
 </html>
