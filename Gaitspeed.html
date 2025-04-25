@@ -35,16 +35,35 @@
       width: 2px;
       background: red;
     }
+    #speedMarker::after {
+      content: 'gemessen';
+      position: absolute;
+      top: -20px;
+      left: 6px;
+      font-size: 12px;
+      color: red;
+      background: white;
+      padding: 1px 4px;
+      border-radius: 4px;
+      white-space: nowrap;
+    }
     #correctedMarker {
       position: absolute;
-      top: 0;
       bottom: 0;
       width: 2px;
       border-left: 2px dashed red;
-      color: red;
+    }
+    #correctedMarker::after {
+      content: 'korrigiert (+0.12 m/s)';
+      position: absolute;
+      top: -20px;
+      left: 6px;
       font-size: 12px;
+      color: red;
+      background: white;
+      padding: 1px 4px;
+      border-radius: 4px;
       white-space: nowrap;
-      transform: translateX(4px);
     }
   </style>
 </head>
@@ -185,8 +204,8 @@
         <h3>Interpretationsgrafik:</h3>
         <div class='graph-container'>
           <img src='walking speeds.jpg' alt='Walking Speed Interpretation' id='speedImage'>
-          <div id='speedMarker'> gemessen </div>
-          <div id='correctedMarker'> korrigiert (+0.12 m/s)</div>
+          <div id='speedMarker'></div>
+          <div id='correctedMarker'></div>
         </div>`;
 
       setTimeout(() => {
