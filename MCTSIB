@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>CTSIB – Modifizierter Test</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <style>
+    body { font-family: sans-serif; margin: 2rem; font-size: 16px; max-width: 700px; }
+    label { display: block; margin-top: 1rem; font-weight: bold; }
+    input[type="number"] {
+      width: 100%;
+      padding: 6px;
+      font-size: 16px;
+      margin-bottom: 0.5rem;
+    }
+    button { padding: 10px 15px; font-size: 16px; margin-top: 15px; }
+    #result { margin-top: 20px; font-weight: bold; }
+    .section { margin-top: 2rem; border-top: 1px solid #ccc; padding-top: 1rem; }
+    .nav-buttons { margin-top: 2rem; }
+    .nav-buttons a {
+      display: inline-block;
+      margin-right: 10px;
+      padding: 10px 15px;
+      background: #eee;
+      border-radius: 8px;
+      text-decoration: none;
+      color: #000;
+    }
+    .nav-buttons a:hover { background: #ddd; }
+  </style>
+</head>
+<body>
+  <h1>Modified CTSIB</h1>
+  <p>Test zur Bewertung der Nutzung sensorischer Systeme bei Gleichgewicht. <br>Maximaldauer pro Bedingung: <strong>30 Sekunden</strong>, der <strong>beste von 3 Versuchen</strong> wird gewertet.</p>
+
+  <form id="ctsibForm">
+    <div class="section">
+      <label>Bedingung 1: Augen offen, fester Untergrund</label>
+      <input type="number" min="0" max="30" step="0.01" placeholder="Versuch 1 (Sekunden)" id="b1t1" />
+      <input type="number" min="0" max="30" step="0.01" placeholder="Versuch 2 (Sekunden)" id="b1t2" />
+      <input type="number" min="0" max="30" step="0.01" placeholder="Versuch 3 (Sekunden)" id="b1t3" />
+    </div>
+
+    <div class="section">
+      <label>Bedingung 2: Augen geschlossen, fester Untergrund</label>
+      <input type="number" min="0" max="30" step="0.01" placeholder="Versuch 1 (Sekunden)" id="b2t1" />
+      <input type="number" min="0" max="30" step="0.01" placeholder="Versuch 2 (Sekunden)" id="b2t2" />
+      <input type="number" min="0" max="30" step="0.01" placeholder="Versuch 3 (Sekunden)" id="b2t3" />
+    </div>
+
+    <div class="section">
+      <label>Bedingung 3: Augen offen, Schaumunterlage</label>
+      <input type="number" min="0" max="30" step="0.01" placeholder="Versuch 1 (Sekunden)" id="b3t1" />
+      <input type="number" min="0" max="30" step="0.01" placeholder="Versuch 2 (Sekunden)" id="b3t2" />
+      <input type="number" min="0" max="30" step="0.01" placeholder="Versuch 3 (Sekunden)" id="b3t3" />
+    </div>
+
+    <div class="section">
+      <label>Bedingung 4: Augen geschlossen, Schaumunterlage</label>
+      <input type="number" min="0" max="30" step="0.01" placeholder="Versuch 1 (Sekunden)" id="b4t1" />
+      <input type="number" min="0" max="30" step="0.01" placeholder="Versuch 2 (Sekunden)" id="b4t2" />
+      <input type="number" min="0" max="30" step="0.01" placeholder="Versuch 3 (Sekunden)" id="b4t3" />
+    </div>
+
+    <button type="button" onclick="calculateCTSIB()">✅ Beste Zeiten berechnen</button>
+    <button type="button" onclick="downloadPDF()">📄 Als PDF speichern</button>
+  </form>
+
+  <div id="result"></div>
+
+  <div class="nav-buttons">
+    <a href="standard.html">⬅️ Zurück zu Standard-Assessments</a>
+    <a href="index.html">🏠 Zur Startseite</a>
+  </div>
+
+  <script>
+    function getMax(id1, id2, id3) {
+      const vals = [id1, id2, id3].map(id => parseFloat(document.getElementById(id).value) || 0);
+      return Math.max(...vals);
+    }
+
+    function calculateCTSIB() {
+      const max1 = getMax("b1t1", "b1t2", "b1t3");
+      const max2 = getMax("b2t1", "b2t2", "b2t3");
+      const max3 = getMax("b3t1", "b3t2", "b3t3");
+      const max4 = getMax("b4t1", "b4t2", "b4t3");
+      const total = (max1 + max2 + max3 + max4).toFixed(2);
+
+      document.getElementById("result").innerText =
+        `Beste Zeiten (Sekunden):\n` +
+        `Bedingung 1: ${max1}\n` +
+        `Bedingung 2: ${max2}\n` +
+        `Bedingung 3: ${max3}\n` +
+        `Bedingung 4: ${max4}\n\n` +
+        `Gesamtdauer: ${total} Sekunden (max. 120)`;
+    }
+
+    function downloadPDF() {
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF();
+      let y = 10;
+
+      doc.setFontSize(16);
+      doc.text("Modified CTSIB – Auswertung", 10, y);
+      y += 10;
+
+      for (let b = 1; b <= 4; b++) {
+        for (let t = 1; t <= 3; t++) {
+          const val = document.getElementById(`b${b}t${t}`).value || "-";
+          doc.setFontSize(12);
+          doc.text(`Bedingung ${b}, Versuch ${t}: ${val} Sekunden`, 10, y);
+          y += 7;
+        }
+      }
+
+      y += 5;
+      const output = document.getElementById("result").innerText || "Kein Ergebnis berechnet.";
+      doc.setFontSize(14);
+      output.split("\n").forEach(line => {
+        doc.text(line, 10, y);
+        y += 7;
+      });
+
+      doc.save("ctsib-ergebnis.pdf");
+    }
+  </script>
+</body>
+</html>
