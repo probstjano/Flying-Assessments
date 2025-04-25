@@ -82,6 +82,25 @@
     let gaitVisible = false;
     let lastSpeed = 0;
 
+    const gaitNorms = {
+      men: {
+        60: { P5: 0.88, P10: 0.95, P25: 1.08, P50: 1.22, P75: 1.35, P90: 1.50, P95: 1.58 },
+        65: { P5: 0.85, P10: 0.92, P25: 1.04, P50: 1.18, P75: 1.33, P90: 1.47, P95: 1.57 },
+        70: { P5: 0.81, P10: 0.88, P25: 0.99, P50: 1.13, P75: 1.29, P90: 1.44, P95: 1.54 },
+        75: { P5: 0.74, P10: 0.81, P25: 0.91, P50: 1.05, P75: 1.22, P90: 1.37, P95: 1.46 },
+        80: { P5: 0.65, P10: 0.72, P25: 0.83, P50: 0.97, P75: 1.14, P90: 1.30, P95: 1.35 },
+        85: { P5: 0.56, P10: 0.64, P25: 0.74, P50: 0.89, P75: 1.06, P90: 1.22, P95: 1.25 }
+      },
+      women: {
+        60: { P5: 0.89, P10: 0.95, P25: 1.07, P50: 1.22, P75: 1.37, P90: 1.52, P95: 1.61 },
+        65: { P5: 0.82, P10: 0.88, P25: 1.00, P50: 1.16, P75: 1.31, P90: 1.46, P95: 1.56 },
+        70: { P5: 0.74, P10: 0.81, P25: 0.92, P50: 1.09, P75: 1.24, P90: 1.39, P95: 1.48 },
+        75: { P5: 0.67, P10: 0.73, P25: 0.85, P50: 1.02, P75: 1.18, P90: 1.32, P95: 1.41 },
+        80: { P5: 0.60, P10: 0.66, P25: 0.79, P50: 0.96, P75: 1.12, P90: 1.25, P95: 1.33 },
+        85: { P5: 0.54, P10: 0.59, P25: 0.73, P50: 0.90, P75: 1.06, P90: 1.17, P95: 1.25 }
+      }
+    };
+
     function calculateGait() {
       const dist = parseFloat(document.querySelector('input[name="strecke"]:checked').value);
       const zeit = parseFloat(document.getElementById("gehzeit").value);
@@ -118,25 +137,50 @@
         return;
       }
 
+      const age = parseInt(document.getElementById("age").value);
+      const sex = document.getElementById("sex").value;
       const speed = lastSpeed;
-      norms.innerHTML = "";
+      const nearest = [60, 65, 70, 75, 80, 85].reduce((a, b) => Math.abs(b - age) < Math.abs(a - age) ? b : a);
+      const P = gaitNorms[sex][nearest];
 
-      if (speed <= 0.8) {
-        norms.innerHTML += `<p style="color: red;"><strong>⚠️ Gehgeschwindigkeit ≤ 0.8 m/s → Hinweis auf Low Physical Performance</strong></p>`;
+      let faster = "-";
+      const percentiles = [5,10,25,50,75,90,95];
+      const values = percentiles.map(p => P["P"+p]);
+      if (speed <= values[0]) faster = 5;
+      else if (speed >= values[6]) faster = 95;
+      else {
+        for (let i = 0; i < values.length - 1; i++) {
+          if (speed >= values[i] && speed <= values[i+1]) {
+            const p0 = percentiles[i], p1 = percentiles[i+1];
+            const v0 = values[i], v1 = values[i+1];
+            const frac = (speed - v0) / (v1 - v0);
+            faster = Math.round(p0 + frac * (p1 - p0));
+            break;
+          }
+        }
       }
 
-      norms.innerHTML += `
-        <div class="graph-container">
-          <img src="walking_speeds.jpg" alt="Walking Speed Interpretation" id="speedImage">
-          <div id="speedMarker"></div>
-        </div>
-      `;
+      norms.innerHTML = "";
+      if (speed <= 0.8) {
+        norms.innerHTML += `<p style='color:red'><strong>⚠️ Gehgeschwindigkeit ≤ 0.8 m/s → Hinweis auf Low Physical Performance</strong></p>`;
+      }
 
-      // Marker positionieren
+      norms.innerHTML += `<h3>Norwegische Referenzwerte – Gehgeschwindigkeit (${nearest} Jahre – ${sex === 'men' ? 'Männer' : 'Frauen'})</h3>`;
+      norms.innerHTML += `<table><tr><th>Perzentil</th><th>m/s</th></tr>
+        ${Object.entries(P).map(([k, v]) => `<tr><td>${k}</td><td>${v}</td></tr>`).join("")}
+      </table><p>→ Geschwindigkeit ist schneller als bei: <strong>${faster}%</strong> der Vergleichsgruppe.</p>`;
+
+      norms.innerHTML += `
+        <h3>Interpretationsgrafik:</h3>
+        <div class='graph-container'>
+          <img src='walking speeds.jpg' alt='Walking Speed Interpretation' id='speedImage'>
+          <div id='speedMarker'></div>
+        </div>`;
+
       setTimeout(() => {
         const img = document.getElementById("speedImage");
         const marker = document.getElementById("speedMarker");
-        const maxSpeed = 1.6;
+        const maxSpeed = 1.5;
         const pxWidth = img.clientWidth;
         const pos = Math.min(Math.max((speed / maxSpeed) * pxWidth, 0), pxWidth);
         marker.style.left = `${pos}px`;
@@ -149,3 +193,4 @@
   </script>
 </body>
 </html>
+
