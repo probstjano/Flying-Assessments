@@ -65,48 +65,48 @@
       { id: "s3", section: "static", text: "3. Patient kreuzt selbst nicht-betroffenes Bein über hemiplegisches", options: [
         { text: "Fällt", value: 0 },
         { text: "Kann nicht ohne Armhilfe kreuzen", value: 1 },
-        { text: "Kreuzt mit Rücklage >10cm oder Hilfe", value: 2 },
+        { text: "Kreuzt mit Oberkörperrücklage von >10cm oder Hilfe", value: 2 },
         { text: "Kreuzt ohne Rücklage oder Hilfe", value: 3 }
       ]},
 
       // DYNAMIC
-      { id: "d1", section: "dynamic", text: "4. Patient berührt mit hemiplegischem Ellbogen Bett/Tisch", options: [
-        { text: "Fällt oder berührt nicht", value: 0 },
+      { id: "d1", section: "dynamic", text: "4. Patient berührt mit hemiplegischem Ellbogen Bett/Tisch und kehrt zurück (verkürzt die hemiplegische Seite und verlängert die nicht-betroffene Seite)", options: [
+        { text: "Fällt, benötigt Unterstützung OEx oder berührt Bett nicht", value: 0 },
         { text: "Ellbogen berührt aktiv, ohne Hilfe", value: 1 }
       ]},
-      { id: "d2", section: "dynamic", parent: "d1", nextIf: 1, text: "5. Wiederholung Item 4: Verkürzung/Verlängerung", options: [
-        { text: "Keine oder falsche Bewegung", value: 0 },
-        { text: "Richtige Bewegung", value: 1 }
+      { id: "d2", section: "dynamic", parent: "d1", nextIf: 1, text: "5. Wiederholung Item 4: Ellbogen auf Bett", options: [
+        { text: "Keine verkürzung oder gegesätzliche Verkürzung der Seite", value: 0 },
+        { text: "Bewegung mit verkürzung der Seite", value: 1 }
       ]},
       { id: "d3", section: "dynamic", parent: "d2", nextIf: 1, text: "6. Wiederholung Item 4: Kompensation", options: [
-        { text: "Mit Kompensation (Arm, Hüfte, Fuß)", value: 0 },
+        { text: "Mit Kompensationsbewegung (Arm, Hüfte, Füsse)", value: 0 },
         { text: "Ohne Kompensation", value: 1 }
       ]},
 
-      { id: "d4", section: "dynamic", text: "7. Patient berührt mit nicht-betroffenem Ellbogen Bett/Tisch", options: [
+      { id: "d4", section: "dynamic", text: "7. Patient berührt mit nicht-betroffenem Ellbogen Bett/Tisch (verkürzt der nicht-betroffene Seite und Verlängerung hemiplegische Seite)", options: [
         { text: "Fällt oder berührt nicht", value: 0 },
         { text: "Ellbogen berührt aktiv, ohne Hilfe", value: 1 }
       ]},
       { id: "d5", section: "dynamic", parent: "d4", nextIf: 1, text: "8. Wiederholung Item 7: Verkürzung/Verlängerung", options: [
-        { text: "Keine oder falsche Bewegung", value: 0 },
+        { text: "Keine oder "fallsche" Verkürzung", value: 0 },
         { text: "Richtige Bewegung", value: 1 }
       ]},
       { id: "d6", section: "dynamic", parent: "d5", nextIf: 1, text: "9. Wiederholung Item 7: Kompensation", options: [
-        { text: "Mit Kompensation", value: 0 },
+        { text: "Mit Kompensation (OEx, Hüfte, Knie, Füsse)", value: 0 },
         { text: "Ohne Kompensation", value: 1 }
       ]},
 
-      { id: "d7", section: "dynamic", text: "10. Hebt Becken auf hemiplegischer Seite", options: [
-        { text: "Keine oder falsche Bewegung", value: 0 },
-        { text: "Richtige Bewegung", value: 1 }
+      { id: "d7", section: "dynamic", text: "10. Hebt Becken auf hemiplegischer Seite (Verkürzung Hemiplegischer Seite)", options: [
+        { text: "Keine oder Gegesätzliche Verkürzung Seite", value: 0 },
+        { text: "Korrekte Bewegung", value: 1 }
       ]},
       { id: "d8", section: "dynamic", parent: "d7", nextIf: 1, text: "11. Wiederholung Item 10: Kompensation", options: [
-        { text: "Mit Kompensation", value: 0 },
+        { text: "Mit Kompensation OEx oder Füsse", value: 0 },
         { text: "Ohne Kompensation", value: 1 }
       ]},
 
       { id: "d9", section: "dynamic", text: "12. Hebt Becken auf nicht-betroffener Seite", options: [
-        { text: "Keine oder falsche Bewegung", value: 0 },
+        { text: "Keine oder Gegesätzliche Verkürzung Seite", value: 0 },
         { text: "Richtige Bewegung", value: 1 }
       ]},
       { id: "d10", section: "dynamic", parent: "d9", nextIf: 1, text: "13. Wiederholung Item 12: Kompensation", options: [
@@ -115,8 +115,8 @@
       ]},
 
       // COORDINATION
-      { id: "c1", section: "coordination", text: "14. Rotation oberer Rumpf 6× (hemiplegische Seite zuerst)", options: [
-        { text: "Hemiplegische Seite nicht 3× bewegt", value: 0 },
+      { id: "c1", section: "coordination", text: "14. Rotation oberer Rumpf 6× (jede Schulter 3x nach vorne), Hemiplegische Seite zuerst, Kopf bleibt in Ausgangsstellung", options: [
+        { text: "Hemiplegische Seite nicht 3× bewegt/rotiert", value: 0 },
         { text: "Asymmetrische Rotation", value: 1 },
         { text: "Symmetrische Rotation", value: 2 }
       ]},
@@ -124,7 +124,7 @@
         { text: "Asymmetrisch", value: 0 },
         { text: "Symmetrisch", value: 1 }
       ]},
-      { id: "c3", section: "coordination", text: "16. Rotation unterer Rumpf 6× (hemiplegische Seite zuerst)", options: [
+      { id: "c3", section: "coordination", text: "16. Rotation unterer Rumpf 6× (Jedes Knie bewegt 3x nach vorne), Hemiseite zuerst, oberer Rumpf bleibt in Ausgangsstellung", options: [
         { text: "Hemiplegische Seite nicht 3× bewegt", value: 0 },
         { text: "Asymmetrisch", value: 1 },
         { text: "Symmetrisch", value: 2 }
