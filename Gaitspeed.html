@@ -186,6 +186,15 @@
         marker.style.left = `${pos}px`;
       }, 100);
 
+          setTimeout2(() => {
+        const img = document.getElementById("speedImage");
+        const marker = document.getElementById("speedMarker");
+        const maxSpeed = 1.5;
+        const pxWidth = img.clientWidth;
+        const pos = Math.min(Math.max((speed-0.12 / maxSpeed) * pxWidth, 0), pxWidth);
+        marker.style.left = `${pos}px`;
+      }, 100);
+
       norms.classList.remove("hidden");
       btn.innerText = "📉 Normwerte & Cut-Offs verbergen";
       gaitVisible = true;
