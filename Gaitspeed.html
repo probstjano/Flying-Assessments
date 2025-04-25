@@ -35,6 +35,17 @@
       width: 2px;
       background: red;
     }
+    #correctedMarker {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      width: 2px;
+      border-left: 2px dashed red;
+      color: red;
+      font-size: 12px;
+      white-space: nowrap;
+      transform: translateX(4px);
+    }
   </style>
 </head>
 <body>
@@ -175,24 +186,22 @@
         <div class='graph-container'>
           <img src='walking speeds.jpg' alt='Walking Speed Interpretation' id='speedImage'>
           <div id='speedMarker'></div>
+          <div id='correctedMarker'>korrigiert (−0.12 m/s)</div>
         </div>`;
 
       setTimeout(() => {
         const img = document.getElementById("speedImage");
-        const marker = document.getElementById("speedMarker");
-        const maxSpeed = 1.5;
         const pxWidth = img.clientWidth;
-        const pos = Math.min(Math.max((speed / maxSpeed) * pxWidth, 0), pxWidth);
-        marker.style.left = `${pos}px`;
-      }, 100);
+        const maxSpeed = 1.5;
 
-          setTimeout2(() => {
-        const img = document.getElementById("speedImage");
         const marker = document.getElementById("speedMarker");
-        const maxSpeed = 1.5;
-        const pxWidth = img.clientWidth;
-        const pos = Math.min(Math.max(((speed-0.12) / maxSpeed) * pxWidth, 0), pxWidth);
-        marker.style.left = `${pos}px`;
+        const corrected = document.getElementById("correctedMarker");
+
+        const posRaw = Math.min(Math.max((speed / maxSpeed) * pxWidth, 0), pxWidth);
+        const posCorr = Math.min(Math.max(((speed - 0.12) / maxSpeed) * pxWidth, 0), pxWidth);
+
+        marker.style.left = `${posRaw}px`;
+        corrected.style.left = `${posCorr}px`;
       }, 100);
 
       norms.classList.remove("hidden");
@@ -202,4 +211,3 @@
   </script>
 </body>
 </html>
-
