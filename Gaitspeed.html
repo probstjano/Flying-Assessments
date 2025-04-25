@@ -191,7 +191,7 @@
         const marker = document.getElementById("speedMarker");
         const maxSpeed = 1.5;
         const pxWidth = img.clientWidth;
-        const pos = Math.min(Math.max((speed-0.12 / maxSpeed) * pxWidth, 0), pxWidth);
+        const pos = Math.min(Math.max(((speed-0.12) / maxSpeed) * pxWidth, 0), pxWidth);
         marker.style.left = `${pos}px`;
       }, 100);
 
