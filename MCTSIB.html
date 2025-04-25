@@ -8,11 +8,18 @@
   <style>
     body { font-family: sans-serif; margin: 2rem; font-size: 16px; max-width: 700px; }
     label { display: block; margin-top: 1rem; font-weight: bold; }
+    .input-group { margin-bottom: 0.5rem; }
     input[type="number"] {
       width: 100%;
       padding: 6px;
       font-size: 16px;
-      margin-bottom: 0.5rem;
+      margin-bottom: 0.2rem;
+    }
+    small {
+      display: block;
+      margin-bottom: 1rem;
+      color: #555;
+      font-size: 13px;
     }
     button { padding: 10px 15px; font-size: 16px; margin-top: 15px; }
     #result { margin-top: 20px; font-weight: bold; }
@@ -32,40 +39,76 @@
 </head>
 <body>
   <h1>Modified CTSIB</h1>
-  <p>Test zur Bewertung der sensorischer Systeme fürs Gleichgewicht. Verkürzte Version des CTSIB (ohne Lampenschirm) -> Ergebnisse beider Versionen sind vergleichbar! </p>
-<p> im Cenplex Behandlungsplan als <strong> Messung </strong> hinterlegt. Zeit/Score übertragen. </p>
-  <p> In jedem Bereich stand mit Füssen zusammen, Arme über Brust gekreuzt </p> 
-    <p>Detailliertes Durchführungsprotokoll hier:
+  <p>Test zur Bewertung der sensorischer Systeme fürs Gleichgewicht. Verkürzte Version des CTSIB (ohne Lampenschirm) → Ergebnisse beider Versionen sind vergleichbar!</p>
+  <p>Im Cenplex Behandlungsplan als <strong>Messung</strong> hinterlegt. Zeit/Score übertragen.</p>
+  <p>In jedem Bereich Stand mit Füßen zusammen, Arme über Brust gekreuzt.</p>
+  <p>Detailliertes Durchführungsprotokoll hier:
     <a href="MCTSIB_Protokoll.pdf" target="_blank">MCTSIB Protokoll (PDF)</a>
- 
+  </p>
 
   <form id="ctsibForm">
     <div class="section">
       <label>Bedingung 1: Augen offen, fester Untergrund</label>
-      <input type="number" min="0" max="30" step="0.01" placeholder="Versuch 1 (Sekunden)" id="b1t1" />
-      <input type="number" min="0" max="30" step="0.01" placeholder="Versuch 2 (Sekunden)" id="b1t2" />
-      <input type="number" min="0" max="30" step="0.01" placeholder="Versuch 3 (Sekunden)" id="b1t3" />
+      <div class="input-group">
+        <input type="number" min="0" max="30" step="0.01" placeholder="Versuch 1 (Sekunden)" id="b1t1" />
+        <small>Max. 30 Sekunden – Bester von 3 Versuchen</small>
+      </div>
+      <div class="input-group">
+        <input type="number" min="0" max="30" step="0.01" placeholder="Versuch 2 (Sekunden)" id="b1t2" />
+        <small>Max. 30 Sekunden – Bester von 3 Versuchen</small>
+      </div>
+      <div class="input-group">
+        <input type="number" min="0" max="30" step="0.01" placeholder="Versuch 3 (Sekunden)" id="b1t3" />
+        <small>Max. 30 Sekunden – Bester von 3 Versuchen</small>
+      </div>
     </div>
 
     <div class="section">
       <label>Bedingung 2: Augen geschlossen, fester Untergrund</label>
-      <input type="number" min="0" max="30" step="0.01" placeholder="Versuch 1 (Sekunden)" id="b2t1" />
-      <input type="number" min="0" max="30" step="0.01" placeholder="Versuch 2 (Sekunden)" id="b2t2" />
-      <input type="number" min="0" max="30" step="0.01" placeholder="Versuch 3 (Sekunden)" id="b2t3" />
+      <div class="input-group">
+        <input type="number" min="0" max="30" step="0.01" placeholder="Versuch 1 (Sekunden)" id="b2t1" />
+        <small>Max. 30 Sekunden – Bester von 3 Versuchen</small>
+      </div>
+      <div class="input-group">
+        <input type="number" min="0" max="30" step="0.01" placeholder="Versuch 2 (Sekunden)" id="b2t2" />
+        <small>Max. 30 Sekunden – Bester von 3 Versuchen</small>
+      </div>
+      <div class="input-group">
+        <input type="number" min="0" max="30" step="0.01" placeholder="Versuch 3 (Sekunden)" id="b2t3" />
+        <small>Max. 30 Sekunden – Bester von 3 Versuchen</small>
+      </div>
     </div>
 
     <div class="section">
       <label>Bedingung 3: Augen offen, Schaumunterlage</label>
-      <input type="number" min="0" max="30" step="0.01" placeholder="Versuch 1 (Sekunden)" id="b3t1" />
-      <input type="number" min="0" max="30" step="0.01" placeholder="Versuch 2 (Sekunden)" id="b3t2" />
-      <input type="number" min="0" max="30" step="0.01" placeholder="Versuch 3 (Sekunden)" id="b3t3" />
+      <div class="input-group">
+        <input type="number" min="0" max="30" step="0.01" placeholder="Versuch 1 (Sekunden)" id="b3t1" />
+        <small>Max. 30 Sekunden – Bester von 3 Versuchen</small>
+      </div>
+      <div class="input-group">
+        <input type="number" min="0" max="30" step="0.01" placeholder="Versuch 2 (Sekunden)" id="b3t2" />
+        <small>Max. 30 Sekunden – Bester von 3 Versuchen</small>
+      </div>
+      <div class="input-group">
+        <input type="number" min="0" max="30" step="0.01" placeholder="Versuch 3 (Sekunden)" id="b3t3" />
+        <small>Max. 30 Sekunden – Bester von 3 Versuchen</small>
+      </div>
     </div>
 
     <div class="section">
       <label>Bedingung 4: Augen geschlossen, Schaumunterlage</label>
-      <input type="number" min="0" max="30" step="0.01" placeholder="Versuch 1 (Sekunden)" id="b4t1" />
-      <input type="number" min="0" max="30" step="0.01" placeholder="Versuch 2 (Sekunden)" id="b4t2" />
-      <input type="number" min="0" max="30" step="0.01" placeholder="Versuch 3 (Sekunden)" id="b4t3" />
+      <div class="input-group">
+        <input type="number" min="0" max="30" step="0.01" placeholder="Versuch 1 (Sekunden)" id="b4t1" />
+        <small>Max. 30 Sekunden – Bester von 3 Versuchen</small>
+      </div>
+      <div class="input-group">
+        <input type="number" min="0" max="30" step="0.01" placeholder="Versuch 2 (Sekunden)" id="b4t2" />
+        <small>Max. 30 Sekunden – Bester von 3 Versuchen</small>
+      </div>
+      <div class="input-group">
+        <input type="number" min="0" max="30" step="0.01" placeholder="Versuch 3 (Sekunden)" id="b4t3" />
+        <small>Max. 30 Sekunden – Bester von 3 Versuchen</small>
+      </div>
     </div>
 
     <button type="button" onclick="calculateCTSIB()">✅ Beste Zeiten berechnen</button>
