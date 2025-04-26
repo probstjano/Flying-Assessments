@@ -1,18 +1,33 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Berg Balance Skala (BBS)</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>DEMMI – De Morton Mobility Index</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <style>
-    body { font-family: sans-serif; margin: 2rem; font-size: 16px; max-width: 1000px; }
-    .question-block { margin-bottom: 1.5rem; }
-    .question { font-weight: bold; margin-bottom: 0.5rem; }
-    select, input[type="number"] { width: 100%; padding: 8px; font-size: 16px; margin-bottom: 1rem; }
-    button { margin-top: 20px; padding: 10px 15px; font-size: 16px; }
-    #scoreDisplay, #result { margin-top: 2rem; font-weight: bold; white-space: pre-line; }
-    #normInfo { margin-top: 1rem; font-size: 0.9em; color: #333; }
-    #normBlock { display: none; margin-top: 1rem; }
+    body { font-family: sans-serif; margin: 10px; font-size: 16px; max-width: 600px; }
+    label { display: block; margin: 10px 0 5px; }
+    select {
+      width: 100%;
+      padding: 6px;
+      font-size: 16px;
+      margin-bottom: 10px;
+    }
+    button { padding: 10px 15px; font-size: 16px; margin-top: 10px; }
+    #result { font-weight: bold; margin-top: 20px; }
+    .nav-buttons { margin-top: 30px; }
+    .nav-buttons a {
+      display: inline-block;
+      margin-right: 10px;
+      padding: 10px 15px;
+      background: #eee;
+      border-radius: 8px;
+      text-decoration: none;
+      color: #000;
+    }
+    .nav-buttons a:hover { background: #ddd; }
+    .hidden { display: none; }
   </style>
 </head>
 <body>
@@ -25,6 +40,11 @@
 
   <button type="button" id="toggleBtn" onclick="toggleForm()">👉 Zur Kurzversion (7 Items) wechseln</button>
 
+
+    <div class="nav-buttons">
+    <a href="bereiche.html">⬅️ Zurück zu Bereichs-Assessments</a>
+    <a href="index.html">🏠 Zur Startseite</a>
+  </div>
 
   <form id="bbsForm">
     <div id="questions"></div>
@@ -259,11 +279,6 @@
       doc.text(`Gesamtscore: ${total} / ${max}`, 10, y);
       window.open(doc.output('bloburl'), '_blank');
     }
-
-    <div class="nav-buttons">
-    <a href="bereiche.html">⬅️ Zurück zu Bereichs-Assessments</a>
-    <a href="index.html">🏠 Zur Startseite</a>
-  </div>
 
     renderForm();
   </script>
