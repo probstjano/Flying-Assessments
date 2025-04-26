@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Berg Balance Skala (BBS)</title>
+  <style>
+    body { font-family: sans-serif; margin: 2rem; font-size: 16px; max-width: 1000px; }
+    .question-block { margin-bottom: 1.5rem; }
+    .question { font-weight: bold; margin-bottom: 0.5rem; }
+    select, input[type="number"] { width: 100%; padding: 8px; font-size: 16px; margin-bottom: 1rem; }
+    button { margin-top: 20px; padding: 10px 15px; font-size: 16px; }
+    #scoreDisplay, #result { margin-top: 2rem; font-weight: bold; white-space: pre-line; }
+    #normInfo { margin-top: 1rem; font-size: 0.9em; color: #333; }
+    #normBlock { display: none; margin-top: 1rem; }
+  </style>
+</head>
+<body>
+  <h1>Berg Balance Skala (BBS)</h1>
+  <p>Einer der am umfassendsten untersuchten Assessments für das Gleichgewicht mit guter Psychometrischer Güte und Reliabilität. Geriatrie, MS, CVI, Parkinson </p>
+  <p> Auch in einer verkürzten Version möglich. Diese ist schneller, benötigt weniger Material ist aber weniger gut untersucht und bietet keine Norm oder Cut-Off Werte </p>
+  <p> Im Cenplex Behandlungsplan als <strong> Messung </strong> hinterlegt. Hier durchführen und Summenscore übertragen </p>
+
+  Ausführliches Protokoll hier: <a href="BBS_Protokoll.pdf" target="_blank">BBS Protokoll (PDF)</a>
+
+  <button type="button" id="toggleBtn" onclick="toggleForm()">👉 Zur Kurzversion (7 Items) wechseln</button>
+
+    <div class="nav-buttons">
+    <a href="bereiche.html">⬅️ Zurück zu Bereichs-Assessments</a>
+    <a href="index.html">🏠 Zur Startseite</a>
+  </div>
+
+
+  <form id="bbsForm">
+    <div id="questions"></div>
+    <button type="button" onclick="calculateBBS()">✅ Score berechnen</button>
+    <div id="scoreDisplay"></div>
+
+    <div id="normBlock">
+      <label for="age">Alter der getesteten Person:</label>
+      <input type="number" id="age" value="70" min="0" max="120" />
+      <button type="button" id="normToggleBtn" onclick="toggleNorm()">📊 Normwerte / Cut-Offs anzeigen</button>
+    </div>
+
+    <button type="button" onclick="generatePDF()">📄 PDF erstellen</button>
+  </form>
+
+  <div id="result"></div>
+  <div id="normInfo"></div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script>
+    const fullQuestions = [
+      { text: "Vom Sitzen zum Stehen", options: [
+        "4 – kann aufstehen ohne die Hände einzusetzen und sich selbstständig stabilisieren",
+        "3 – kann selbstständig mit Einsatz der Hände aufstehen",
+        "2 – kann nach einigen Versuchen mit Einsatz der Hände aufstehen",
+        "1 – braucht minimale Hilfe zum Aufstehen oder zum Stabilisieren",
+        "0 – braucht mäßige bis maximale Hilfe um aufzustehen"
+      ]},
+      { text: "Stehen ohne Unterstützung", options: [
+        "4 – kann zwei Minuten sicher stehen",
+        "3 – kann zwei Minuten unter Supervision stehen",
+        "2 – kann 30 Sek. ohne Unterstützung stehen",
+        "1 – braucht einige Versuche, um 30 Sekunden ohne Unterstützung zu stehen",
+        "0 – kann nicht ohne Unterstützung 30 Sekunden stehen"
+      ]},
+      { text: "Sitzen ohne Rückenlehne", options: [
+        "4 – kann sicher und stabil zwei Minuten sitzen",
+        "3 – kann zwei Minuten unter Supervision sitzen",
+        "2 – kann 30 Sekunden sitzen",
+        "1 – kann 10 Sekunden sitzen",
+        "0 – kann nicht ohne Unterstützung 10 Sekunden sitzen"
+      ]},
+      { text: "Vom Stehen zum Sitzen", options: [
+        "4 – setzt sich sicher mit minimalem Einsatz der Hände hin",
+        "3 – kontrolliert das Hinsetzen mit den Händen",
+        "2 – berührt mit Rückseite der Beine den Stuhl, um das Hinsetzen zu kontrollieren",
+        "1 – setzt sich selbständig aber unkontrolliert hin",
+        "0 – braucht Hilfe um sich hinzusetzen"
+      ]},
+      { text: "Transfer", options: [
+        "4 – sicher mit minimalem Einsatz der Hände",
+        "3 – sicher, aber mit Einsatz der Hände",
+        "2 – mit Anweisung und/oder Supervision",
+        "1 – mit Hilfe einer Person",
+        "0 – mit zwei Personen oder ständiger Unterstützung"
+      ]},
+      { text: "Stehen mit geschlossenen Augen", options: [
+        "4 – zehn Sekunden sicher",
+        "3 – zehn Sekunden unter Supervision",
+        "2 – drei Sekunden",
+        "1 – steht stabil, aber nicht mit geschlossenen Augen",
+        "0 – braucht Hilfe"
+      ]},
+      { text: "Stehen mit Füßen zusammen", options: [
+        "4 – 1 Minute sicher",
+        "3 – 1 Minute unter Supervision",
+        "2 – 30 Sekunden",
+        "1 – 15 Sekunden mit Hilfe",
+        "0 – nicht möglich"
+      ]},
+      { text: "Nach vorne greifen", options: [
+        "4 – mehr als 25 cm",
+        "3 – mehr als 12 cm",
+        "2 – mehr als 5 cm",
+        "1 – weniger als 5 cm",
+        "0 – Gleichgewichtsverlust, Hilfe nötig"
+      ]},
+      { text: "Gegenstand vom Boden aufheben", options: [
+        "4 – sicher",
+        "3 – mit Überwachung",
+        "2 – mit Hilfe oder anderer Technik",
+        "1 – nur mit Unterstützung",
+        "0 – nicht möglich, Gleichgewichtsverlust"
+      ]},
+      { text: "Umdrehen über Schulter", options: [
+        "4 – sicher nach beiden Seiten",
+        "3 – unter Supervision",
+        "2 – nur eine Seite sicher",
+        "1 – unsicher",
+        "0 – Gleichgewichtsverlust"
+      ]},
+      { text: "360° drehen", options: [
+        "4 – sicher in < 4 Sekunden",
+        "3 – sicher in > 4 Sekunden",
+        "2 – mit vielen Schritten",
+        "1 – mit Hilfe",
+        "0 – nicht möglich"
+      ]},
+      { text: "Schritt vorwärts", options: [
+        "4 – sicher und kontrolliert",
+        "3 – unter Supervision",
+        "2 – leicht unsicher oder leicht gestützt",
+        "1 – mit Unterstützung",
+        "0 – nicht möglich"
+      ]},
+      { text: "Tandemstand", options: [
+        "4 – 30 Sekunden sicher",
+        "3 – 30 Sekunden mit Supervision",
+        "2 – unter 30 Sekunden",
+        "1 – mit Hilfe",
+        "0 – nicht möglich"
+      ]},
+      { text: "Einbeinstand", options: [
+        "4 – 10 Sekunden sicher",
+        "3 – 10 Sekunden mit Supervision",
+        "2 – 5 Sekunden",
+        "1 – unter 3 Sekunden",
+        "0 – nicht möglich"
+      ]}
+    ];
+
+    const shortIndexes = [0, 5, 7, 8, 9, 12, 13];
+    let useShort = false;
+    let currentScore = null;
+    let normVisible = false;
+
+    function toggleForm() {
+      useShort = !useShort;
+      document.getElementById("toggleBtn").innerText = useShort
+        ? "🔁 Zur Vollversion (14 Items) wechseln"
+        : "👉 Zur Kurzversion (7 Items) wechseln";
+      renderForm();
+      document.getElementById("scoreDisplay").innerText = "";
+      document.getElementById("result").innerText = "";
+      document.getElementById("normInfo").innerText = "";
+      document.getElementById("normBlock").style.display = "none";
+      normVisible = false;
+    }
+
+    function renderForm() {
+      const container = document.getElementById("questions");
+      container.innerHTML = "";
+      const items = useShort ? shortIndexes.map(i => fullQuestions[i]) : fullQuestions;
+      items.forEach((q, i) => {
+        const fullIndex = useShort ? shortIndexes[i] : i;
+        const block = document.createElement("div");
+        block.className = "question-block";
+        const options = q.options.map((textOpt, idx) =>
+          `<option value="${4 - idx}">${textOpt}</option>`).join("");
+        block.innerHTML = `
+          <div class="question">${fullIndex + 1}. ${q.text}</div>
+          <select name="q${fullIndex}" required>
+            <option value="" disabled selected>Antwort auswählen</option>
+            ${options}
+          </select>
+        `;
+        container.appendChild(block);
+      });
+    }
+
+    function calculateNorm(age) {
+      if (age < 70) return 56;
+      return Math.round((56 - ((age - 70) * 0.7)) * 10) / 10;
+    }
+
+    function calculateBBS() {
+      const items = useShort ? shortIndexes.map(i => fullQuestions[i]) : fullQuestions;
+      let total = 0;
+      for (let idx = 0; idx < items.length; idx++) {
+        const fullIndex = useShort ? shortIndexes[idx] : idx;
+        const sel = document.querySelector(`select[name='q${fullIndex}']`);
+        if (!sel || sel.value === "") return alert("Bitte alle Fragen beantworten.");
+        total += parseInt(sel.value);
+      }
+      const max = useShort ? 28 : 56;
+      currentScore = total;
+      document.getElementById("scoreDisplay").innerText = `BBS Gesamtscore: ${total} / ${max}`;
+      if (!useShort) document.getElementById("normBlock").style.display = "block";
+    }
+
+    function toggleNorm() {
+      const normBtn = document.getElementById("normToggleBtn");
+      if (!normVisible) {
+        const age = parseInt(document.getElementById("age").value);
+        const norm = calculateNorm(age);
+        document.getElementById("result").innerText = `Erwarteter Normwert (Alter ${age}): ${norm}`;
+        document.getElementById("result").innerText = 
+  `Erwarteter Normwert (Alter ${age}): ${norm} Punkte\nCut-off für erhöhtes Sturzrisiko: < 45 Punkte. (BBS aber nicht empfohlen zur alleinigen Beurteilung des Sturzrisikos)`;
+        document.getElementById("normInfo").innerText =
+          "Ein 70-jähriger, selbstständig lebender Mensch ohne beeinträchtigende Erkrankungen erreicht wahrscheinlich einen Maximalwert von 56 Punkten auf der BBS. Mit jedem Lebensjahr mehr nimmt der mittlere Wert um ca. 0,7 Punkte pro Jahr ab und die Streuung der Werte steigt deutlich an.";
+        normBtn.innerText = "❌ Normwerte verbergen";
+        normVisible = true;
+      } else {
+        document.getElementById("result").innerText = "";
+        document.getElementById("normInfo").innerText = "";
+        normBtn.innerText = "📊 Normwerte / Cut-Offs anzeigen";
+        normVisible = false;
+      }
+    }
+
+    async function generatePDF() {
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF();
+      let y = 10;
+      const items = useShort ? shortIndexes.map(i => fullQuestions[i]) : fullQuestions;
+      let total = 0;
+
+      doc.setFontSize(16);
+      doc.text(`BBS ${useShort ? "Kurzversion" : "Vollversion"} – Auswertung`, 10, y);
+      y += 10;
+
+      for (let idx = 0; idx < items.length; idx++) {
+        const fullIndex = useShort ? shortIndexes[idx] : idx;
+        const q = items[idx];
+        const sel = document.querySelector(`select[name='q${fullIndex}']`);
+        const val = parseInt(sel.value);
+        const label = sel.options[sel.selectedIndex].text;
+        total += val;
+        doc.setFontSize(12);
+        doc.text(`${fullIndex + 1}. ${q.text}`, 10, y);
+        y += 6;
+        doc.text(`Antwort: ${label}`, 10, y);
+        y += 10;
+        if (y > 270) {
+          doc.addPage();
+          y = 10;
+        }
+      }
+
+      const max = useShort ? 28 : 56;
+      doc.setFontSize(14);
+      doc.text(`Gesamtscore: ${total} / ${max}`, 10, y);
+      window.open(doc.output('bloburl'), '_blank');
+    }
+
+    renderForm();
+  </script>
+</body>
+</html>
