@@ -6,10 +6,11 @@
   <title>Insomnia Severity Index (ISI)</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <style>
-    body { font-family: sans-serif; margin: 2rem; font-size: 16px; max-width: 700px; }
-    .question-block { margin-bottom: 1.5rem; }
-    label { font-weight: bold; display: block; margin-bottom: 0.5rem; }
-    select { width: 100%; padding: 6px; font-size: 16px; }
+    body { font-family: sans-serif; margin: 2rem; font-size: 16px; max-width: 900px; }
+    .question-block { margin-bottom: 2rem; }
+    .options { display: flex; gap: 10px; margin-top: 0.5rem; }
+    .option-item { display: flex; align-items: center; gap: 4px; }
+    label.question { font-weight: bold; display: block; margin-bottom: 0.5rem; }
     button { margin-top: 15px; padding: 10px 15px; font-size: 16px; }
     #result, #interpretation, #additional { margin-top: 20px; font-weight: bold; white-space: pre-line; }
     .nav-buttons { margin-top: 2rem; }
@@ -29,10 +30,7 @@
   <h1>Insomnia Severity Index (ISI)</h1>
   <p>Erfassung primäre Schlaflosigkeit und hilfreich zur Einschätzung ob weitere Abklärungen empfohlen sind.</p>
   <p>Im Cenplex Behandlungsplan als <strong>Messung</strong> hinterlegt. Hier oder in Papierform durchführen und Score im Cenplex übertragen.</p>
-
-
-  <p> Bitte kreuzen Sie für jede der folgenden Fragen die Zahl an, die am besten Ihrem Schlafmuster im
-letzten Monat entspricht.</p>
+  <p>Bitte kreuzen Sie für jede der folgenden Fragen die Zahl an, die am besten Ihrem Schlafmuster im letzten Monat entspricht.</p>
 
   <form id="isiForm"></form>
 
@@ -54,8 +52,8 @@ letzten Monat entspricht.</p>
       "2. Schwierigkeit, durchzuschlafen.",
       "3. Das Problem, am Morgen früh aufzuwachen.",
       "4. Wie zufrieden/unzufrieden sind Sie mit Ihrem aktuellen Schlafverhalten?",
-      "5. In welchem Ausmass beeinflussen Ihre Schlafprobleme Ihrer Ansicht nach Ihre Alltagsfunktionen (z.B. Tagesmüdigkeit, Fähigkeit auf der Arbeit/Alltag zu funktionieren, Konzentration, Erinnerung, Stimmung)?",
-      "6. In welchem Ausmass nehmen Ihrer Ansicht nach Ihre Mitmenschen Ihr Schlafproblem und die damit verbundene Beeinträchtigung Ihrer Lebensqualität wahr?",
+      "5. In welchem Ausmass beeinflussen Ihre Schlafprobleme Ihre Alltagsfunktionen (z.B. Tagesmüdigkeit, Fähigkeit auf der Arbeit/Alltag zu funktionieren, Konzentration, Erinnerung, Stimmung)?",
+      "6. In welchem Ausmass nehmen Ihre Mitmenschen Ihr Schlafproblem und die damit verbundene Beeinträchtigung Ihrer Lebensqualität wahr?",
       "7. Wie besorgt/bedrückt sind Sie durch Ihre gegenwärtigen Schlafprobleme?"
     ];
 
@@ -72,11 +70,15 @@ letzten Monat entspricht.</p>
       items.forEach((item, index) => {
         const block = document.createElement("div");
         block.className = "question-block";
-        block.innerHTML = `<label for="q${index}">${item}</label>
-          <select id="q${index}">
-            <option value="" disabled selected>Antwort auswählen</option>
-            ${options.map((opt, idx) => `<option value="${idx}">${opt}</option>`).join('')}
-          </select>`;
+        block.innerHTML = `<label class="question">${item}</label>
+          <div class="options">
+            ${options.map((opt, idx) => `
+              <div class="option-item">
+                <input type="radio" name="q${index}" value="${idx}" id="q${index}_${idx}">
+                <label for="q${index}_${idx}">${opt}</label>
+              </div>
+            `).join('')}
+          </div>`;
         form.appendChild(block);
       });
     }
@@ -84,8 +86,10 @@ letzten Monat entspricht.</p>
     function calculateISI() {
       let score = 0;
       for (let i = 0; i < items.length; i++) {
-        const val = parseInt(document.getElementById(`q${i}`).value);
-        if (!isNaN(val)) score += val;
+        const selected = document.querySelector(`input[name="q${i}"]:checked`);
+        if (selected) {
+          score += parseInt(selected.value);
+        }
       }
       document.getElementById("result").innerText = `Gesamtpunktzahl: ${score} / 28`;
 
@@ -114,10 +118,10 @@ letzten Monat entspricht.</p>
       y += 10;
 
       items.forEach((item, idx) => {
-        const val = document.getElementById(`q${idx}`).value;
-        if (val !== "") {
+        const selected = document.querySelector(`input[name="q${idx}"]:checked`);
+        if (selected) {
           doc.setFontSize(12);
-          doc.text(`${item} Antwort: ${options[val]}`, 10, y);
+          doc.text(`${item} Antwort: ${options[selected.value]}`, 10, y);
           y += 8;
         }
       });
@@ -132,7 +136,7 @@ letzten Monat entspricht.</p>
       doc.text(interp, 10, y += 7);
       if (additional) {
         doc.setFontSize(12);
-        doc.setTextColor(200, 0, 0); // Rot für Hinweis
+        doc.setTextColor(200, 0, 0);
         doc.text(additional, 10, y += 10);
       }
 
