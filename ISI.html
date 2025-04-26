@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Insomnia Severity Index (ISI)</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <style>
+    body { font-family: sans-serif; margin: 2rem; font-size: 16px; max-width: 700px; }
+    .question-block { margin-bottom: 1.5rem; }
+    label { font-weight: bold; display: block; margin-bottom: 0.5rem; }
+    select { width: 100%; padding: 6px; font-size: 16px; }
+    button { margin-top: 15px; padding: 10px 15px; font-size: 16px; }
+    #result, #interpretation, #additional { margin-top: 20px; font-weight: bold; white-space: pre-line; }
+    .nav-buttons { margin-top: 2rem; }
+    .nav-buttons a {
+      display: inline-block;
+      margin-right: 10px;
+      padding: 10px 15px;
+      background: #eee;
+      border-radius: 8px;
+      text-decoration: none;
+      color: #000;
+    }
+    .nav-buttons a:hover { background: #ddd; }
+  </style>
+</head>
+<body>
+  <h1>Insomnia Severity Index (ISI)</h1>
+  <p>Erfassung primäre Schlaflosigkeit und hilfreich zur Einschätzung ob weitere Abklärungen empfohlen sind.</p>
+  <p>Im Cenplex Behandlungsplan als <strong>Messung</strong> hinterlegt. Hier oder in Papierform durchführen und Score im Cenplex übertragen.</p>
+
+
+  <p> Bitte kreuzen Sie für jede der folgenden Fragen die Zahl an, die am besten Ihrem Schlafmuster im
+letzten Monat entspricht.</p>
+
+  <form id="isiForm"></form>
+
+  <button type="button" onclick="calculateISI()">✅ Score berechnen</button>
+  <button type="button" onclick="downloadPDF()">📄 Als PDF speichern</button>
+
+  <div id="result"></div>
+  <div id="interpretation"></div>
+  <div id="additional"></div>
+
+  <div class="nav-buttons">
+    <a href="standard.html">⬅️ Zurück zu Standard-Assessments</a>
+    <a href="index.html">🏠 Zur Startseite</a>
+  </div>
+
+  <script>
+    const items = [
+      "1. Schwierigkeit, einzuschlafen.",
+      "2. Schwierigkeit, durchzuschlafen.",
+      "3. Das Problem, am Morgen früh aufzuwachen.",
+      "4. Wie zufrieden/unzufrieden sind Sie mit Ihrem aktuellen Schlafverhalten?",
+      "5. In welchem Ausmass beeinflussen Ihre Schlafprobleme Ihrer Ansicht nach Ihre Alltagsfunktionen (z.B. Tagesmüdigkeit, Fähigkeit auf der Arbeit/Alltag zu funktionieren, Konzentration, Erinnerung, Stimmung)?",
+      "6. In welchem Ausmass nehmen Ihrer Ansicht nach Ihre Mitmenschen Ihr Schlafproblem und die damit verbundene Beeinträchtigung Ihrer Lebensqualität wahr?",
+      "7. Wie besorgt/bedrückt sind Sie durch Ihre gegenwärtigen Schlafprobleme?"
+    ];
+
+    const options = [
+      "0 - Überhaupt nicht",
+      "1 - Wenig",
+      "2 - Etwas",
+      "3 - Stark",
+      "4 - Sehr stark"
+    ];
+
+    function renderForm() {
+      const form = document.getElementById("isiForm");
+      items.forEach((item, index) => {
+        const block = document.createElement("div");
+        block.className = "question-block";
+        block.innerHTML = `<label for="q${index}">${item}</label>
+          <select id="q${index}">
+            <option value="" disabled selected>Antwort auswählen</option>
+            ${options.map((opt, idx) => `<option value="${idx}">${opt}</option>`).join('')}
+          </select>`;
+        form.appendChild(block);
+      });
+    }
+
+    function calculateISI() {
+      let score = 0;
+      for (let i = 0; i < items.length; i++) {
+        const val = parseInt(document.getElementById(`q${i}`).value);
+        if (!isNaN(val)) score += val;
+      }
+      document.getElementById("result").innerText = `Gesamtpunktzahl: ${score} / 28`;
+
+      let interpretation = "";
+      if (score <= 7) interpretation = "Keine Schlaflosigkeit";
+      else if (score <= 14) interpretation = "Unterschwellige Schlaflosigkeit";
+      else if (score <= 21) interpretation = "Moderate Schlaflosigkeit";
+      else interpretation = "Schwere Schlaflosigkeit";
+
+      document.getElementById("interpretation").innerText = `Einschätzung: ${interpretation}`;
+
+      const additional = document.getElementById("additional");
+      if (score >= 10) {
+        additional.innerHTML = `<p style="color: red;">⚠️ Hinweis: Nähere Abklärungen können empfohlen werden.</p>`;
+      } else {
+        additional.innerHTML = "";
+      }
+    }
+
+    function downloadPDF() {
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF();
+      let y = 10;
+      doc.setFontSize(16);
+      doc.text("Insomnia Severity Index (ISI) - Auswertung", 10, y);
+      y += 10;
+
+      items.forEach((item, idx) => {
+        const val = document.getElementById(`q${idx}`).value;
+        if (val !== "") {
+          doc.setFontSize(12);
+          doc.text(`${item} Antwort: ${options[val]}`, 10, y);
+          y += 8;
+        }
+      });
+
+      const result = document.getElementById("result").innerText;
+      const interp = document.getElementById("interpretation").innerText;
+      const additional = document.getElementById("additional").innerText;
+
+      y += 10;
+      doc.setFontSize(14);
+      doc.text(result, 10, y += 7);
+      doc.text(interp, 10, y += 7);
+      if (additional) {
+        doc.setFontSize(12);
+        doc.setTextColor(200, 0, 0); // Rot für Hinweis
+        doc.text(additional, 10, y += 10);
+      }
+
+      doc.save("isi-auswertung.pdf");
+    }
+
+    renderForm();
+  </script>
+</body>
+</html>
