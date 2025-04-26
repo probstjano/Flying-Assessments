@@ -23,10 +23,9 @@
 </head>
 <body>
   <h1>Geriatrische Depressionsskala (GDS-15)</h1>
-  <p> Screening Instrument zur Erfassung depressiver Symptome bei älteren Menschen <p>
-  <p> Im Behanldungsplan als <strong> Messung </strong> oder <strong> Asessment </strong> vorhande. Am besten direkt im Cenplex Assessment versenden/durchführen. Alternativ hier und Score übertragen </p>
-  
-  <p> <strong> Bitte kreuzen Sie die entsprechende Antwortan.  </strong> </p>
+  <p>Screening Instrument zur Erfassung depressiver Symptome bei älteren Menschen</p>
+  <p>Im Behandlungsplan als <strong>Messung</strong> oder <strong>Assessment</strong> vorhanden. Direkt im Cenplex Assessment durchführen oder alternativ hier und Score übertragen.</p>
+  <p><strong>Bitte kreuzen Sie die entsprechende Antwort an.</strong></p>
 
   <form id="gdsForm"></form>
 
@@ -82,12 +81,21 @@
 
     function calculateGDS() {
       let score = 0;
+      let answered = 0;
+
       for (let i = 0; i < items.length; i++) {
         const selected = document.querySelector(`input[name="q${i}"]:checked`);
         if (selected) {
+          answered++;
           score += selected.value === "ja" ? items[i].scoreJa : items[i].scoreNein;
         }
       }
+
+      if (answered < items.length) {
+        alert("Bitte beantworten Sie alle 15 Fragen, bevor Sie den Score berechnen.");
+        return;
+      }
+
       document.getElementById("result").innerText = `Gesamtpunktzahl: ${score} / 15`;
 
       let interpretation = "";
