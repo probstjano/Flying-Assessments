@@ -27,7 +27,7 @@
   <h1>Timed Up and Go (TUG)</h1>
   <p>Test zur Einschätzung der Mobilität und des Sturzrisikos.</p>
   <p>Im Cenplex-Plan als <strong>Messung</strong> vorhanden. Hier Werte eintragen für Interpretation und Normwerte. Score im Cenplex übertragen.</p>
-  <p> <strong> Achtung: </strong> Norwerte und einige Cut-off Werte basieren nur auf kleinen Stichproben, mit Vorsicht zu interpretieren </p>
+  <p><strong>Achtung:</strong> Normwerte und einige Cut-off-Werte basieren nur auf kleinen Stichproben und sind vorsichtig zu interpretieren.</p>
 
   <form>
     <label>Gemessene Zeit (Sekunden):</label>
@@ -99,14 +99,19 @@
         resultText += "\n⬇️ Mehr als 1 Standardabweichung schneller als der Mittelwert";
       }
 
-      // Cut-offs
-      if (zeit > 15) resultText += "\n\n⚠️ Sturzrisiko: Intermediate Risk Group World Guidelines Fall Prevention >15 Sekunden)";
-      else if (zeit > 14) resultText += "\n\n⚠️ Sturzrisiko: ältere Schlaganfallpatienten (>14 Sekunden)";
-      else if (zeit > 11.5) resultText += "\n\n⚠️ Sturzrisiko: Parkinson-Patienten (>11,5 Sekunden)";
+      // Cut-offs – alle passenden anzeigen
+      if (zeit > 11.5) {
+        resultText += "\n\n⚠️ Sturzrisiko: Parkinson-Patienten (>11,5 Sekunden)";
+      }
+      if (zeit > 14) {
+        resultText += "\n⚠️ Sturzrisiko: ältere Schlaganfallpatienten (>14 Sekunden)";
+      }
+      if (zeit > 15) {
+        resultText += "\n⚠️ Sturzrisiko: Intermediate Risk Group World Guidelines Fall Prevention (>15 Sekunden)";
+      }
 
       document.getElementById("result").innerText = resultText;
 
-      // Jetzt auch Normtabelle unten einblenden
       const norms = document.getElementById("normwerteTUG");
       norms.innerHTML = `<h3>Weitere Cut-Offs und Normwerte</h3>
         <table>
@@ -120,9 +125,9 @@
         </table>
         <h4>Weitere Sturzrisiko-Grenzwerte:</h4>
         <ul>
-          <li>World Guidelines Fall Prevention intermediate Risk Group > 15 Sekunden</li>
-          <li>Parkinson > 11,5 Sekunden</li>
+          <li>Parkinson-Patienten > 11,5 Sekunden</li>
           <li>Ältere Schlaganfallpatienten > 14 Sekunden</li>
+          <li>Intermediate Fall Risk Group > 15 Sekunden</li>
         </ul>`;
       norms.classList.remove("hidden");
     }
