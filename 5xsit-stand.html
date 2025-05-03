@@ -117,20 +117,19 @@
         }
       }
 
-      let cutoffHinweis = "";
-if (sitzZeit > 12) {
-  cutoffHinweis += "<strong>Interpretationshilfe:</strong><br>";
-  if (sitzZeit > 15)
-    cutoffHinweis += ">15 Sek = geringe Muskelkraft (Sarkopenie)<br>";
-  if (sitzZeit > 12)
-    cutoffHinweis += ">12 Sek = Sturzgefahr abklärungswürdig<br>";
-  if (sitzZeit > 16)
-    cutoffHinweis += ">16 Sek = Parkinson: erhöhte Sturzgefahr<br>";
-}
+      let cutoffHinweis = "<strong>Interpretationshilfe:</strong><br>";
+cutoffHinweis += sitzZeit > 15
+  ? '<span style="color:red;">>15 Sek = geringe Muskelkraft (Sarkopenie)</span><br>'
+  : '>15 Sek = geringe Muskelkraft (Sarkopenie)<br>';
+cutoffHinweis += sitzZeit > 12
+  ? '<span style="color:red;">>12 Sek = Sturzgefahr abklärungswürdig</span><br>'
+  : '>12 Sek = Sturzgefahr abklärungswürdig<br>';
+cutoffHinweis += sitzZeit > 16
+  ? '<span style="color:red;">>16 Sek = Parkinson: erhöhte Sturzgefahr</span><br>'
+  : '>16 Sek = Parkinson: erhöhte Sturzgefahr<br>';
 
-if (cutoffHinweis) {
-  norms.innerHTML += `<p style="margin-bottom:1rem; font-style:italic;">${cutoffHinweis}</p>`;
-}
+norms.innerHTML += `<p style="margin-bottom:1rem; font-style:italic;">${cutoffHinweis}</p>`;
+
 
       norms.innerHTML += `<h3>Norwegische Referenzwerte zuhause lebender Personen (${nearest} Jahre – ${sex === 'men' ? 'Männer' : 'Frauen'})</h3>`;
       norms.innerHTML += `<table><tr><th>Perzentil</th><th>Wert (s)</th></tr>
