@@ -18,6 +18,21 @@
     th, td { border: 1px solid #ccc; padding: 6px; text-align: center; }
     th { background: #f0f0f0; }
     .hidden { display: none; }
+    .nav-buttons {
+      margin-top: 2rem;
+    }
+    .nav-buttons a {
+      display: inline-block;
+      margin-right: 10px;
+      padding: 10px 15px;
+      background: #eee;
+      border-radius: 8px;
+      text-decoration: none;
+      color: #000;
+    }
+    .nav-buttons a:hover {
+      background: #ddd;
+    }
   </style>
 </head>
 <body>
@@ -30,7 +45,7 @@
   </p>
   <p><strong>Nur bei Bedarf hier eintragen</strong> für Infos, Normwerte und Score-Berechnung.</p>
 
-  <form>
+   <form>
     <label><input type="checkbox" id="standZusammen"> Füße zusammen >10s</label>
     <label><input type="checkbox" id="semitandem"> Semitandem >10s</label>
     <label>Tandem-Zeit (Sek.):</label>
@@ -63,6 +78,11 @@
   <div id="normwerteSitz" class="hidden"></div>
   <div id="normwerteSPPB" class="hidden"></div>
   <div id="normwerteGait" class="hidden"></div>
+
+  <div class="nav-buttons">
+    <a href="bereiche.html">⬅️ Zurück zu Bereichs-Assessments</a>
+    <a href="index.html">🏠 Zur Startseite</a>
+  </div>
 
   <script>
     let sitzVisible = false;
