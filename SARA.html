@@ -1,18 +1,33 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SARA – Scale for the Assessment and Rating of Ataxia</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>DEMMI – De Morton Mobility Index</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <style>
-    body { font-family: sans-serif; margin: 2rem; font-size: 16px; max-width: 900px; }
-    h1 { margin-bottom: 0; }
-    p { margin-top: 0.2rem; }
-    .question-block { margin-bottom: 1.5rem; }
-    .question { margin-bottom: 0.5rem; font-weight: bold; }
-    select { width: 100%; padding: 6px; font-size: 16px; }
-    button { margin-top: 20px; padding: 10px 15px; font-size: 16px; }
-    #result { margin-top: 2rem; font-weight: bold; white-space: pre-line; }
+    body { font-family: sans-serif; margin: 10px; font-size: 16px; max-width: 600px; }
+    label { display: block; margin: 10px 0 5px; }
+    select {
+      width: 100%;
+      padding: 6px;
+      font-size: 16px;
+      margin-bottom: 10px;
+    }
+    button { padding: 10px 15px; font-size: 16px; margin-top: 10px; }
+    #result { font-weight: bold; margin-top: 20px; }
+    .nav-buttons { margin-top: 30px; }
+    .nav-buttons a {
+      display: inline-block;
+      margin-right: 10px;
+      padding: 10px 15px;
+      background: #eee;
+      border-radius: 8px;
+      text-decoration: none;
+      color: #000;
+    }
+    .nav-buttons a:hover { background: #ddd; }
+    .hidden { display: none; }
   </style>
 </head>
 <body>
