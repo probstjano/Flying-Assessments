@@ -125,22 +125,23 @@
 
   <script>
     const files = [
-      { name: 'ISI', file: 'ISI.html', tags: ['schlaf', 'insomnie', 'schlafstörung'] },
-      { name: 'Braincheck', file: 'Braincheck.html', tags: ['kognition', 'demenz', 'screening', 'Kognition', 'Gedächtniss'] },
-      { name: 'GDS', file: 'GDS.html', tags: ['depression', 'psychisch', 'screening', 'mental', 'stimmung', 'psyche'] },
-      { name: 'SPPB', file: 'sppb.html', tags: ['standard', 'mobilität', 'kraft', 'balance', 'gehen'] },
-      { name: 'DEMMI', file: 'DEMMI.html', tags: ['mobilität', 'standard', 'bewegung', 'transfert', 'bett', 'bewegungsübergänge', 'mobilität'] },
-      { name: 'Gaitspeed', file: 'Gaitspeed.html', tags: ['geschwindigkeit', 'gang', 'mobilität'] },
-      { name: 'Tinetti', file: 'Tinetti.html', tags: ['gang', 'gleichgewicht', 'sturzrisiko'] },
-      { name: '5x sit-stand', file: '5xsit-stand.html', tags: ['kraft', 'untere extremität', 'mobilität', 'sitz-stand', 'aufstehen'] },
+      { name: 'ISI', file: 'ISI.html', tags: ['schlaf', 'insomnie', 'schlafstörung', 'geriatrie', 'alter'] },
+      { name: 'Braincheck', file: 'Braincheck.html', tags: ['kognition', 'demenz', 'screening', 'Kognition', 'Gedächtniss', 'geriatrie', 'alter'] },
+      { name: 'GDS', file: 'GDS.html', tags: ['depression', 'psychisch', 'screening', 'mental', 'stimmung', 'psyche', 'geriatrie', 'alter'] },
+      { name: 'SPPB', file: 'sppb.html', tags: ['standard', 'mobilität', 'kraft', 'balance', 'gehen', 'geriatrie', 'alter', 'neurologie', 'msk', 'muskuloskelletal'] },
+      { name: 'DEMMI', file: 'DEMMI.html', tags: ['mobilität', 'standard', 'bewegung', 'transfert', 'bett', 'bewegungsübergänge', 'mobilität', 'geriatrie', 'alter', 'neurologie', 'msk', 'muskuloskelletal'] },
+      { name: 'Gaitspeed', file: 'Gaitspeed.html', tags: ['geschwindigkeit', 'gang', 'mobilität', 'geriatrie', 'alter', 'neurologie', 'msk', 'muskuloskelletal'] },
+      { name: 'Tinetti', file: 'Tinetti.html', tags: ['gang', 'gleichgewicht', 'sturzrisiko', 'geriatrie', 'alter'] },
+      { name: '5x sit-stand', file: '5xsit-stand.html', tags: ['kraft', 'untere extremität', 'mobilität', 'sitz-stand', 'aufstehen', 'geriatrie', 'alter', 'neurologie', 'msk', 'muskuloskelletal'] },
+        { name: '30s assisted sit-stand', file: '30s_assissted.html', tags: ['kraft', 'untere extremität', 'mobilität', 'sitz-stand', 'aufstehen', 'geriatrie', 'alter', 'neurologie', 'msk', 'muskuloskelletal'] },
       { name: 'FSMC', file: 'FSMC.html', tags: ['fatigue', 'neurologie', 'müdigkeit'] },
       { name: 'SARA', file: 'SARA.html', tags: ['ataxie', 'koordination', 'neurologie'] },
-      { name: 'Trunk Impairment Scale', file: 'trunk_impairment_scale.html', tags: ['rumpf', 'neurologie', 'gleichgewicht', 'stabilität', 'CVI', 'schlaganfall'] },
-      { name: 'PSFS / GAS', file: 'PSFS_GAS.html', tags: ['ziel', 'funktion', 'individualisiert', 'standard'] },
-      { name: 'Function in Sitting Test', file: 'FiST.html', tags: ['sitzen', 'balance', 'neurologie', 'gleichgewicht', 'schlaganfall', 'standard'] },
-      { name: 'TUG', file: 'TUG.html', tags: ['mobilität', 'gang', 'gleichgewicht', 'sturzrisiko'] },
-      { name: 'BBS', file: 'BBS.html', tags: ['gleichgewicht', 'sturzrisiko', 'balance', 'berg balance scale', 'short form'] },
-      { name: 'FSST', file: 'FSST.html', tags: ['balance', 'reaktion', 'koordination', ] }
+      { name: 'Trunk Impairment Scale', file: 'trunk_impairment_scale.html', tags: ['rumpf', 'neurologie', 'gleichgewicht', 'stabilität', 'CVI', 'schlaganfall', 'neurologie'] },
+      { name: 'PSFS / GAS', file: 'PSFS_GAS.html', tags: ['ziel', 'funktion', 'individualisiert', 'standard', 'geriatrie', 'alter', 'neurologie'] },
+      { name: 'Function in Sitting Test', file: 'FiST.html', tags: ['sitzen', 'balance', 'neurologie', 'gleichgewicht', 'schlaganfall', 'standard', 'neurologie'] },
+      { name: 'TUG', file: 'TUG.html', tags: ['mobilität', 'gang', 'gleichgewicht', 'sturzrisiko', 'geriatrie', 'alter', 'neurologie'] },
+      { name: 'BBS', file: 'BBS.html', tags: ['gleichgewicht', 'sturzrisiko', 'balance', 'berg balance scale', 'short form', 'geriatrie', 'alter', 'neurologie' ] },
+      { name: 'FSST', file: 'FSST.html', tags: ['balance', 'reaktion', 'koordination', 'schritte', 'gleichgewicht', 'sturugefahr', 'geriatrie', 'alter', 'neurologie' ] }
     ];
 
     const input = document.getElementById('searchInput');
