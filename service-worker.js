@@ -1,4 +1,4 @@
-const CACHE_NAME = 'flying-assessments-v3';
+const CACHE_NAME = 'flying-assessments-v4';
 
 const ASSETS_TO_CACHE = [
   '/', // wichtig für index.html bei PWA
