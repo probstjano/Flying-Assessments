@@ -41,12 +41,12 @@
   </details>
 
   <details>
-    <summary>🦺 Sturzprävention</summary>
+    <summary>🩺 Sturzprävention</summary>
     <li><a href="WGFP.html">🔹 World Guidelines Fall Prevention </a></li>
     <li><a href="STEADI.html">🔹 CDC STEADI Algorithm for Fall Risk Screening, Assessment, and Intervention </a></li>
   </details>
-  
-<details>
+
+  <details>
     <summary> 🧰 APTA Home-Health Toolkits </summary>
     <p> Die Amerikanische Physiotherapie-Verband bietet Hilfsmaterial/Leitfäden zu verschiedenen Themen im Domizilphysiotherapie-Bereich (auf englisch) </p>
     <li><a href="Schlaf_Toolkit.pdf">🔹 Schlaf Leitfaden </a></li>
@@ -62,9 +62,8 @@
   </details>
 
   <details>
-    <summary>🧓 Soziale und Mentale Gesundheit </summary>
+    <summary>🦳 Soziale und Mentale Gesundheit </summary>
     <li><a href="Mentale Gesundheit_Toolkit.pdf">🔹 Mental Health Tooklit </a></li>
-    
   </details>
 
   <details>
@@ -72,5 +71,12 @@
   </details>
 
   <a href="index.html">⬅️ Zurück zur Übersicht</a>
+
+  <script>
+    document.querySelectorAll('a[href$=".pdf"]').forEach(link => {
+      link.setAttribute('target', '_blank');
+      link.setAttribute('rel', 'noopener noreferrer');
+    });
+  </script>
 </body>
 </html>
