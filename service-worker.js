@@ -1,7 +1,9 @@
 const CACHE_NAME = 'flying-assessments-v4';
 
+const CACHE_NAME = 'flying-assessments-v3';
+
 const ASSETS_TO_CACHE = [
-  '/', // wichtig für index.html bei PWA
+  '/', // für index.html
   '/index.html',
   '/standard.html',
   '/bereiche.html',
@@ -9,43 +11,50 @@ const ASSETS_TO_CACHE = [
   '/Assessment-Leitfaden.pdf',
   '/manifest.json',
   '/icon.png',
-  // Einzelseiten Assessments
-  '/5xsit-stand.html',
-  '/30s_assisted.html',
+  // HTML-Seiten
   '/1MSTS.html',
   '/2MST.html',
-  '/DEMMI.html',
-  '/FiST.html',
-  '/PSFS_GAS.html',
-  '/sppb.html',
-  '/TUG.html',
-  '/Gaitspeed.html',
-  '/Tinetti.html',
+  '/30s_assissted.html',
+  '/5xsit-stand.html',
   '/BBS.html',
-  '/MCTSIB.html',
-  '/FSST.html',
-  '/FSMC.html',
-  '/SARA.html',
-  '/trunk_impairment_scale.html',
-  '/ISI.html',
-  '/GDS.html',
   '/Braincheck.html',
+  '/DEMMI.html',
+  '/FES-I.html',
   '/FOG.html',
-  // Protokolle & PDFs
-  '/SPPB_Protokoll.pdf',
-  '/DEMMI_Protokoll.pdf',
+  '/FSMC.html',
+  '/FSST.html',
+  '/FiST.html',
+  '/GDS.html',
+  '/Gaitspeed.html',
+  '/ISI.html',
+  '/MCTSIB.html',
+  '/PSFS_GAS.html',
+  '/SARA.html',
+  '/STEADI.html',
+  '/TUG.html',
+  '/tinetti.html',
+  '/trunk_impairment_scale.html',
+  '/WGFP.html',
+  // PDFs & Materialien
+  '/2MST.pdf',
   '/BBS_Protokoll.pdf',
-  '/FSST_Protokoll.pdf',
-  '/MCTSIB_Protokoll.pdf',
-  '/SARA_Protokoll.pdf',
   '/BraincheckQuestionnaire.pdf',
   '/BraincheckQuestionnaire_englisch.pdf',
   '/BraincheckQuestionnaire_französisch.pdf',
   '/BraincheckQuestionnaire_italienisch.pdf',
   '/BraincheckUhr.pdf',
-  '/braincheck_anleitung.pdf',
-  // Medien
-  '/walking speeds.jpg'
+  '/DEMMI_Protokoll.pdf',
+  '/FSST_Protokoll.pdf',
+  '/Inkontinenz_Toolkit.pdf',
+  '/MCTSIB_Protokoll.pdf',
+  '/Mentale Gesundheit_Toolkit.pdf',
+  '/SARA_Protokoll.pdf',
+  '/SPPB_Protokoll.pdf',
+  '/STEADI_Algorithm.pdf',
+  '/STEADI_Schuhe.pdf',
+  '/Schlaf_Toolkit.pdf',
+  '/Schmerz_Toolkit.pdf',
+  '/Flying_Unfall.pdf'
 ];
 
 self.addEventListener('install', event => {
