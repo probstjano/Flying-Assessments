@@ -1,1 +1,138 @@
 
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FES-I – Falls Efficacy Scale – International</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <style>
+    body {
+      font-family: sans-serif;
+      margin: 2rem;
+      font-size: 16px;
+      max-width: 800px;
+    }
+    .question-block { margin-bottom: 1.5rem; }
+    .options { display: flex; gap: 10px; margin-top: 0.5rem; }
+    .option-item { display: flex; align-items: center; gap: 4px; }
+    label.question { font-weight: bold; display: block; margin-bottom: 0.5rem; }
+    button { margin-top: 15px; padding: 10px 15px; font-size: 16px; }
+    #result { margin-top: 20px; font-weight: bold; white-space: pre-line; }
+    .nav-buttons { margin-top: 2rem; }
+    .nav-buttons a {
+      display: inline-block;
+      margin-right: 10px;
+      padding: 10px 15px;
+      background: #eee;
+      border-radius: 8px;
+      text-decoration: none;
+      color: #000;
+    }
+    .nav-buttons a:hover { background: #ddd; }
+  </style>
+</head>
+<body>
+  <h1>FES-I – Falls Efficacy Scale – International</h1>
+  <p>Erfassung der Bedenken hinsichtlich eines möglichen Sturzes bei verschiedenen alltäglichen Aktivitäten.</p>
+  <p>Die Skala umfasst 16 Fragen. Antwortmöglichkeiten: 1 = keinerlei Bedenken, 2 = einige Bedenken, 3 = ziemliche Bedenken, 4 = sehr große Bedenken.</p>
+
+  <form id="fesiForm"></form>
+
+  <button type="button" onclick="calculateFESI()">✅ Score berechnen</button>
+  <button type="button" onclick="downloadPDF()">📄 Als PDF speichern</button>
+
+  <div id="result"></div>
+
+  <div class="nav-buttons">
+    <a href="bereiche.html">⬅️ Zurück zu Bereichs-Assessments</a>
+    <a href="index.html">🏠 Zur Startseite</a>
+  </div>
+
+  <script>
+    const items = [
+      "1. Hausputz (kehren, staubsaugen, Staub wischen)",
+      "2. An- oder Ausziehen",
+      "3. Einfache Mahlzeiten kochen",
+      "4. Baden oder duschen",
+      "5. Einkaufen gehen",
+      "6. Von einem Stuhl aufstehen oder hinsetzen",
+      "7. Eine Treppe hinauf- oder hinuntersteigen",
+      "8. In der Nähe der Wohnung umhergehen",
+      "9. Etwas oberhalb des Kopfes oder auf dem Boden erreichen",
+      "10. Das Telefon erreichen, bevor es aufhört zu klingeln",
+      "11. Auf rutschiger Oberfläche gehen (Eis, nasser Boden)",
+      "12. Freunde oder Verwandte besuchen",
+      "13. In einer Menschenmenge gehen",
+      "14. Auf unebenem Boden gehen (Kopfsteinpflaster, Waldweg)",
+      "15. Steigung hinauf oder Gefälle hinunter gehen",
+      "16. Eine Veranstaltung besuchen (z. B. Gottesdienst)"
+    ];
+
+    const options = [
+      "1 - keinerlei Bedenken",
+      "2 - einige Bedenken",
+      "3 - ziemliche Bedenken",
+      "4 - sehr große Bedenken"
+    ];
+
+    function renderForm() {
+      const form = document.getElementById("fesiForm");
+      items.forEach((item, index) => {
+        const block = document.createElement("div");
+        block.className = "question-block";
+        block.innerHTML = `<label class="question">${item}</label>
+          <div class="options">
+            ${options.map((opt, idx) => `
+              <div class="option-item">
+                <input type="radio" name="q${index}" value="${idx + 1}" id="q${index}_${idx}">
+                <label for="q${index}_${idx}">${opt}</label>
+              </div>
+            `).join('')}
+          </div>`;
+        form.appendChild(block);
+      });
+    }
+
+    function calculateFESI() {
+      let score = 0;
+      let allAnswered = true;
+      for (let i = 0; i < items.length; i++) {
+        const selected = document.querySelector(`input[name="q${i}"]:checked`);
+        if (selected) {
+          score += parseInt(selected.value);
+        } else {
+          allAnswered = false;
+        }
+      }
+      document.getElementById("result").innerText = `Gesamtpunktzahl: ${score} / 64` + (allAnswered ? "" : "\n⚠️ Einige Fragen wurden nicht beantwortet.");
+    }
+
+    function downloadPDF() {
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF();
+      let y = 10;
+      doc.setFontSize(16);
+      doc.text("FES-I – Auswertung", 10, y);
+      y += 10;
+
+      items.forEach((item, idx) => {
+        const selected = document.querySelector(`input[name="q${idx}"]:checked`);
+        if (selected) {
+          doc.setFontSize(12);
+          doc.text(`${item}: ${options[selected.value - 1]}`, 10, y);
+          y += 8;
+        }
+      });
+
+      const result = document.getElementById("result").innerText;
+      y += 10;
+      doc.setFontSize(14);
+      doc.text(result, 10, y);
+      doc.save("fes-i-auswertung.pdf");
+    }
+
+    renderForm();
+  </script>
+</body>
+</html>
