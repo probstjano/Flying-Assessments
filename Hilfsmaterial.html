@@ -73,10 +73,15 @@
   <a href="index.html">⬅️ Zurück zur Übersicht</a>
 
   <script>
-    document.querySelectorAll('a[href$=".pdf"]').forEach(link => {
+  document.querySelectorAll('a').forEach(link => {
+    const href = link.getAttribute('href');
+
+    if (href && (href.endsWith('.pdf') || href.startsWith('http'))) {
       link.setAttribute('target', '_blank');
       link.setAttribute('rel', 'noopener noreferrer');
-    });
-  </script>
+    }
+  });
+</script>
+
 </body>
 </html>
