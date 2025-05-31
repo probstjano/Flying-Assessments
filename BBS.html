@@ -239,40 +239,55 @@
       }
     }
 
-    async function generatePDF() {
-      const { jsPDF } = window.jspdf;
-      const doc = new jsPDF();
-      let y = 10;
-      const items = useShort ? shortIndexes.map(i => fullQuestions[i]) : fullQuestions;
-      let total = 0;
+    
+async function generatePDF() {
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF();
+  const lineHeight = 8;
+  const left = 10;
+  const right = 180;
+  let y = 20;
 
-      doc.setFontSize(16);
-      doc.text(`BBS ${useShort ? "Kurzversion" : "Vollversion"} – Auswertung`, 10, y);
-      y += 10;
+  doc.setFont("helvetica", "normal");
+  doc.setFontSize(16);
+  doc.text(`BBS ${useShort ? "Kurzversion" : "Vollversion"} – Auswertung`, left, y);
+  y += lineHeight;
 
-      for (let idx = 0; idx < items.length; idx++) {
-        const fullIndex = useShort ? shortIndexes[idx] : idx;
-        const q = items[idx];
-        const sel = document.querySelector(`select[name='q${fullIndex}']`);
-        const val = parseInt(sel.value);
-        const label = sel.options[sel.selectedIndex].text;
-        total += val;
-        doc.setFontSize(12);
-        doc.text(`${fullIndex + 1}. ${q.text}`, 10, y);
-        y += 6;
-        doc.text(`Antwort: ${label}`, 10, y);
-        y += 10;
-        if (y > 270) {
-          doc.addPage();
-          y = 10;
-        }
-      }
+  doc.setFontSize(12);
+  doc.line(left, y, 200, y);
+  y += 5;
 
-      const max = useShort ? 28 : 56;
-      doc.setFontSize(14);
-      doc.text(`Gesamtscore: ${total} / ${max}`, 10, y);
-      window.open(doc.output('bloburl'), '_blank');
+  const items = useShort ? shortIndexes.map(i => fullQuestions[i]) : fullQuestions;
+  let total = 0;
+
+  for (let idx = 0; idx < items.length; idx++) {
+    const fullIndex = useShort ? shortIndexes[idx] : idx;
+    const q = items[idx];
+    const sel = document.querySelector(`select[name='q${fullIndex}']`);
+    if (!sel || sel.value === "") continue;
+    const val = parseInt(sel.value);
+    total += val;
+    const text = `${fullIndex + 1}. ${q.text}`;
+    doc.text(text, left, y);
+    doc.text(`${val}`, right, y, { align: "right" });
+    y += lineHeight;
+    if (y > 270) {
+      doc.addPage();
+      y = 20;
     }
+  }
+
+  const max = useShort ? 28 : 56;
+  y += 5;
+  doc.setFontSize(14);
+  doc.text(`Gesamtscore: ${total} / ${max}`, left, y);
+
+  const today = new Date().toLocaleDateString("de-CH");
+  doc.text(`Datum: ${today}`, 150, y);
+
+  doc.save("BBS_Auswertung.pdf");
+}
+
 
     renderForm();
   </script>
