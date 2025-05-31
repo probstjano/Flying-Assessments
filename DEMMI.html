@@ -119,36 +119,68 @@
       document.getElementById("result").innerText = `Rohscore: ${score}/20 → DEMMI-Score: ${scaled}/100`;
     }
 
-    async function downloadPDF() {
-      const { jsPDF } = window.jspdf;
-      const doc = new jsPDF();
-      const form = document.forms["demmiForm"];
-      let y = 10;
+    
 
-      doc.text("DEMMI-Auswertung", 10, y);
-      y += 10;
+async function downloadPDF() {
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF();
+  const form = document.forms["demmiForm"];
+  const lineHeight = 8;
+  const left = 10;
+  const right = 180;
+  let y = 20;
 
-      for (let i = 0; i < questions.length; i++) {
-        const selectedValue = form["q" + i].value;
-        const optionLabel = questions[i].options.find(opt => opt.value.toString() === selectedValue)?.label || "Keine Auswahl";
-        doc.text(`${questions[i].text}: ${optionLabel}`, 10, y);
-        y += 7;
-        if (i === 11 && selectedValue === "1") {
-          const hilfsmittel = document.getElementById("hilfsmittel").value || "–";
-          doc.text(`Hilfsmittel: ${hilfsmittel}`, 10, y);
-          y += 7;
-        }
-        if (y > 280) {
-          doc.addPage();
-          y = 10;
-        }
-      }
+  doc.setFont("helvetica", "normal");
+  doc.setFontSize(16);
+  doc.text("DEMMI – Auswertung", left, y);
+  y += lineHeight;
 
-      y += 5;
-      const resultText = document.getElementById("result").innerText || "Kein Ergebnis berechnet.";
-      doc.text(resultText, 10, y);
-      doc.save("demmi-ergebnis.pdf");
+  doc.setFontSize(12);
+  doc.line(left, y, 200, y);
+  y += 5;
+
+  let rawScore = 0;
+  for (let i = 0; i < questions.length; i++) {
+    const selectedValue = form["q" + i].value;
+    if (selectedValue === "") continue;
+    rawScore += parseInt(selectedValue);
+    const text = questions[i].text;
+    doc.text(`${i + 1}. ${text}`, left, y);
+    doc.text(`${selectedValue}`, right, y, { align: "right" });
+    y += lineHeight;
+    if (i === 11 && selectedValue === "1") {
+      const hilfsmittel = document.getElementById("hilfsmittel").value || "–";
+      doc.text("Hilfsmittel:", left + 10, y);
+      doc.text(hilfsmittel, right, y, { align: "right" });
+      y += lineHeight;
     }
+    if (y > 270) {
+      doc.addPage();
+      y = 20;
+    }
+  }
+
+  y += 10;
+  const scaled = rawScore <= 20 ? conversion[rawScore] : "Ungültig";
+
+  doc.setFontSize(12);
+  doc.setFont(undefined, "bold");
+  doc.text("Gesamtergebnis:", left, y);
+  y += lineHeight;
+
+  doc.setFont(undefined, "normal");
+  doc.text(`Rohscore: ${rawScore} / 20`, left, y);
+  y += lineHeight;
+  doc.text(`DEMMI-Score: ${scaled} / 100`, left, y);
+  y += lineHeight;
+
+  const today = new Date().toLocaleDateString("de-CH");
+  doc.text(`Datum: ${today}`, left, y);
+
+  doc.save("DEMMI_Auswertung.pdf");
+}
+
+
   </script>
 </body>
 </html>
