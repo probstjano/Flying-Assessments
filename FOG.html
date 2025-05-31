@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="de">
 <head>
@@ -5,146 +6,115 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>FOG-Q – Freezing of Gait Questionnaire</title>
   <style>
-    body { font-family: sans-serif; margin: 2rem; font-size: 16px; max-width: 800px; }
-    h1 { margin-bottom: 0; }
-    p { margin-top: 0.2rem; }
+    body { font-family: sans-serif; margin: 2rem; font-size: 16px; max-width: 900px; }
+    label { display: block; margin: 4px 0; }
     .question-block { margin-bottom: 1.5rem; }
-    .question { margin-bottom: 0.5rem; font-weight: bold; }
-    select { width: 100%; padding: 6px; font-size: 16px; }
+    .question { font-weight: bold; margin-bottom: 0.5rem; }
     button { margin-top: 20px; padding: 10px 15px; font-size: 16px; }
     #result { margin-top: 2rem; font-weight: bold; white-space: pre-line; }
   </style>
 </head>
 <body>
   <h1>Freezing of Gait Questionnaire (FOG-Q)</h1>
-  <p>Beurteilung und Verlaufsüberprüfung der "Freezing" Symptomatik bei Parkinson.</p>
-  <p>Im Cenplex als <strong> Messung </strong> vorhanden. Hier ausfüllen und Summe-Score übertragen</p>
+  <p>Zur Selbsteinschätzung von Gangstörungen und Freezing bei Parkinson.</p>
+
   <form id="fogForm">
-    <div id="questions"></div>
-    <button type="button" onclick="calculateFOG()">✅ Score berechnen</button>
-    <button type="button" onclick="generatePDF()">📄 PDF erstellen</button>
+    <div class="question-block">
+      <div class="question">1. In Ihrem schlechtesten Zustand gehen Sie:</div>
+      <label><input type="radio" name="q0" value="0"> 0) Normal</label>
+      <label><input type="radio" name="q0" value="1"> 1) Ziemlich normal - etwas langsam</label>
+      <label><input type="radio" name="q0" value="2"> 2) Langsam, aber völlig selbständig</label>
+      <label><input type="radio" name="q0" value="3"> 3) Brauche Hilfe oder Gehstützen</label>
+      <label><input type="radio" name="q0" value="4"> 4) Nicht in der Lage zu gehen</label>
+    </div>
+
+    <div class="question-block">
+      <div class="question">2. Beeinflussen Ihre Gehschwierigkeiten Ihre alltäglichen Aktivitäten und Ihre Unabhängigkeit?</div>
+      <label><input type="radio" name="q1" value="0"> 0) Überhaupt nicht</label>
+      <label><input type="radio" name="q1" value="1"> 1) Ein bisschen</label>
+      <label><input type="radio" name="q1" value="2"> 2) Moderat</label>
+      <label><input type="radio" name="q1" value="3"> 3) Stark</label>
+      <label><input type="radio" name="q1" value="4"> 4) Nicht in der Lage zu gehen</label>
+    </div>
+
+    <div class="question-block">
+      <div class="question">3. Spüren Sie, wie Ihre Füße am Boden kleben bleiben während des Gehens, während des Drehens oder wenn Sie den ersten Schritt auslösen möchten?</div>
+      <label><input type="radio" name="q2" value="0"> 0) Nie</label>
+      <label><input type="radio" name="q2" value="1"> 1) Sehr selten (einmal im Monat)</label>
+      <label><input type="radio" name="q2" value="2"> 2) Selten (einmal in der Woche)</label>
+      <label><input type="radio" name="q2" value="3"> 3) Oft (einmal am Tag)</label>
+      <label><input type="radio" name="q2" value="4"> 4) Immer (beim Gehen)</label>
+    </div>
+
+    <div class="question-block">
+      <div class="question">4. Wie lange dauert Ihre längste Freezing Episode?</div>
+      <label><input type="radio" name="q3" value="0"> 0) Passiert nie</label>
+      <label><input type="radio" name="q3" value="1"> 1) 1-2 Sekunden</label>
+      <label><input type="radio" name="q3" value="2"> 2) 3-10 Sekunden</label>
+      <label><input type="radio" name="q3" value="3"> 3) 11-30 Sekunden</label>
+      <label><input type="radio" name="q3" value="4"> 4) Nicht in der Lage zu gehen für mehr als 30 Sekunden</label>
+    </div>
+
+    <div class="question-block">
+      <div class="question">5. Wie lange dauert Ihre typische Starthemmung, wenn Sie den ersten Schritt einleiten?</div>
+      <label><input type="radio" name="q4" value="0"> 0) Gar nicht</label>
+      <label><input type="radio" name="q4" value="1"> 1) Dauert länger als 1 Sekunde bis Gehstart</label>
+      <label><input type="radio" name="q4" value="2"> 2) Dauert länger als 3 Sekunden bis Gehstart</label>
+      <label><input type="radio" name="q4" value="3"> 3) Dauert länger als 10 Sekunden bis Gehstart</label>
+      <label><input type="radio" name="q4" value="4"> 4) Dauert länger als 30 Sekunden bis Gehstart</label>
+    </div>
+
+    <div class="question-block">
+      <div class="question">6. Wie lange müssen Sie typischerweise zögern, bevor Sie drehen (Freezing beim Drehen)?</div>
+      <label><input type="radio" name="q5" value="0"> 0) Nie</label>
+      <label><input type="radio" name="q5" value="1"> 1) 1-2 Sekunden bis zum Drehen</label>
+      <label><input type="radio" name="q5" value="2"> 2) 3-10 Sekunden bis zum Drehen</label>
+      <label><input type="radio" name="q5" value="3"> 3) 11-30 Sekunden bis zum Drehen</label>
+      <label><input type="radio" name="q5" value="4"> 4) Nicht in der Lage zu Drehen für mehr als 30 Sekunden</label>
+    </div>
+
+    <button type="button" onclick="calculateScore()">✅ Score berechnen</button>
+    <button type="button" onclick="generatePDF()">📄 PDF exportieren</button>
   </form>
+
   <div id="result"></div>
+
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script>
-    const questions = [
-      {
-        text: "In Ihrem schlechtesten Zustand gehen Sie:",
-        options: [
-          "Normal",
-          "Ziemlich normal – etwas langsam",
-          "Langsam, aber völlig selbständig",
-          "Brauche Hilfe oder Gehstützen",
-          "Nicht in der Lage zu gehen"
-        ]
-      },
-      {
-        text: "Beeinflussen Ihre Gehschwierigkeiten Ihre alltäglichen Aktivitäten und Ihre Unabhängigkeit?",
-        options: [
-          "Überhaupt nicht",
-          "Ein bisschen",
-          "Moderat",
-          "Stark",
-          "Nicht in der Lage zu gehen"
-        ]
-      },
-      {
-        text: "Spüren Sie, wie Ihre Füße am Boden kleben bleiben während des Gehens, während des Drehens oder wenn Sie den ersten Schritt auslösen möchten?",
-        options: [
-          "Nie",
-          "Sehr selten (einmal im Monat)",
-          "Selten (einmal in der Woche)",
-          "Oft (einmal am Tag)",
-          "Immer (beim Gehen)"
-        ]
-      },
-      {
-        text: "Wie lange dauert Ihre längste Freezing Episode?",
-        options: [
-          "Passiert nie",
-          "1–2 Sekunden",
-          "3–10 Sekunden",
-          "11–30 Sekunden",
-          "Nicht in der Lage zu gehen für mehr als 30 Sekunden"
-        ]
-      },
-      {
-        text: "Wie lange dauert Ihre typische Starthemmung, wenn Sie den ersten Schritt einleiten?",
-        options: [
-          "Gar nicht",
-          "Dauert länger als 1 Sekunde bis Gehstart",
-          "Dauert länger als 3 Sekunden bis Gehstart",
-          "Dauert länger als 10 Sekunden bis Gehstart",
-          "Dauert länger als 30 Sekunden bis Gehstart"
-        ]
-      },
-      {
-        text: "Wie lange müssen Sie typischerweise zögern, bevor Sie drehen (Freezing beim Drehen)?",
-        options: [
-          "Nie",
-          "1–2 Sekunden bis zum Drehen",
-          "3–10 Sekunden bis zum Drehen",
-          "11–30 Sekunden bis zum Drehen",
-          "Nicht in der Lage zu Drehen für mehr als 30 Sekunden"
-        ]
-      }
-    ];
-
-    const container = document.getElementById("questions");
-    questions.forEach((q, i) => {
-      const block = document.createElement("div");
-      block.className = "question-block";
-      const options = q.options.map((text, idx) => `<option value="${idx}">${text}</option>`).join("");
-      block.innerHTML = `
-        <div class="question">${i + 1}. ${q.text}</div>
-        <select name="q${i}" required>
-          <option value="" disabled selected>Antwort auswählen</option>
-          ${options}
-        </select>
-      `;
-      container.appendChild(block);
-    });
-
-    function calculateFOG() {
+    function calculateScore() {
       let total = 0;
-      for (let i = 0; i < questions.length; i++) {
-        const val = parseInt(document.querySelector(`select[name='q${i}']`)?.value);
-        if (isNaN(val)) return alert("Bitte alle Fragen beantworten.");
-        total += val;
+      for (let i = 0; i < 6; i++) {
+        const selected = document.querySelector(`input[name="q${i}"]:checked`);
+        if (!selected) return alert("Bitte alle Fragen beantworten.");
+        total += parseInt(selected.value);
       }
-      document.getElementById("result").innerText = `FOG-Q Gesamtscore: ${total} / 24`;
+      document.getElementById("result").innerText = `Gesamtscore: ${total} / 24`;
     }
 
     async function generatePDF() {
       const { jsPDF } = window.jspdf;
-      let doc = new jsPDF();
-      let y = 10;
-
+      const doc = new jsPDF();
+      doc.setFont("helvetica", "normal");
       doc.setFontSize(16);
-      doc.text("Freezing of Gait Questionnaire (FOG-Q) – Auswertung", 10, y);
-      y += 10;
-
+      doc.text("FOG-Q – Auswertung", 10, 15);
+      doc.setFontSize(12);
+      let y = 25;
       let total = 0;
-      questions.forEach((q, i) => {
-        const select = document.querySelector(`select[name='q${i}']`);
-        const val = parseInt(select?.value);
-        const label = select?.options[select.selectedIndex]?.text;
-        if (!isNaN(val)) total += val;
-        doc.setFontSize(12);
-        doc.text(`${i + 1}. ${q.text}`, 10, y);
-        y += 6;
-        doc.text(`Antwort: ${label}`, 10, y);
-        y += 10;
-        if (y > 270) {
-          doc.addPage();
-          y = 10;
-        }
-      });
+
+      for (let i = 0; i < 6; i++) {
+        const question = document.querySelectorAll(".question-block")[i].querySelector(".question").innerText;
+        const selected = document.querySelector(`input[name="q${i}"]:checked`);
+        if (!selected) continue;
+        const label = selected.parentElement.innerText;
+        total += parseInt(selected.value);
+        doc.text(`${i + 1}. ${question}`, 10, y); y += 6;
+        doc.text(`Antwort: ${label}`, 10, y); y += 10;
+        if (y > 270) { doc.addPage(); y = 20; }
+      }
 
       doc.setFontSize(14);
-      doc.text(`Gesamtscore: ${total} / 24. (höhere Werte=stärkere Symptomatik) `, 10, y);
-
-      window.open(doc.output('bloburl'), '_blank');
+      doc.text(`Gesamtscore: ${total} / 24`, 10, y);
+      doc.save("FOG_Auswertung.pdf");
     }
   </script>
 </body>
