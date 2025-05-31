@@ -44,10 +44,7 @@
 
   <div id="result"></div>
 
-  <div class="nav-buttons">
-   <a href="bereiche.html">⬅️ Zurück zu Bereichs-Assessments</a>
-    <a href="index.html">🏠 Zur Startseite</a>
-  </div>
+  
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script>
@@ -121,39 +118,93 @@
         `<em>Hinweis: Die Einteilung des Sturzrisikos variiert je nach Literaturquelle.</em>`;
     }
 
-    async function generatePDF() {
-      const { jsPDF } = window.jspdf;
-      const doc = new jsPDF();
-      let y = 10;
-      let total = 0;
+    
+async function generatePDF() {
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF();
+  let y = 10;
+  const lineHeight = 8;
+  const left = 10;
+  const right = 180;
 
-      doc.setFontSize(16);
-      doc.text("Tinetti POMA – Auswertung", 10, y);
-      y += 10;
+  doc.setFont("helvetica", "normal");
+  doc.setFontSize(16);
+  doc.text("Tinetti POMA – Auswertung", left, y);
+  y += lineHeight;
 
-      for (let i = 0; i < questions.length; i++) {
-        const sel = document.querySelector(`select[name='q${i}']`);
-        if (!sel || sel.selectedIndex < 0) continue;
-        const val = parseInt(sel.value);
-        const label = sel.options[sel.selectedIndex].text;
-        total += val;
-        doc.setFontSize(12);
-        doc.text(`${i + 1}. ${questions[i].text}`, 10, y);
-        y += 6;
-        doc.text(`Antwort: ${label}`, 10, y);
-        y += 10;
-        if (y > 270) {
-          doc.addPage();
-          y = 10;
-        }
+  doc.setFontSize(12);
+  doc.line(left, y, 200, y);
+  y += 5;
+
+  let balance = 0, gait = 0;
+  let questionNumber = 1;
+
+  for (let i = 0; i < questions.length; i++) {
+    const sel = document.querySelector(`select[name='q${i}']`);
+    if (!sel || sel.value === "") continue;
+
+    const rawText = questions[i].text;
+    const cleanText = rawText
+      .normalize("NFD").replace(/[̀-ͯ]/g, "")
+      .replace(/[^\x00-\x7F]/g, "")
+      .replace(/\n/g, " ")
+      .replace(/\s+/g, " ")
+      .trim();
+
+    const fullLine = `${questionNumber}. ${cleanText}`;
+    const wrapped = doc.splitTextToSize(fullLine, 160);
+    const val = parseInt(sel.value);
+
+    wrapped.forEach((line, idx) => {
+      doc.text(line, left, y);
+      if (idx === 0) {
+        doc.text(`${val}`, right, y, { align: "right" });
       }
+      y += lineHeight;
+    });
 
-      doc.setFontSize(14);
-      doc.text(`Gesamtscore: ${total} / 28`, 10, y);
-      window.open(doc.output('bloburl'), '_blank');
+    y += 4;
+    questionNumber++;
+
+    if (balanceIndexes.includes(i)) balance += val;
+    if (gaitIndexes.includes(i)) gait += val;
+
+    if (y > 270) {
+      doc.addPage();
+      y = 20;
     }
+  }
+
+  const total = balance + gait;
+  let riskLevel = "";
+  if (total < 19) riskLevel = "Hohes Sturzrisiko";
+  else if (total <= 24) riskLevel = "Mittleres Sturzrisiko";
+  else riskLevel = "Geringes Sturzrisiko";
+
+  y += 5;
+  doc.setFontSize(14);
+  doc.setFont(undefined, "bold");
+  doc.text("Gesamtergebnis:", left, y);
+  y += lineHeight;
+
+  doc.setFont(undefined, "normal");
+  doc.setFontSize(12);
+  doc.text(`Gesamtscore: ${total} / 28 → ${riskLevel}`, left, y);
+  y += lineHeight;
+  doc.text(`Gleichgewicht: ${balance} / 16`, left, y);
+  y += lineHeight;
+  doc.text(`Gang: ${gait} / 12`, left, y);
+  y += lineHeight;
+
+  const today = new Date().toLocaleDateString("de-CH");
+  doc.text(`Datum: ${today}`, left, y);
+
+  doc.save("Tinetti_Auswertung.pdf");
+}
+
 
     renderForm();
   </script>
+<p><a href="index.html"> ⬅️ Zurück zur Hauptseite</a></p>
 </body>
 </html>
